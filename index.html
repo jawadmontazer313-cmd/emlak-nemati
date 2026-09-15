@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد املاک نعمتی</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1720;
+    --card: #1a2433;
+    --card2: #223046;
+    --border: #2d3e5a;
+    --text: #e6edf5;
+    --muted: #8fa3bf;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --warn: #f59e0b;
+  }
+  body {
+    font-family: Tahoma, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+  /* LOGIN */
+  #loginScreen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+  }
+  .login-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; width: 100%; max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  .login-box h1 { font-size: 22px; margin-bottom: 8px; text-align: center; }
+  .login-box p { color: var(--muted); text-align: center; margin-bottom: 24px; font-size: 14px; }
+
+  input, textarea, select {
+    width: 100%; padding: 12px 14px; background: var(--card2);
+    border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text); font-size: 15px; font-family: inherit;
+    margin-bottom: 12px; outline: none;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+
+  button {
+    background: var(--primary); color: #fff; border: none;
+    padding: 12px 18px; border-radius: 10px; font-size: 15px;
+    font-family: inherit; cursor: pointer; transition: .2s;
+    font-weight: 600;
+  }
+  button:hover { background: var(--primary-hover); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.danger { background: var(--danger); padding: 6px 12px; font-size: 13px; }
+  button.danger:hover { background: #dc2626; }
+  button.secondary { background: var(--card2); border: 1px solid var(--border); }
+  button.secondary:hover { background: var(--border); }
+
+  /* HEADER */
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 10px;
+  }
+  header h1 { font-size: 18px; }
+  header .actions { display: flex; gap: 8px; }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding-bottom: 8px; margin-bottom: 16px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 10px 16px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; white-space: nowrap;
+    font-size: 14px; color: var(--muted); transition: .2s;
+  }
+  .tab.active {
+    background: var(--primary); color: #fff; border-color: var(--primary);
+  }
+
+  /* CARDS */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+  }
+  .stat-card .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .stat-card .value { font-size: 26px; font-weight: bold; }
+  .stat-card.blue .value { color: var(--primary); }
+  .stat-card.green .value { color: var(--success); }
+  .stat-card.warn .value { color: var(--warn); }
+  .stat-card.red .value { color: var(--danger); }
+
+  /* ITEM LIST */
+  .item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+  }
+  .item-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 10px; margin-bottom: 8px;
+  }
+  .item-title { font-weight: bold; font-size: 15px; }
+  .item-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 6px;
+    font-size: 11px; background: var(--card2); color: var(--muted);
+    margin-inline-start: 6px;
+  }
+  .item-badge.pub { background: #1e3a5f; color: #60a5fa; }
+  .item-badge.priv { background: #3f2e1a; color: #fbbf24; }
+  .item-badge.sell { background: #14532d; color: #4ade80; }
+  .item-badge.rent { background: #4a1d3f; color: #f472b6; }
+  .item-row { font-size: 13px; color: var(--muted); margin: 4px 0; }
+  .item-row b { color: var(--text); font-weight: normal; }
+  .item-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+  .empty {
+    text-align: center; padding: 40px 20px; color: var(--muted);
+    background: var(--card); border: 1px dashed var(--border);
+    border-radius: 12px;
+  }
+
+  /* FORM */
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--card2); border: 1px solid var(--border);
+    padding: 12px 20px; border-radius: 10px; font-size: 14px;
+    opacity: 0; pointer-events: none; transition: .3s; z-index: 999;
+    max-width: 90vw;
+  }
+  #toast.show { opacity: 1; }
+  #toast.success { border-color: var(--success); }
+  #toast.error { border-color: var(--danger); }
+
+  .loading { text-align: center; padding: 30px; color: var(--muted); }
+
+  .section-title {
+    font-size: 16px; font-weight: bold; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  @media (max-width: 500px) {
+    .container { padding: 12px; }
+    header h1 { font-size: 16px; }
+    .stat-card .value { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>🏠 داشبورد املاک</h1>
+    <p>برای ورود رمز عبور را وارد کنید</p>
+    <input type="password" id="loginPassword" placeholder="رمز عبور" autocomplete="current-password">
+    <button onclick="doLogin()" id="loginBtn" style="width:100%">ورود</button>
+  </div>
+</div>
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div id="dashboard" style="display:none">
+  <div class="container">
+    <header>
+      <h1>🏠 داشبورد املاک نعمتی</h1>
+      <div class="actions">
+        <button class="secondary" onclick="loadAll()">🔄 بروزرسانی</button>
+        <button class="secondary" onclick="logout()">خروج</button>
+      </div>
+    </header>
+
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="overview">📊 آمار</div>
+      <div class="tab" data-tab="listings">🏘️ املاک</div>
+      <div class="tab" data-tab="customers">👥 مشتری‌ها</div>
+      <div class="tab" data-tab="requests">📝 درخواست‌ها</div>
+      <div class="tab" data-tab="fileRequests">🔍 فایل‌یابی</div>
+      <div class="tab" data-tab="add">➕ افزودن ملک</div>
+      <div class="tab" data-tab="broadcast">📢 پیام گروهی</div>
+    </div>
+
+    <div id="content"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  تنظیمات - آدرس Worker خودت رو اینجا بذار
+// ═══════════════════════════════════════════════
+const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
+
+// ═══════════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════════
+let PASSWORD = localStorage.getItem("admin_pass") || "";
+let currentTab = "overview";
+
+// ═══════════════════════════════════════════════
+//  Helpers
+// ═══════════════════════════════════════════════
+function toast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "show " + type;
+  setTimeout(() => { t.className = ""; }, 2500);
+}
+
+async function api(path, options = {}) {
+  const opts = {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + PASSWORD,
+      ...(options.headers || {})
+    }
+  };
+  const r = await fetch(API_BASE + path, opts);
+  const data = await r.json().catch(() => ({}));
+  if (r.status === 401) {
+    // رمز اشتباه - برو لاگین
+    logout();
+    throw new Error("دسترسی غیرمجاز");
+  }
+  if (!r.ok) throw new Error(data.error || "خطا");
+  return data;
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[m]));
+}
+
+// ═══════════════════════════════════════════════
+//  Login / Logout
+// ═══════════════════════════════════════════════
+async function doLogin() {
+  const pass = document.getElementById("loginPassword").value.trim();
+  if (!pass) return toast("رمز را وارد کنید", "error");
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "در حال بررسی...";
+  try {
+    const r = await fetch(API_BASE + "/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pass })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      PASSWORD = pass;
+      localStorage.setItem("admin_pass", pass);
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      loadAll();
+    } else {
+      toast("رمز اشتباه است", "error");
+    }
+  } catch (e) {
+    toast("خطا در ارتباط با سرور", "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "ورود";
+  }
+}
+
+function logout() {
+  PASSWORD = "";
+  localStorage.removeItem("admin_pass");
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginPassword").value = "";
+}
+
+// ═══════════════════════════════════════════════
+//  Tabs
+// ═══════════════════════════════════════════════
+document.getElementById("tabs").addEventListener("click", e => {
+  const tab = e.target.closest(".tab");
+  if (!tab) return;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+  currentTab = tab.dataset.tab;
+  renderTab();
+});
+
+function renderTab() {
+  const c = document.getElementById("content");
+  if (currentTab === "overview") renderOverview(c);
+  else if (currentTab === "listings") renderListings(c);
+  else if (currentTab === "customers") renderCustomers(c);
+  else if (currentTab === "requests") renderRequests(c);
+  else if (currentTab === "fileRequests") renderFileRequests(c);
+  else if (currentTab === "add") renderAddForm(c);
+  else if (currentTab === "broadcast") renderBroadcast(c);
+}
+
+// ═══════════════════════════════════════════════
+//  Load All
+// ═══════════════════════════════════════════════
+async function loadAll() {
+  const c = document.getElementById("content");
+  c.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+  try {
+    await renderTab();
+  } catch (e) {
+    c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  Overview
+// ═══════════════════════════════════════════════
+async function renderOverview(c) {
+  const { stats } = await api("/api/stats");
+  c.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="label">املاک عمومی</div>
+        <div class="value">${stats.publicListings}</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="label">املاک خصوصی</div>
+        <div class="value">${stats.privateListings}</div>
+      </div>
+      <div class="stat-card green">
+        <div class="label">مشتری‌ها</div>
+        <div class="value">${stats.customers}</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="label">درخواست‌ها</div>
+        <div class="value">${stats.requests}</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">فایل‌یابی</div>
+        <div class="value">${stats.fileRequests}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+//  Listings
+// ═══════════════════════════════════════════════
+async function renderListings(c) {
+  const { public: pubList, private: privList } = await api("/api/listings?scope=all");
+
+  if (pubList.length === 0 && privList.length === 0) {
+    c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>';
+    return;
+  }
+
+  let html = "";
+  if (pubList.length) {
+    html += `<div class="section-title">🏘️ املاک عمومی (${pubList.length})</div>`;
+    html += pubList.map(item => listingCard(item, true)).join("");
+  }
+  if (privList.length) {
+    html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${privList.length})</div>`;
+    html += privList.map(item => listingCard(item, false)).join("");
+  }
+  c.innerHTML = html;
+}
+
+function listingCard(item, isPublic) {
+  const typeLabel = item.type === "rent" ? "اجاره" : "فروش";
+  const typeClass = item.type === "rent" ? "rent" : "sell";
+  return `
+    <div class="item">
+      <div class="item-header">
+        <div>
+          <span class="item-title">${escapeHtml(item.propertyType || "ملک")}</span>
+          <span class="item-badge ${typeClass}">${typeLabel}</span>
+          <span class="item-badge ${isPublic ? "pub" : "priv"}">${isPublic ? "عمومی" : "خصوصی"}</span>
+        </div>
+      </div>
+      ${item.location ? `<div class="item-row">📍 موقعیت: <b>${escapeHtml(item.location)}</b></div>` : ""}
+      ${item.size ? `<div class="item-row">📐 متراژ: <b>${escapeHtml(item.size)}</b></div>` : ""}
+      ${item.price ? `<div class="item-row">💰 قیمت: <b>${escapeHtml(item.price)}</b></div>` : ""}
+      ${item.document ? `<div class="item-row">📄 سند: <b>${escapeHtml(item.document)}</b></div>` : ""}
+      ${item.phone ? `<div class="item-row">📞 تماس: <b>${escapeHtml(item.phone)}</b></div>` : ""}
+      ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
+      <div class="item-actions">
+        <button class="danger" onclick="deleteListing('${escapeHtml(item._key)}')">🗑️ حذف</button>
+      </div>
+    </div>
+  `;
+}
+
+async function deleteListing(key) {
+  if (!confirm("این ملک حذف شود؟")) return;
+  try {
+    await api("/api/listings/" + encodeURIComponent(key), { method: "DELETE" });
+    toast("حذف شد");
+    loadAll();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+// ═══════════════════════════════════════════════
+//  Customers
+// ═══════════════════════════════════════════════
+async function renderCustomers(c) {
+  const { customers } = await api("/api/customers");
+  if (!customers.length) {
+    c.innerHTML = '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>';
+    return;
+  }
+  c.innerHTML = customers.map(item => `
+    <div class="item">
+      <div class="item-header">
+        <div>
+          <span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>
+        </div>
+      </div>
+      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
+      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
+      ${item.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(item.language)}</b></div>` : ""}
+      ${item.date ? `<div class="item-row">📅 ${escapeHtml(new Date(item.date).toLocaleString("fa-IR"))}</div>` : ""}
+      <div class="item-actions">
+        <button class="danger" onclick="deleteCustomer('${escapeHtml(item._key)}')">🗑️ حذف</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function deleteCustomer(key) {
+  if (!confirm("این مشتری حذف شود؟")) return;
+  try {
+    await api("/api/customers/" + encodeURIComponent(key), { method: "DELETE" });
+    toast("حذف شد");
+    loadAll();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+// ═══════════════════════════════════════════════
+//  Requests
+// ═══════════════════════════════════════════════
+async function renderRequests(c) {
+  const { requests } = await api("/api/requests");
+  if (!requests.length) {
+    c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>';
+    return;
+  }
+  c.innerHTML = requests.map(item => `
+    <div class="item">
+      <div class="item-header">
+        <div>
+          <span class="item-title">${escapeHtml(item.propertyType || "درخواست ملک")}</span>
+          <span class="item-badge ${item.type === "rent" ? "rent" : "sell"}">${item.type === "rent" ? "اجاره" : "فروش"}</span>
+        </div>
+      </div>
+      ${item.location ? `<div class="item-row">📍 ${escapeHtml(item.location)}</div>` : ""}
+      ${item.budget ? `<div class="item-row">💰 بودجه: <b>${escapeHtml(item.budget)}</b></div>` : ""}
+      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
+      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
+      ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
+      ${item.date ? `<div class="item-row">📅 ${escapeHtml(new Date(item.date).toLocaleString("fa-IR"))}</div>` : ""}
+      <div class="item-actions">
+        <button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function deleteRequest(key) {
+  if (!confirm("این درخواست حذف شود؟")) return;
+  try {
+    await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" });
+    toast("حذف شد");
+    loadAll();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+// ═══════════════════════════════════════════════
+//  File Requests
+// ═══════════════════════════════════════════════
+async function renderFileRequests(c) {
+  const { fileRequests } = await api("/api/file-requests");
+  if (!fileRequests.length) {
+    c.innerHTML = '<div class="empty">هیچ درخواست فایل‌یابی ثبت نشده</div>';
+    return;
+  }
+  c.innerHTML = fileRequests.map(item => `
+    <div class="item">
+      <div class="item-header">
+        <div>
+          <span class="item-title">🔍 درخواست فایل‌یابی</span>
+        </div>
+      </div>
+      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
+      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
+      ${item.text ? `<div class="item-row">📝 ${escapeHtml(item.text)}</div>` : ""}
+      ${item.date ? `<div class="item-row">📅 ${escapeHtml(new Date(item.date).toLocaleString("fa-IR"))}</div>` : ""}
+      <div class="item-actions">
+        <button class="danger" onclick="deleteFileRequest('${escapeHtml(item._key)}')">🗑️ حذف</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function deleteFileRequest(key) {
+  if (!confirm("این درخواست حذف شود؟")) return;
+  try {
+    await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" });
+    toast("حذف شد");
+    loadAll();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+// ═══════════════════════════════════════════════
+//  Add Listing Form
+// ═══════════════════════════════════════════════
+function renderAddForm(c) {
+  c.innerHTML = `
+    <div class="form-card">
+      <div class="section-title">➕ افزودن ملک جدید</div>
+      <div class="form-grid">
+        <div>
+          <label>نوع</label>
+          <select id="f_type">
+            <option value="sell">فروش</option>
+            <option value="rent">اجاره</option>
+          </select>
+        </div>
+        <div>
+          <label>نمایش</label>
+          <select id="f_isPublic">
+            <option value="true">عمومی</option>
+            <option value="false">خصوصی</option>
+          </select>
+        </div>
+        <div>
+          <label>نوع ملک</label>
+          <input id="f_propertyType" placeholder="آپارتمان، ویلا، زمین...">
+        </div>
+        <div>
+          <label>متراژ</label>
+          <input id="f_size" placeholder="مثلاً ۱۲۰ متر">
+        </div>
+        <div>
+          <label>سند</label>
+          <input id="f_document" placeholder="تک‌برگ، منگوله‌دار...">
+        </div>
+        <div>
+          <label>موقعیت</label>
+          <input id="f_location" placeholder="شهر، محله">
+        </div>
+        <div>
+          <label>قیمت</label>
+          <input id="f_price" placeholder="مثلاً ۵ میلیارد">
+        </div>
+        <div>
+          <label>شماره تماس</label>
+          <input id="f_phone" placeholder="۰۹...">
+        </div>
+        <div class="full">
+          <label>توضیحات</label>
+          <textarea id="f_extraNotes" rows="3" placeholder="توضیحات اضافی..."></textarea>
+        </div>
+        <div class="full">
+          <button onclick="submitListing()" id="submitBtn" style="width:100%">💾 ذخیره ملک</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function submitListing() {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true; btn.textContent = "در حال ذخیره...";
+  try {
+    await api("/api/listings", {
+      method: "POST",
+      body: JSON.stringify({
+        type: document.getElementById("f_type").value,
+        isPublic: document.getElementById("f_isPublic").value === "true",
+        propertyType: document.getElementById("f_propertyType").value,
+        size: document.getElementById("f_size").value,
+        document: document.getElementById("f_document").value,
+        location: document.getElementById("f_location").value,
+        price: document.getElementById("f_price").value,
+        phone: document.getElementById("f_phone").value,
+        extraNotes: document.getElementById("f_extraNotes").value,
+        name: "املاک نعمتی"
+      })
+    });
+    toast("ملک ذخیره شد ✅");
+    // switch to listings
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelector('.tab[data-tab="listings"]').classList.add("active");
+    currentTab = "listings";
+    renderTab();
+  } catch (e) {
+    toast("خطا: " + e.message, "error");
+    btn.disabled = false; btn.textContent = "💾 ذخیره ملک";
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  Broadcast
+// ═══════════════════════════════════════════════
+function renderBroadcast(c) {
+  c.innerHTML = `
+    <div class="form-card">
+      <div class="section-title">📢 ارسال پیام گروهی به مشتری‌ها</div>
+      <label>متن پیام</label>
+      <textarea id="b_text" rows="6" placeholder="متن پیام خود را بنویسید..."></textarea>
+      <button onclick="sendBroadcast()" id="bcastBtn" style="width:100%">🚀 ارسال به همه مشتری‌ها</button>
+      <div id="bcastResult" style="margin-top:14px;color:var(--muted);font-size:14px"></div>
+    </div>
+  `;
+}
+
+async function sendBroadcast() {
+  const text = document.getElementById("b_text").value.trim();
+  if (!text) return toast("متن پیام خالی است", "error");
+  if (!confirm("پیام به همه مشتری‌ها ارسال شود؟")) return;
+  const btn = document.getElementById("bcastBtn");
+  btn.disabled = true; btn.textContent = "در حال ارسال...";
+  try {
+    const r = await api("/api/broadcast", {
+      method: "POST",
+      body: JSON.stringify({ text, target: "customers" })
+    });
+    document.getElementById("bcastResult").innerHTML =
+      `✅ ارسال شد: <b>${r.sent}</b> | ❌ ناموفق: <b>${r.failed}</b> | 📊 کل: <b>${r.total}</b>`;
+    toast("ارسال انجام شد");
+  } catch (e) {
+    toast("خطا: " + e.message, "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "🚀 ارسال به همه مشتری‌ها";
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  Init
+// ═══════════════════════════════════════════════
+document.getElementById("loginPassword").addEventListener("keydown", e => {
+  if (e.key === "Enter") doLogin();
+});
+
+// اگه رمز قبلاً ذخیره شده، مستقیم برو داشبورد
+(async function init() {
+  if (PASSWORD) {
+    // تست کن رمز هنوز معتبره
+    try {
+      const r = await fetch(API_BASE + "/api/stats", {
+        headers: { "Authorization": "Bearer " + PASSWORD }
+      });
+      if (r.ok) {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        loadAll();
+        return;
+      }
+    } catch (e) {}
+    logout();
+  }
+})();
+</script>
+</body>
+</html>
