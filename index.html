@@ -30,6 +30,8 @@
   button.small { padding: 6px 12px; font-size: 13px; }
   button.link-btn { background: #1e3a5f; padding: 6px 12px; font-size: 13px; }
   button.link-btn:hover { background: #2563eb; }
+  button.channel-btn { background: #9333ea; padding: 6px 12px; font-size: 13px; }
+  button.channel-btn:hover { background: #7e22ce; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -682,7 +684,7 @@ async function saveAppt(editKey) {
 async function renderSettings(c) {
   const { settings } = await api("/api/settings");
   c.innerHTML = `
-    <div class="form-card">
+    <div class="form-card" style="margin-bottom:16px">
       <div class="section-title">⚙️ تنظیمات</div>
 
       <label>Chat ID مدیر (برای دریافت یادآورها)</label>
@@ -693,11 +695,18 @@ async function renderSettings(c) {
         ۲. عددی که برمی‌گردونه رو اینجا بذار
       </div>
 
+      <label>📢 کانال تلگرام (برای آگهی خودکار)</label>
+      <input id="s_channelId" placeholder="مثلاً @emlak_nemati" value="${escapeHtml(settings.channelId || "")}">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
+        💡 آیدی کانال رو با <b>@</b> بنویس (مثلاً <b>@emlak_nemati</b>)<br>
+        ⚠️ ربات باید توی کانال ادمین باشه
+      </div>
+
       <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
 
       <div style="margin-top:20px;padding:14px;background:var(--card2);border-radius:10px;font-size:13px;color:var(--muted)">
-        <b style="color:var(--text)">چطور یادآور کار می‌کنه؟</b><br>
-        هر روز ساعت ۹:۳۰ صبح به وقت ایران، ربات بهت پیام میده اگه فردا قراری داری.
+        <b style="color:var(--text)">چطور آگهی خودکار کار می‌کنه؟</b><br>
+        توی تب <b>🏘️ املاک</b>، روی هر ملک عمومی دکمه <b>📢 ارسال به کانال</b> داری. با یه کلیک، ملک میره توی کانال.
       </div>
     </div>
   `;
@@ -705,14 +714,15 @@ async function renderSettings(c) {
 
 async function saveSettings() {
   const adminChatId = document.getElementById("s_adminChatId").value.trim();
+  const channelId = document.getElementById("s_channelId").value.trim();
   try {
-    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId }) });
+    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId }) });
     toast("ذخیره شد ✅");
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
 // ═══════════════════════════════════════════════
-// LISTINGS (with share link)
+// LISTINGS (with share link + channel)
 // ═══════════════════════════════════════════════
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
@@ -752,6 +762,7 @@ function listingCard(item, isPublic) {
       <div class="item-actions">
         ${isPublic ? `<button class="link-btn" onclick="copyListingLink('${escapeHtml(item._key)}')">🔗 کپی لینک</button>` : ""}
         ${isPublic ? `<button class="secondary small" onclick="openListingLink('${escapeHtml(item._key)}')">👁️ نمایش</button>` : ""}
+        ${isPublic ? `<button class="channel-btn" onclick="sendToChannel('${escapeHtml(item._key)}', this)">📢 ارسال به کانال</button>` : ""}
         <button class="secondary small" onclick="quickAppt('${escapeHtml(item._key)}')">📅 قرار بازدید</button>
         <button class="danger" onclick="deleteListing('${escapeHtml(item._key)}')">🗑️ حذف</button>
       </div>
@@ -779,6 +790,22 @@ async function copyListingLink(key) {
 
 function openListingLink(key) {
   window.open(buildListingUrl(key), "_blank");
+}
+
+async function sendToChannel(key, btn) {
+  if (!confirm("این ملک به کانال تلگرام ارسال شود؟")) return;
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = "در حال ارسال...";
+  try {
+    const r = await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) });
+    toast("به کانال ارسال شد ✅");
+  } catch (e) {
+    toast("خطا: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 
 async function quickAppt(listingKey) {
@@ -1172,4 +1199,4 @@ document.getElementById("loginPassword").addEventListener("keydown", e => { if (
 })();
 </script>
 </body>
-</html>
+ </html>
