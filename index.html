@@ -7,164 +7,101 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0f1720;
-    --card: #1a2433;
-    --card2: #223046;
-    --border: #2d3e5a;
-    --text: #e6edf5;
-    --muted: #8fa3bf;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --danger: #ef4444;
-    --success: #22c55e;
-    --warn: #f59e0b;
+    --bg: #0f1720; --card: #1a2433; --card2: #223046; --border: #2d3e5a;
+    --text: #e6edf5; --muted: #8fa3bf; --primary: #3b82f6;
+    --primary-hover: #2563eb; --danger: #ef4444; --success: #22c55e; --warn: #f59e0b;
   }
-  body {
-    font-family: Tahoma, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
+  body { font-family: Tahoma, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
   .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
-
-  #loginScreen {
-    display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 20px;
-  }
-  .login-box {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 32px; width: 100%; max-width: 400px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  }
+  #loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+  .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; width: 100%; max-width: 400px; }
   .login-box h1 { font-size: 22px; margin-bottom: 8px; text-align: center; }
   .login-box p { color: var(--muted); text-align: center; margin-bottom: 24px; font-size: 14px; }
-
-  input, textarea, select {
-    width: 100%; padding: 12px 14px; background: var(--card2);
-    border: 1px solid var(--border); border-radius: 10px;
-    color: var(--text); font-size: 15px; font-family: inherit;
-    margin-bottom: 12px; outline: none;
-  }
+  input, textarea, select { width: 100%; padding: 12px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 12px; outline: none; }
   input:focus, textarea:focus, select:focus { border-color: var(--primary); }
-
-  button {
-    background: var(--primary); color: #fff; border: none;
-    padding: 12px 18px; border-radius: 10px; font-size: 15px;
-    font-family: inherit; cursor: pointer; transition: .2s;
-    font-weight: 600;
-  }
+  button { background: var(--primary); color: #fff; border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; font-family: inherit; cursor: pointer; transition: .2s; font-weight: 600; }
   button:hover { background: var(--primary-hover); }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
   button.danger { background: var(--danger); padding: 6px 12px; font-size: 13px; }
   button.danger:hover { background: #dc2626; }
   button.secondary { background: var(--card2); border: 1px solid var(--border); }
   button.secondary:hover { background: var(--border); }
-
-  header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border);
-    flex-wrap: wrap; gap: 10px;
-  }
+  button.small { padding: 6px 12px; font-size: 13px; }
+  header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
-
-  .tabs {
-    display: flex; gap: 6px; overflow-x: auto;
-    padding-bottom: 8px; margin-bottom: 16px;
-    scrollbar-width: none;
-  }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    padding: 10px 16px; background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; cursor: pointer; white-space: nowrap;
-    font-size: 14px; color: var(--muted); transition: .2s;
-  }
-  .tab.active {
-    background: var(--primary); color: #fff; border-color: var(--primary);
-  }
-
-  .stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px; margin-bottom: 20px;
-  }
-  .stat-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px;
-  }
+  .tab { padding: 10px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; white-space: nowrap; font-size: 14px; color: var(--muted); transition: .2s; }
+  .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
   .stat-card .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
   .stat-card .value { font-size: 26px; font-weight: bold; }
   .stat-card.blue .value { color: var(--primary); }
   .stat-card.green .value { color: var(--success); }
   .stat-card.warn .value { color: var(--warn); }
   .stat-card.red .value { color: var(--danger); }
-
-  .item {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px; margin-bottom: 10px;
-  }
-  .item-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 10px; margin-bottom: 8px;
-  }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .item.clickable { cursor: pointer; transition: .2s; }
+  .item.clickable:hover { border-color: var(--primary); }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
   .item-title { font-weight: bold; font-size: 15px; }
-  .item-badge {
-    display: inline-block; padding: 2px 8px; border-radius: 6px;
-    font-size: 11px; background: var(--card2); color: var(--muted);
-    margin-inline-start: 6px;
-  }
+  .item-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; background: var(--card2); color: var(--muted); margin-inline-start: 6px; }
   .item-badge.pub { background: #1e3a5f; color: #60a5fa; }
   .item-badge.priv { background: #3f2e1a; color: #fbbf24; }
   .item-badge.sell { background: #14532d; color: #4ade80; }
   .item-badge.rent { background: #4a1d3f; color: #f472b6; }
+  .item-badge.tag { background: #2a1f47; color: #a78bfa; }
   .item-row { font-size: 13px; color: var(--muted); margin: 4px 0; }
   .item-row b { color: var(--text); font-weight: normal; }
-  .item-actions { display: flex; gap: 8px; margin-top: 10px; }
-
-  .media-wrap {
-    margin-top: 10px; border-radius: 10px; overflow: hidden;
-    background: var(--card2);
-  }
-  .media-wrap img, .media-wrap video {
-    width: 100%; max-height: 400px; object-fit: cover;
-    display: block; cursor: pointer;
-  }
+  .item-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .media-wrap { margin-top: 10px; border-radius: 10px; overflow: hidden; background: var(--card2); }
+  .media-wrap img, .media-wrap video { width: 100%; max-height: 400px; object-fit: cover; display: block; cursor: pointer; }
   .media-wrap video { cursor: default; }
-
-  .empty {
-    text-align: center; padding: 40px 20px; color: var(--muted);
-    background: var(--card); border: 1px dashed var(--border);
-    border-radius: 12px;
-  }
-
-  .form-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-  }
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); background: var(--card); border: 1px dashed var(--border); border-radius: 12px; }
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
   .form-grid .full { grid-column: 1 / -1; }
-  .form-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px;
-  }
+  .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
   label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
-
-  #toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: var(--card2); border: 1px solid var(--border);
-    padding: 12px 20px; border-radius: 10px; font-size: 14px;
-    opacity: 0; pointer-events: none; transition: .3s; z-index: 999;
-    max-width: 90vw;
-  }
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--card2); border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: .3s; z-index: 999; max-width: 90vw; }
   #toast.show { opacity: 1; }
   #toast.success { border-color: var(--success); }
   #toast.error { border-color: var(--danger); }
-
   .loading { text-align: center; padding: 30px; color: var(--muted); }
+  .section-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
-  .section-title {
-    font-size: 16px; font-weight: bold; margin-bottom: 12px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  /* STARS */
+  .stars { display: inline-flex; gap: 3px; font-size: 20px; cursor: pointer; user-select: none; }
+  .stars .star { color: #4a5568; transition: .15s; }
+  .stars .star.on { color: #fbbf24; }
+  .stars .star:hover { transform: scale(1.15); }
+  .stars.readonly { cursor: default; font-size: 16px; }
+  .stars.readonly .star:hover { transform: none; }
+
+  /* TAGS */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { background: #2a1f47; color: #a78bfa; padding: 3px 10px; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
+  .tag .rm { cursor: pointer; opacity: 0.6; font-weight: bold; }
+  .tag .rm:hover { opacity: 1; }
+
+  /* MODAL */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+  .modal { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 700px; padding: 20px; margin: auto; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .modal-header h2 { font-size: 18px; }
+  .modal-close { background: transparent; color: var(--muted); font-size: 24px; padding: 0 8px; }
+  .modal-close:hover { color: var(--text); background: transparent; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section h3 { font-size: 14px; color: var(--muted); margin-bottom: 8px; font-weight: normal; }
+  .contact-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; }
+  .contact-item .date { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+  .tag-input-wrap { display: flex; gap: 6px; margin-top: 8px; }
+  .tag-input-wrap input { margin-bottom: 0; }
+  .tag-input-wrap button { padding: 8px 14px; }
+  .quick-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .quick-tags .qt { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 12px; font-size: 12px; cursor: pointer; }
+  .quick-tags .qt:hover { background: var(--border); color: var(--text); }
 
   @media (max-width: 500px) {
     .container { padding: 12px; }
@@ -208,13 +145,16 @@
   </div>
 </div>
 
+<div id="modal-root"></div>
 <div id="toast"></div>
 
 <script>
 const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
+const QUICK_TAGS = ["خریدار جدی", "اجاره‌ای", "سرمایه‌گذار", "فوری", "در انتظار", "پیگیری مجدد"];
 
 let PASSWORD = localStorage.getItem("admin_pass") || "";
 let currentTab = "overview";
+let customersCache = [];
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
@@ -234,10 +174,7 @@ async function api(path, options = {}) {
   };
   const r = await fetch(API_BASE + path, opts);
   const data = await r.json().catch(() => ({}));
-  if (r.status === 401) {
-    logout();
-    throw new Error("دسترسی غیرمجاز");
-  }
+  if (r.status === 401) { logout(); throw new Error("دسترسی غیرمجاز"); }
   if (!r.ok) throw new Error(data.error || "خطا");
   return data;
 }
@@ -247,6 +184,16 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[m]));
+}
+
+function renderStars(n, editable = false, onChange = null) {
+  n = parseInt(n) || 0;
+  let html = `<div class="stars ${editable ? '' : 'readonly'}" data-rating="${n}">`;
+  for (let i = 1; i <= 5; i++) {
+    html += `<span class="star ${i <= n ? 'on' : ''}" data-val="${i}">★</span>`;
+  }
+  html += `</div>`;
+  return html;
 }
 
 async function doLogin() {
@@ -267,14 +214,9 @@ async function doLogin() {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
       loadAll();
-    } else {
-      toast("رمز اشتباه است", "error");
-    }
-  } catch (e) {
-    toast("خطا در ارتباط با سرور", "error");
-  } finally {
-    btn.disabled = false; btn.textContent = "ورود";
-  }
+    } else { toast("رمز اشتباه است", "error"); }
+  } catch (e) { toast("خطا در ارتباط با سرور", "error"); }
+  finally { btn.disabled = false; btn.textContent = "ورود"; }
 }
 
 function logout() {
@@ -308,73 +250,41 @@ function renderTab() {
 async function loadAll() {
   const c = document.getElementById("content");
   c.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
-  try {
-    await renderTab();
-  } catch (e) {
-    c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>';
-  }
+  try { await renderTab(); }
+  catch (e) { c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>'; }
 }
 
 async function renderOverview(c) {
   const { stats } = await api("/api/stats");
   c.innerHTML = `
     <div class="stats-grid">
-      <div class="stat-card blue">
-        <div class="label">املاک عمومی</div>
-        <div class="value">${stats.publicListings}</div>
-      </div>
-      <div class="stat-card warn">
-        <div class="label">املاک خصوصی</div>
-        <div class="value">${stats.privateListings}</div>
-      </div>
-      <div class="stat-card green">
-        <div class="label">مشتری‌ها</div>
-        <div class="value">${stats.customers}</div>
-      </div>
-      <div class="stat-card blue">
-        <div class="label">درخواست‌ها</div>
-        <div class="value">${stats.requests}</div>
-      </div>
-      <div class="stat-card red">
-        <div class="label">فایل‌یابی</div>
-        <div class="value">${stats.fileRequests}</div>
-      </div>
+      <div class="stat-card blue"><div class="label">املاک عمومی</div><div class="value">${stats.publicListings}</div></div>
+      <div class="stat-card warn"><div class="label">املاک خصوصی</div><div class="value">${stats.privateListings}</div></div>
+      <div class="stat-card green"><div class="label">مشتری‌ها</div><div class="value">${stats.customers}</div></div>
+      <div class="stat-card blue"><div class="label">درخواست‌ها</div><div class="value">${stats.requests}</div></div>
+      <div class="stat-card red"><div class="label">فایل‌یابی</div><div class="value">${stats.fileRequests}</div></div>
     </div>
   `;
 }
 
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
-  if (pubList.length === 0 && privList.length === 0) {
-    c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>';
-    return;
-  }
+  if (pubList.length === 0 && privList.length === 0) { c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>'; return; }
   let html = "";
-  if (pubList.length) {
-    html += `<div class="section-title">🏘️ املاک عمومی (${pubList.length})</div>`;
-    html += pubList.map(item => listingCard(item, true)).join("");
-  }
-  if (privList.length) {
-    html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${privList.length})</div>`;
-    html += privList.map(item => listingCard(item, false)).join("");
-  }
+  if (pubList.length) { html += `<div class="section-title">🏘️ املاک عمومی (${pubList.length})</div>`; html += pubList.map(item => listingCard(item, true)).join(""); }
+  if (privList.length) { html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${privList.length})</div>`; html += privList.map(item => listingCard(item, false)).join(""); }
   c.innerHTML = html;
 }
 
 function listingCard(item, isPublic) {
   const typeLabel = item.type === "rent" ? "اجاره" : "فروش";
   const typeClass = item.type === "rent" ? "rent" : "sell";
-
   let mediaHtml = "";
   if (item.mediaFileId) {
     const mediaUrl = API_BASE + "/api/media?fileId=" + encodeURIComponent(item.mediaFileId) + "&token=" + encodeURIComponent(PASSWORD);
-    if (item.mediaType === "video") {
-      mediaHtml = `<div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
-    } else {
-      mediaHtml = `<div class="media-wrap"><img src="${mediaUrl}" alt="ملک" loading="lazy" onclick="window.open('${mediaUrl}','_blank')"></div>`;
-    }
+    if (item.mediaType === "video") mediaHtml = `<div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
+    else mediaHtml = `<div class="media-wrap"><img src="${mediaUrl}" alt="ملک" loading="lazy" onclick="window.open('${mediaUrl}','_blank')"></div>`;
   }
-
   return `
     <div class="item">
       <div class="item-header">
@@ -400,35 +310,246 @@ function listingCard(item, isPublic) {
 
 async function deleteListing(key) {
   if (!confirm("این ملک حذف شود؟")) return;
-  try {
-    await api("/api/listings/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد");
-    loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/listings/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// CUSTOMERS with CRM
+// ═══════════════════════════════════════════════
 async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
-  if (!customers.length) {
-    c.innerHTML = '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>';
-    return;
-  }
-  c.innerHTML = customers.map(item => `
-    <div class="item">
-      <div class="item-header">
-        <div>
-          <span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>
+  customersCache = customers;
+  if (!customers.length) { c.innerHTML = '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>'; return; }
+
+  c.innerHTML = customers.map(item => {
+    const rating = parseInt(item.rating) || 0;
+    const tags = item.tags || [];
+    const noteCount = item.notes ? 1 : 0;
+    const contactCount = (item.contactHistory || []).length;
+    return `
+      <div class="item clickable" onclick="openCustomer('${escapeHtml(item._key)}')">
+        <div class="item-header">
+          <div>
+            <span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>
+            ${rating ? `<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">${"★".repeat(rating)}</span>` : ""}
+          </div>
+          <div style="font-size:20px;color:var(--muted)">›</div>
+        </div>
+        ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
+        ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
+        ${tags.length ? `<div class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+        ${(noteCount || contactCount) ? `<div class="item-row" style="margin-top:8px">${noteCount ? "📝 یادداشت · " : ""}${contactCount ? `📞 ${contactCount} تماس` : ""}</div>` : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+function openCustomer(key) {
+  const cust = customersCache.find(x => x._key === key);
+  if (!cust) return;
+  renderCustomerModal(cust);
+}
+
+function renderCustomerModal(cust) {
+  const rating = parseInt(cust.rating) || 0;
+  const tags = cust.tags || [];
+  const history = cust.contactHistory || [];
+  const root = document.getElementById("modal-root");
+
+  root.innerHTML = `
+    <div class="modal-bg" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>👤 ${escapeHtml(cust.name || cust.phone || "کاربر")}</h2>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+
+        <div class="modal-section">
+          <h3>اطلاعات پایه</h3>
+          ${cust.phone ? `<div class="item-row">📞 ${escapeHtml(cust.phone)}</div>` : ""}
+          ${cust.username ? `<div class="item-row">👤 @${escapeHtml(cust.username)}</div>` : ""}
+          ${cust.chatId ? `<div class="item-row">💬 Chat ID: <b>${escapeHtml(cust.chatId)}</b></div>` : ""}
+          ${cust.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(cust.language)}</b></div>` : ""}
+          ${cust.date ? `<div class="item-row">📅 عضویت: ${escapeHtml(new Date(cust.date).toLocaleString("fa-IR"))}</div>` : ""}
+        </div>
+
+        <div class="modal-section">
+          <h3>⭐ امتیاز اهمیت</h3>
+          <div id="ratingBox">${renderStars(rating, true)}</div>
+        </div>
+
+        <div class="modal-section">
+          <h3>🏷️ برچسب‌ها</h3>
+          <div id="tagsBox" class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("")}</div>
+          <div class="tag-input-wrap">
+            <input id="newTagInput" placeholder="برچسب جدید...">
+            <button class="small" onclick="addTag()">افزودن</button>
+          </div>
+          <div class="quick-tags">
+            ${QUICK_TAGS.map(t => `<span class="qt" onclick="quickAddTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`).join("")}
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3>📝 یادداشت</h3>
+          <textarea id="notesBox" rows="3" placeholder="یادداشت خود را بنویسید...">${escapeHtml(cust.notes || "")}</textarea>
+        </div>
+
+        <div class="modal-section">
+          <h3>📞 تاریخچه تماس</h3>
+          <div id="historyBox">
+            ${history.length ? history.map((h, i) => `
+              <div class="contact-item">
+                <div class="date">${escapeHtml(new Date(h.date).toLocaleString("fa-IR"))}</div>
+                <div>${escapeHtml(h.text)}</div>
+                <div style="text-align:left;margin-top:6px">
+                  <button class="danger" style="padding:4px 10px;font-size:11px" onclick="removeContact(${i})">حذف</button>
+                </div>
+              </div>
+            `).join("") : '<div class="empty" style="padding:20px;font-size:13px">هنوز تماسی ثبت نشده</div>'}
+          </div>
+          <textarea id="newContactText" rows="2" placeholder="متن تماس جدید..." style="margin-top:8px"></textarea>
+          <button class="small" onclick="addContact()">➕ افزودن تماس</button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
+          <button onclick="saveCustomer('${escapeHtml(cust._key)}')" style="flex:1">💾 ذخیره تغییرات</button>
+          <button class="danger" onclick="deleteCustomer('${escapeHtml(cust._key)}')">🗑️ حذف مشتری</button>
         </div>
       </div>
-      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-      ${item.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(item.language)}</b></div>` : ""}
-      ${item.date ? `<div class="item-row">📅 ${escapeHtml(new Date(item.date).toLocaleString("fa-IR"))}</div>` : ""}
-      <div class="item-actions">
-        <button class="danger" onclick="deleteCustomer('${escapeHtml(item._key)}')">🗑️ حذف</button>
+    </div>
+  `;
+
+  // setup star click
+  setupStarClicks();
+}
+
+let currentRating = 0;
+let currentTags = [];
+
+function setupStarClicks() {
+  const box = document.getElementById("ratingBox");
+  if (!box) return;
+  currentRating = parseInt(box.querySelector(".stars").dataset.rating) || 0;
+  box.querySelectorAll(".star").forEach(s => {
+    s.addEventListener("click", () => {
+      currentRating = parseInt(s.dataset.val);
+      box.innerHTML = renderStars(currentRating, true);
+      setupStarClicks();
+    });
+  });
+
+  const cust = getCurrentCustomer();
+  currentTags = [...(cust?.tags || [])];
+}
+
+function getCurrentCustomer() {
+  // Find from cache by looking for the open modal's key
+  const modal = document.querySelector(".modal");
+  if (!modal) return null;
+  const saveBtn = modal.querySelector('button[onclick^="saveCustomer"]');
+  if (!saveBtn) return null;
+  const match = saveBtn.getAttribute("onclick").match(/'([^']+)'/);
+  if (!match) return null;
+  return customersCache.find(x => x._key === match[1]);
+}
+
+function addTag() {
+  const input = document.getElementById("newTagInput");
+  const v = input.value.trim();
+  if (!v) return;
+  if (!currentTags.includes(v)) {
+    currentTags.push(v);
+    refreshTagsBox();
+  }
+  input.value = "";
+}
+
+function quickAddTag(t) {
+  if (!currentTags.includes(t)) {
+    currentTags.push(t);
+    refreshTagsBox();
+  }
+}
+
+function removeTag(t) {
+  currentTags = currentTags.filter(x => x !== t);
+  refreshTagsBox();
+}
+
+function refreshTagsBox() {
+  const box = document.getElementById("tagsBox");
+  if (!box) return;
+  box.innerHTML = currentTags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("");
+}
+
+let currentHistory = [];
+
+async function addContact() {
+  const ta = document.getElementById("newContactText");
+  const text = ta.value.trim();
+  if (!text) return toast("متن تماس خالی است", "error");
+  const cust = getCurrentCustomer();
+  currentHistory = [...(cust?.contactHistory || []), { date: new Date().toISOString(), text }];
+  ta.value = "";
+  renderHistoryBox();
+}
+
+function removeContact(i) {
+  currentHistory = currentHistory.filter((_, idx) => idx !== i);
+  renderHistoryBox();
+}
+
+function renderHistoryBox() {
+  const box = document.getElementById("historyBox");
+  if (!box) return;
+  if (!currentHistory.length) {
+    box.innerHTML = '<div class="empty" style="padding:20px;font-size:13px">هنوز تماسی ثبت نشده</div>';
+    return;
+  }
+  box.innerHTML = currentHistory.map((h, i) => `
+    <div class="contact-item">
+      <div class="date">${escapeHtml(new Date(h.date).toLocaleString("fa-IR"))}</div>
+      <div>${escapeHtml(h.text)}</div>
+      <div style="text-align:left;margin-top:6px">
+        <button class="danger" style="padding:4px 10px;font-size:11px" onclick="removeContact(${i})">حذف</button>
       </div>
     </div>
   `).join("");
+}
+
+async function saveCustomer(key) {
+  try {
+    const notes = document.getElementById("notesBox").value;
+    // get current history (from state, or fallback to original)
+    const cust = customersCache.find(x => x._key === key);
+    const history = currentHistory.length ? currentHistory : (cust?.contactHistory || []);
+    const tags = currentTags.length ? currentTags : (cust?.tags || []);
+
+    const r = await api("/api/customers/" + encodeURIComponent(key), {
+      method: "PUT",
+      body: JSON.stringify({
+        rating: currentRating,
+        tags: tags,
+        notes: notes,
+        contactHistory: history
+      })
+    });
+    toast("ذخیره شد ✅");
+    // update cache
+    const idx = customersCache.findIndex(x => x._key === key);
+    if (idx >= 0) customersCache[idx] = { ...customersCache[idx], ...r.customer };
+    closeModal();
+    renderTab();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+function closeModal() {
+  document.getElementById("modal-root").innerHTML = "";
+  currentRating = 0;
+  currentTags = [];
+  currentHistory = [];
 }
 
 async function deleteCustomer(key) {
@@ -436,16 +557,17 @@ async function deleteCustomer(key) {
   try {
     await api("/api/customers/" + encodeURIComponent(key), { method: "DELETE" });
     toast("حذف شد");
+    closeModal();
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// REQUESTS
+// ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
-  if (!requests.length) {
-    c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>';
-    return;
-  }
+  if (!requests.length) { c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>'; return; }
   c.innerHTML = requests.map(item => `
     <div class="item">
       <div class="item-header">
@@ -469,26 +591,19 @@ async function renderRequests(c) {
 
 async function deleteRequest(key) {
   if (!confirm("این درخواست حذف شود؟")) return;
-  try {
-    await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد");
-    loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// FILE REQUESTS
+// ═══════════════════════════════════════════════
 async function renderFileRequests(c) {
   const { fileRequests } = await api("/api/file-requests");
-  if (!fileRequests.length) {
-    c.innerHTML = '<div class="empty">هیچ درخواست فایل‌یابی ثبت نشده</div>';
-    return;
-  }
+  if (!fileRequests.length) { c.innerHTML = '<div class="empty">هیچ درخواست فایل‌یابی ثبت نشده</div>'; return; }
   c.innerHTML = fileRequests.map(item => `
     <div class="item">
-      <div class="item-header">
-        <div>
-          <span class="item-title">🔍 درخواست فایل‌یابی</span>
-        </div>
-      </div>
+      <div class="item-header"><div><span class="item-title">🔍 درخواست فایل‌یابی</span></div></div>
       ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
       ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
       ${item.text ? `<div class="item-row">📝 ${escapeHtml(item.text)}</div>` : ""}
@@ -502,75 +617,30 @@ async function renderFileRequests(c) {
 
 async function deleteFileRequest(key) {
   if (!confirm("این درخواست حذف شود؟")) return;
-  try {
-    await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد");
-    loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// ADD LISTING
+// ═══════════════════════════════════════════════
 function renderAddForm(c) {
   c.innerHTML = `
     <div class="form-card">
       <div class="section-title">➕ افزودن ملک جدید</div>
       <div class="form-grid">
-        <div>
-          <label>نوع</label>
-          <select id="f_type">
-            <option value="sell">فروش</option>
-            <option value="rent">اجاره</option>
-          </select>
-        </div>
-        <div>
-          <label>نمایش</label>
-          <select id="f_isPublic">
-            <option value="true">عمومی</option>
-            <option value="false">خصوصی</option>
-          </select>
-        </div>
-        <div>
-          <label>نوع ملک</label>
-          <input id="f_propertyType" placeholder="آپارتمان، ویلا، زمین...">
-        </div>
-        <div>
-          <label>متراژ</label>
-          <input id="f_size" placeholder="مثلاً ۱۲۰ متر">
-        </div>
-        <div>
-          <label>سند</label>
-          <input id="f_document" placeholder="تک‌برگ، منگوله‌دار...">
-        </div>
-        <div>
-          <label>موقعیت</label>
-          <input id="f_location" placeholder="شهر، محله">
-        </div>
-        <div>
-          <label>قیمت</label>
-          <input id="f_price" placeholder="مثلاً ۵ میلیارد">
-        </div>
-        <div>
-          <label>شماره تماس</label>
-          <input id="f_phone" placeholder="۰۹...">
-        </div>
-        <div>
-          <label>نوع رسانه</label>
-          <select id="f_mediaType">
-            <option value="">بدون رسانه</option>
-            <option value="photo">عکس</option>
-            <option value="video">ویدیو</option>
-          </select>
-        </div>
-        <div>
-          <label>File ID رسانه (از تلگرام)</label>
-          <input id="f_mediaFileId" placeholder="اختیاری">
-        </div>
-        <div class="full">
-          <label>توضیحات</label>
-          <textarea id="f_extraNotes" rows="3" placeholder="توضیحات اضافی..."></textarea>
-        </div>
-        <div class="full">
-          <button onclick="submitListing()" id="submitBtn" style="width:100%">💾 ذخیره ملک</button>
-        </div>
+        <div><label>نوع</label><select id="f_type"><option value="sell">فروش</option><option value="rent">اجاره</option></select></div>
+        <div><label>نمایش</label><select id="f_isPublic"><option value="true">عمومی</option><option value="false">خصوصی</option></select></div>
+        <div><label>نوع ملک</label><input id="f_propertyType" placeholder="آپارتمان، ویلا، زمین..."></div>
+        <div><label>متراژ</label><input id="f_size" placeholder="مثلاً ۱۲۰ متر"></div>
+        <div><label>سند</label><input id="f_document" placeholder="تک‌برگ..."></div>
+        <div><label>موقعیت</label><input id="f_location" placeholder="شهر، محله"></div>
+        <div><label>قیمت</label><input id="f_price" placeholder="مثلاً ۵ میلیارد"></div>
+        <div><label>شماره تماس</label><input id="f_phone" placeholder="۰۹..."></div>
+        <div><label>نوع رسانه</label><select id="f_mediaType"><option value="">بدون رسانه</option><option value="photo">عکس</option><option value="video">ویدیو</option></select></div>
+        <div><label>File ID رسانه</label><input id="f_mediaFileId" placeholder="اختیاری"></div>
+        <div class="full"><label>توضیحات</label><textarea id="f_extraNotes" rows="3" placeholder="توضیحات..."></textarea></div>
+        <div class="full"><button onclick="submitListing()" id="submitBtn" style="width:100%">💾 ذخیره ملک</button></div>
       </div>
     </div>
   `;
@@ -602,18 +672,18 @@ async function submitListing() {
     document.querySelector('.tab[data-tab="listings"]').classList.add("active");
     currentTab = "listings";
     renderTab();
-  } catch (e) {
-    toast("خطا: " + e.message, "error");
-    btn.disabled = false; btn.textContent = "💾 ذخیره ملک";
-  }
+  } catch (e) { toast("خطا: " + e.message, "error"); btn.disabled = false; btn.textContent = "💾 ذخیره ملک"; }
 }
 
+// ═══════════════════════════════════════════════
+// BROADCAST
+// ═══════════════════════════════════════════════
 function renderBroadcast(c) {
   c.innerHTML = `
     <div class="form-card">
       <div class="section-title">📢 ارسال پیام گروهی به مشتری‌ها</div>
       <label>متن پیام</label>
-      <textarea id="b_text" rows="6" placeholder="متن پیام خود را بنویسید..."></textarea>
+      <textarea id="b_text" rows="6" placeholder="متن پیام..."></textarea>
       <button onclick="sendBroadcast()" id="bcastBtn" style="width:100%">🚀 ارسال به همه مشتری‌ها</button>
       <div id="bcastResult" style="margin-top:14px;color:var(--muted);font-size:14px"></div>
     </div>
@@ -627,30 +697,19 @@ async function sendBroadcast() {
   const btn = document.getElementById("bcastBtn");
   btn.disabled = true; btn.textContent = "در حال ارسال...";
   try {
-    const r = await api("/api/broadcast", {
-      method: "POST",
-      body: JSON.stringify({ text, target: "customers" })
-    });
-    document.getElementById("bcastResult").innerHTML =
-      `✅ ارسال شد: <b>${r.sent}</b> | ❌ ناموفق: <b>${r.failed}</b> | 📊 کل: <b>${r.total}</b>`;
+    const r = await api("/api/broadcast", { method: "POST", body: JSON.stringify({ text, target: "customers" }) });
+    document.getElementById("bcastResult").innerHTML = `✅ ارسال شد: <b>${r.sent}</b> | ❌ ناموفق: <b>${r.failed}</b> | 📊 کل: <b>${r.total}</b>`;
     toast("ارسال انجام شد");
-  } catch (e) {
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false; btn.textContent = "🚀 ارسال به همه مشتری‌ها";
-  }
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+  finally { btn.disabled = false; btn.textContent = "🚀 ارسال به همه مشتری‌ها"; }
 }
 
-document.getElementById("loginPassword").addEventListener("keydown", e => {
-  if (e.key === "Enter") doLogin();
-});
+document.getElementById("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
 
 (async function init() {
   if (PASSWORD) {
     try {
-      const r = await fetch(API_BASE + "/api/stats", {
-        headers: { "Authorization": "Bearer " + PASSWORD }
-      });
+      const r = await fetch(API_BASE + "/api/stats", { headers: { "Authorization": "Bearer " + PASSWORD } });
       if (r.ok) {
         document.getElementById("loginScreen").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
