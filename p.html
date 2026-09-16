@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشاهده ملک | املاک نعمتی</title>
+<meta name="description" content="مشاهده جزئیات ملک - املاک نعمتی">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1720;
+    --card: #1a2433;
+    --card2: #223046;
+    --border: #2d3e5a;
+    --text: #e6edf5;
+    --muted: #8fa3bf;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --success: #22c55e;
+    --warn: #f59e0b;
+  }
+  body {
+    font-family: Tahoma, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header .logo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .header .sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* MEDIA */
+  .media-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .media-box img, .media-box video {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* MAIN CARD */
+  .main-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .badge.sell { background: #14532d; color: #4ade80; }
+  .badge.rent { background: #4a1d3f; color: #f472b6; }
+  .badge.new { background: #3a2a0e; color: #fbbf24; }
+
+  .title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .price {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--success);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .info-item {
+    background: var(--card2);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .info-item .label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .info-item .value {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  /* NOTES */
+  .notes-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .notes-card .label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .notes-card .text {
+    font-size: 15px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+
+  /* CALL BUTTON - FIXED AT BOTTOM */
+  .call-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    z-index: 100;
+  }
+  .call-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: bold;
+    transition: .2s;
+    box-shadow: 0 4px 20px rgba(34,197,94,0.3);
+  }
+  .call-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(34,197,94,0.5);
+  }
+  .call-btn:active {
+    transform: translateY(0);
+  }
+
+  /* SHARE BUTTON */
+  .share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: .2s;
+  }
+  .share-btn:hover {
+    background: var(--border);
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--card2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ERROR */
+  .error-box {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .error-box .icon {
+    font-size: 60px;
+    margin-bottom: 16px;
+  }
+  .error-box h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .error-box p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card2);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    transition: .3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 500px) {
+    .container { padding: 12px; padding-bottom: 100px; }
+    .title { font-size: 22px; }
+    .price { font-size: 22px; }
+    .info-grid { gap: 8px; }
+    .info-item { padding: 10px; }
+    .info-item .value { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">🏠 املاک نعمتی</div>
+    <div class="sub">مشاهده جزئیات ملک</div>
+  </div>
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>در حال بارگذاری...</div>
+    </div>
+  </div>
+</div>
+
+<div class="call-wrap" id="callWrap" style="display:none">
+  <a class="call-btn" id="callBtn" href="#">
+    <span>📞</span>
+    <span>تماس با ما</span>
+  </a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
+
+function getListingId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id") || "";
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[m]));
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+function showError(msg) {
+  document.getElementById("content").innerHTML = `
+    <div class="error-box">
+      <div class="icon">🏚️</div>
+      <h2>ملک پیدا نشد</h2>
+      <p>${escapeHtml(msg)}</p>
+    </div>
+  `;
+}
+
+async function loadListing() {
+  const id = getListingId();
+  if (!id) {
+    showError("لینک نامعتبر است");
+    return;
+  }
+
+  try {
+    const r = await fetch(API_BASE + "/api/public/listing/" + encodeURIComponent(id));
+    const data = await r.json();
+
+    if (!data.ok || !data.listing) {
+      showError(data.error || "ملک پیدا نشد یا حذف شده");
+      return;
+    }
+
+    renderListing(data.listing);
+  } catch (e) {
+    showError("خطا در ارتباط با سرور");
+  }
+}
+
+function renderListing(l) {
+  const typeLabel = l.type === "rent" ? "🏠 اجاره" : "💰 فروش";
+  const typeClass = l.type === "rent" ? "rent" : "sell";
+
+  // Check if new (last 7 days)
+  let isNew = false;
+  if (l.date) {
+    const days = (Date.now() - new Date(l.date).getTime()) / (1000*60*60*24);
+    if (days <= 7) isNew = true;
+  }
+
+  // Media
+  let mediaHtml = "";
+  if (l.mediaFileId) {
+    const mediaUrl = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    if (l.mediaType === "video") {
+      mediaHtml = `<div class="media-box"><video src="${mediaUrl}" controls preload="metadata" playsinline></video></div>`;
+    } else {
+      mediaHtml = `<div class="media-box"><img src="${mediaUrl}" alt="${escapeHtml(l.propertyType || 'ملک')}" loading="lazy"></div>`;
+    }
+  }
+
+  // Info items
+  const infoItems = [];
+  if (l.size) infoItems.push({ label: "📐 متراژ", value: l.size });
+  if (l.document) infoItems.push({ label: "📄 سند", value: l.document });
+  if (l.location) infoItems.push({ label: "📍 موقعیت", value: l.location });
+
+  let infoHtml = "";
+  if (infoItems.length) {
+    infoHtml = `<div class="info-grid">${infoItems.map(i => `
+      <div class="info-item">
+        <div class="label">${i.label}</div>
+        <div class="value">${escapeHtml(i.value)}</div>
+      </div>
+    `).join("")}</div>`;
+  }
+
+  let html = `
+    ${mediaHtml}
+
+    <div class="main-card">
+      <div class="badges">
+        <span class="badge ${typeClass}">${typeLabel}</span>
+        ${isNew ? `<span class="badge new">✨ جدید</span>` : ""}
+      </div>
+
+      <div class="title">${escapeHtml(l.propertyType || "ملک")}</div>
+
+      ${l.price ? `<div class="price">${escapeHtml(l.price)}</div>` : ""}
+
+      ${infoHtml}
+    </div>
+  `;
+
+  // Notes
+  if (l.extra_notes) {
+    html += `
+      <div class="notes-card">
+        <div class="label">📝 توضیحات</div>
+        <div class="text">${escapeHtml(l.extra_notes)}</div>
+      </div>
+    `;
+  }
+
+  // Share button
+  html += `
+    <button class="share-btn" onclick="shareListing()">
+      <span>📤</span>
+      <span>اشتراک‌گذاری این ملک</span>
+    </button>
+  `;
+
+  document.getElementById("content").innerHTML = html;
+
+  // Call button
+  if (l.phone) {
+    const callWrap = document.getElementById("callWrap");
+    const callBtn = document.getElementById("callBtn");
+    const cleanPhone = String(l.phone).replace(/[^\d+]/g, "");
+    callBtn.href = "tel:" + cleanPhone;
+    callWrap.style.display = "block";
+  }
+}
+
+async function shareListing() {
+  const url = window.location.href;
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "املاک نعمتی - مشاهده ملک",
+        text: "این ملک رو ببین:",
+        url: url
+      });
+    } catch (e) {}
+  } else if (navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast("لینک کپی شد ✅");
+    } catch (e) {
+      showToast("خطا در کپی");
+    }
+  } else {
+    prompt("لینک رو کپی کن:", url);
+  }
+}
+
+// Init
+loadListing();
+</script>
+</body>
+</html>
