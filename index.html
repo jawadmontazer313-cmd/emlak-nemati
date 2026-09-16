@@ -32,6 +32,8 @@
   button.link-btn:hover { background: #2563eb; }
   button.channel-btn { background: #9333ea; padding: 6px 12px; font-size: 13px; }
   button.channel-btn:hover { background: #7e22ce; }
+  button.suggest-btn { background: #ea580c; padding: 6px 12px; font-size: 13px; }
+  button.suggest-btn:hover { background: #c2410c; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -722,7 +724,7 @@ async function saveSettings() {
 }
 
 // ═══════════════════════════════════════════════
-// LISTINGS (with share link + channel)
+// LISTINGS
 // ═══════════════════════════════════════════════
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
@@ -798,7 +800,7 @@ async function sendToChannel(key, btn) {
   const original = btn.textContent;
   btn.textContent = "در حال ارسال...";
   try {
-    const r = await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) });
+    await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) });
     toast("به کانال ارسال شد ✅");
   } catch (e) {
     toast("خطا: " + e.message, "error");
@@ -1051,6 +1053,9 @@ async function deleteCustomer(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// REQUESTS (with suggest button)
+// ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
   if (!requests.length) { c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>'; return; }
@@ -1069,10 +1074,34 @@ async function renderRequests(c) {
       ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
       ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
       <div class="item-actions">
+        <button class="suggest-btn" onclick="suggestForRequest('${escapeHtml(item._key)}', this)">🎯 پیشنهاد ملک</button>
         <button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button>
       </div>
     </div>
   `).join("");
+}
+
+async function suggestForRequest(key, btn) {
+  if (!confirm("ملک‌های مناسب برای این مشتری پیدا و ارسال شود؟")) return;
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = "⏳ در حال جستجو...";
+  try {
+    const r = await api("/api/suggest-for-request", {
+      method: "POST",
+      body: JSON.stringify({ requestKey: key })
+    });
+    if (r.ok) {
+      toast(`✅ ${r.sent} ملک ارسال شد`);
+    } else {
+      toast(r.error || "خطا", "error");
+    }
+  } catch (e) {
+    toast("خطا: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 
 async function deleteRequest(key) {
@@ -1199,4 +1228,4 @@ document.getElementById("loginPassword").addEventListener("keydown", e => { if (
 })();
 </script>
 </body>
- </html>
+</html>
