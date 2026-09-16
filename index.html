@@ -105,7 +105,6 @@
   .quick-tags .qt { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 12px; font-size: 12px; cursor: pointer; }
   .quick-tags .qt:hover { background: var(--border); color: var(--text); }
 
-  /* APPOINTMENTS */
   .appt-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; margin-inline-start: 6px; }
   .appt-type-visit { background: #1e3a5f; color: #60a5fa; }
   .appt-type-call { background: #3a2a0e; color: #fbbf24; }
@@ -146,6 +145,7 @@
 
     <div class="tabs" id="tabs">
       <div class="tab active" data-tab="overview">📊 آمار</div>
+      <div class="tab" data-tab="analytics">📈 تحلیل‌ها</div>
       <div class="tab" data-tab="appointments">📅 قرارها</div>
       <div class="tab" data-tab="listings">🏘️ املاک</div>
       <div class="tab" data-tab="customers">👥 مشتری‌ها</div>
@@ -213,7 +213,6 @@ function renderStars(n, editable = false) {
   return html;
 }
 
-// Persian date helpers
 function toPersianDate(iso) {
   try {
     const d = new Date(iso);
@@ -222,7 +221,6 @@ function toPersianDate(iso) {
 }
 
 function toISODateTimeLocal(dateStr) {
-  // dateStr from datetime-local is "YYYY-MM-DDTHH:MM"
   if (!dateStr) return "";
   return new Date(dateStr).toISOString();
 }
@@ -277,6 +275,7 @@ document.getElementById("tabs").addEventListener("click", e => {
 function renderTab() {
   const c = document.getElementById("content");
   if (currentTab === "overview") renderOverview(c);
+  else if (currentTab === "analytics") renderAnalytics(c);
   else if (currentTab === "appointments") renderAppointments(c);
   else if (currentTab === "listings") renderListings(c);
   else if (currentTab === "customers") renderCustomers(c);
@@ -294,6 +293,9 @@ async function loadAll() {
   catch (e) { c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>'; }
 }
 
+// ═══════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════
 async function renderOverview(c) {
   const { stats } = await api("/api/stats");
   c.innerHTML = `
@@ -306,6 +308,123 @@ async function renderOverview(c) {
       <div class="stat-card purple"><div class="label">قرارها</div><div class="value">${stats.appointments || 0}</div></div>
     </div>
   `;
+}
+
+// ═══════════════════════════════════════════════
+// ANALYTICS
+// ═══════════════════════════════════════════════
+async function renderAnalytics(c) {
+  const { analytics: a } = await api("/api/analytics");
+
+  function bar(value, max) {
+    const pct = max ? Math.round((value / max) * 100) : 0;
+    return `<div style="background:var(--card2);border-radius:6px;overflow:hidden;height:22px;margin-top:4px"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);display:flex;align-items:center;justify-content:flex-end;padding-inline-end:6px;font-size:11px;color:#fff;font-weight:bold">${value}</div></div>`;
+  }
+
+  function section(title, items) {
+    if (!items || !items.length) return "";
+    const max = items[0][1];
+    return `
+      <div class="form-card" style="margin-bottom:16px">
+        <div class="section-title">${title}</div>
+        ${items.map(([k, v]) => `
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span>${escapeHtml(k)}</span>
+              <span style="color:var(--muted)">${v}</span>
+            </div>
+            ${bar(v, max)}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  let html = `
+    <div class="stats-grid">
+      <div class="stat-card blue"><div class="label">کل املاک</div><div class="value">${a.totalListings}</div></div>
+      <div class="stat-card green"><div class="label">کل مشتری‌ها</div><div class="value">${a.totalCustomers}</div></div>
+      <div class="stat-card warn"><div class="label">درخواست‌ها</div><div class="value">${a.totalRequests}</div></div>
+      <div class="stat-card purple"><div class="label">قرارها</div><div class="value">${a.totalAppointments}</div></div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card green">
+        <div class="label">⭐ میانگین امتیاز</div>
+        <div class="value">${a.avgRating || "—"}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">از ${a.ratingCount} مشتری</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="label">📅 قرارهای این ماه</div>
+        <div class="value">${a.apptsThisMonth}</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="label">💰 فروش</div>
+        <div class="value">${a.listingsByType.sell}</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">🏠 اجاره</div>
+        <div class="value">${a.listingsByType.rent}</div>
+      </div>
+    </div>
+  `;
+
+  html += section("🏘️ پرتکرارترین نوع ملک", a.propertyTypes);
+  html += section("📍 محله‌های پرملک", a.locations);
+  html += section("🎯 محله‌های پرتقاضا (درخواست‌ها)", a.reqLocations);
+  html += section("🏷️ پرتکرارترین برچسب مشتری‌ها", a.tags);
+
+  if (a.dailyListings && a.dailyListings.length) {
+    const maxDaily = Math.max(...a.dailyListings.map(x => x[1]));
+    html += `
+      <div class="form-card" style="margin-bottom:16px">
+        <div class="section-title">📊 ثبت ملک در ۳۰ روز اخیر</div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:100px;margin-top:12px;overflow-x:auto;padding-bottom:8px">
+          ${a.dailyListings.map(([day, count]) => {
+            const h = maxDaily ? Math.round((count / maxDaily) * 100) : 0;
+            return `<div title="${day}: ${count}" style="min-width:14px;width:14px;height:${h}%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:4px 4px 0 0"></div>`;
+          }).join("")}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">${a.dailyListings.length} روز داده</div>
+      </div>
+    `;
+  }
+
+  const totalReq = (a.requestsByType.sell + a.requestsByType.rent) || 1;
+  html += `
+    <div class="form-card" style="margin-bottom:16px">
+      <div class="section-title">📝 درخواست‌ها بر اساس نوع</div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px">
+          <div style="font-size:24px;font-weight:bold;color:#4ade80">${a.requestsByType.sell}</div>
+          <div style="font-size:12px;color:var(--muted)">فروش (${Math.round(a.requestsByType.sell/totalReq*100)}%)</div>
+        </div>
+        <div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px">
+          <div style="font-size:24px;font-weight:bold;color:#f472b6">${a.requestsByType.rent}</div>
+          <div style="font-size:12px;color:var(--muted)">اجاره (${Math.round(a.requestsByType.rent/totalReq*100)}%)</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (a.customersByMonth && a.customersByMonth.length) {
+    const maxM = Math.max(...a.customersByMonth.map(x => x[1]));
+    html += `
+      <div class="form-card" style="margin-bottom:16px">
+        <div class="section-title">👥 مشتری‌های جدید ماهانه</div>
+        ${a.customersByMonth.map(([m, v]) => `
+          <div style="margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span>${m}</span><span style="color:var(--muted)">${v}</span>
+            </div>
+            ${bar(v, maxM)}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  c.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════
@@ -341,8 +460,8 @@ async function renderAppointments(c) {
     html += `<div class="section-title">🔥 امروز (${today.length})</div>`;
     html += today.map(a => apptCard(a, "today")).join("");
   }
-  if (upcoming.filter(a => !today.includes(a)).length) {
-    const otherUpcoming = upcoming.filter(a => !today.includes(a));
+  const otherUpcoming = upcoming.filter(a => !today.includes(a));
+  if (otherUpcoming.length) {
     html += `<div class="section-title" style="margin-top:20px">⏰ پیش‌رو (${otherUpcoming.length})</div>`;
     html += otherUpcoming.map(a => apptCard(a, "upcoming")).join("");
   }
@@ -401,9 +520,7 @@ function apptCard(a, state) {
 
 async function markApptDone(key) {
   try {
-    await api("/api/appointments/" + encodeURIComponent(key), {
-      method: "PUT", body: JSON.stringify({ status: "done" })
-    });
+    await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "done" }) });
     toast("انجام شد ✅");
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
@@ -412,9 +529,7 @@ async function markApptDone(key) {
 async function markApptCancelled(key) {
   if (!confirm("این قرار لغو شود؟")) return;
   try {
-    await api("/api/appointments/" + encodeURIComponent(key), {
-      method: "PUT", body: JSON.stringify({ status: "cancelled" })
-    });
+    await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "cancelled" }) });
     toast("لغو شد");
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
@@ -430,29 +545,18 @@ async function deleteAppt(key) {
 }
 
 async function openApptForm(editKey = null) {
-  // Load customers and listings for dropdowns
   if (!customersCache.length) {
-    try {
-      const r = await api("/api/customers");
-      customersCache = r.customers;
-    } catch (e) {}
+    try { const r = await api("/api/customers"); customersCache = r.customers; } catch (e) {}
   }
   if (!listingsCache.public.length && !listingsCache.private.length) {
-    try {
-      const r = await api("/api/listings?scope=all");
-      listingsCache = { public: r.public, private: r.private };
-    } catch (e) {}
+    try { const r = await api("/api/listings?scope=all"); listingsCache = { public: r.public, private: r.private }; } catch (e) {}
   }
 
   let appt = null;
-  if (editKey) {
-    appt = appointmentsCache.find(a => a._key === editKey);
-  }
-
+  if (editKey) appt = appointmentsCache.find(a => a._key === editKey);
   const isEdit = !!appt;
   const d = appt || {};
 
-  // Default date = tomorrow at 10:00
   let defaultDate = "";
   if (!isEdit) {
     const tomorrow = new Date();
@@ -496,7 +600,7 @@ async function openApptForm(editKey = null) {
         <label>شماره تماس</label>
         <input id="ap_customerPhone" placeholder="۰۹..." value="${escapeHtml(d.customerPhone || "")}">
 
-        <label>ملک (از لیست - اختیاری)</label>
+        <label>ملک (اختیاری)</label>
         <select id="ap_property">
           <option value="">— بدون ملک —</option>
           ${allListings.map(l => `
@@ -535,9 +639,7 @@ function onCustomerPick() {
   document.getElementById("ap_customerPhone").value = opt.dataset.phone || "";
 }
 
-function openApptEdit(key) {
-  openApptForm(key);
-}
+function openApptEdit(key) { openApptForm(key); }
 
 async function saveAppt(editKey) {
   const dateVal = document.getElementById("ap_date").value;
@@ -558,7 +660,6 @@ async function saveAppt(editKey) {
     note: document.getElementById("ap_note").value
   };
 
-  // If picked from dropdown, fill name/phone if empty
   if (data.customerKey && !data.customerName) {
     const opt = custSel.options[custSel.selectedIndex];
     data.customerName = opt.dataset.name || "";
@@ -567,14 +668,10 @@ async function saveAppt(editKey) {
 
   try {
     if (editKey) {
-      await api("/api/appointments/" + encodeURIComponent(editKey), {
-        method: "PUT", body: JSON.stringify(data)
-      });
+      await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) });
       toast("ویرایش شد ✅");
     } else {
-      await api("/api/appointments", {
-        method: "POST", body: JSON.stringify(data)
-      });
+      await api("/api/appointments", { method: "POST", body: JSON.stringify(data) });
       toast("قرار ثبت شد ✅");
     }
     closeModal();
@@ -609,8 +706,7 @@ async function renderSettings(c) {
 
       <div style="margin-top:20px;padding:14px;background:var(--card2);border-radius:10px;font-size:13px;color:var(--muted)">
         <b style="color:var(--text)">چطور یادآور کار می‌کنه؟</b><br>
-        هر روز ساعت ۹:۳۰ صبح به وقت ایران، ربات بهت پیام میده اگه فردا قراری داری.<br>
-        فقط قرارهای <b>فردا</b> که هنوز یادآور نگرفتن، ارسال میشن.
+        هر روز ساعت ۹:۳۰ صبح به وقت ایران، ربات بهت پیام میده اگه فردا قراری داری.
       </div>
     </div>
   `;
@@ -619,9 +715,7 @@ async function renderSettings(c) {
 async function saveSettings() {
   const adminChatId = document.getElementById("s_adminChatId").value.trim();
   try {
-    await api("/api/settings", {
-      method: "PUT", body: JSON.stringify({ adminChatId })
-    });
+    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId }) });
     toast("ذخیره شد ✅");
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
@@ -676,7 +770,6 @@ async function quickAppt(listingKey) {
   const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === listingKey);
   if (!item) return;
   await openApptForm();
-  // Pre-fill
   setTimeout(() => {
     const propSel = document.getElementById("ap_property");
     if (propSel) propSel.value = listingKey;
@@ -807,10 +900,7 @@ async function quickApptForCustomer(custKey) {
   await openApptForm();
   setTimeout(() => {
     const sel = document.getElementById("ap_customer");
-    if (sel) {
-      sel.value = custKey;
-      onCustomerPick();
-    }
+    if (sel) { sel.value = custKey; onCustomerPick(); }
   }, 100);
 }
 
