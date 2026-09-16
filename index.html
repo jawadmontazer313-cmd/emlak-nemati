@@ -28,7 +28,6 @@
   }
   .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
-  /* LOGIN */
   #loginScreen {
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh; padding: 20px;
@@ -62,7 +61,6 @@
   button.secondary { background: var(--card2); border: 1px solid var(--border); }
   button.secondary:hover { background: var(--border); }
 
-  /* HEADER */
   header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border);
@@ -71,7 +69,6 @@
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
 
-  /* TABS */
   .tabs {
     display: flex; gap: 6px; overflow-x: auto;
     padding-bottom: 8px; margin-bottom: 16px;
@@ -87,7 +84,6 @@
     background: var(--primary); color: #fff; border-color: var(--primary);
   }
 
-  /* CARDS */
   .stats-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 12px; margin-bottom: 20px;
@@ -103,7 +99,6 @@
   .stat-card.warn .value { color: var(--warn); }
   .stat-card.red .value { color: var(--danger); }
 
-  /* ITEM LIST */
   .item {
     background: var(--card); border: 1px solid var(--border);
     border-radius: 12px; padding: 14px; margin-bottom: 10px;
@@ -126,13 +121,22 @@
   .item-row b { color: var(--text); font-weight: normal; }
   .item-actions { display: flex; gap: 8px; margin-top: 10px; }
 
+  .media-wrap {
+    margin-top: 10px; border-radius: 10px; overflow: hidden;
+    background: var(--card2);
+  }
+  .media-wrap img, .media-wrap video {
+    width: 100%; max-height: 400px; object-fit: cover;
+    display: block; cursor: pointer;
+  }
+  .media-wrap video { cursor: default; }
+
   .empty {
     text-align: center; padding: 40px 20px; color: var(--muted);
     background: var(--card); border: 1px dashed var(--border);
     border-radius: 12px;
   }
 
-  /* FORM */
   .form-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
@@ -144,7 +148,6 @@
   }
   label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
 
-  /* TOAST */
   #toast {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
     background: var(--card2); border: 1px solid var(--border);
@@ -172,7 +175,6 @@
 </head>
 <body>
 
-<!-- ═══════════ LOGIN ═══════════ -->
 <div id="loginScreen">
   <div class="login-box">
     <h1>🏠 داشبورد املاک</h1>
@@ -182,7 +184,6 @@
   </div>
 </div>
 
-<!-- ═══════════ DASHBOARD ═══════════ -->
 <div id="dashboard" style="display:none">
   <div class="container">
     <header>
@@ -210,20 +211,11 @@
 <div id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  تنظیمات - آدرس Worker خودت رو اینجا بذار
-// ═══════════════════════════════════════════════
 const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
 
-// ═══════════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════════
 let PASSWORD = localStorage.getItem("admin_pass") || "";
 let currentTab = "overview";
 
-// ═══════════════════════════════════════════════
-//  Helpers
-// ═══════════════════════════════════════════════
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -243,7 +235,6 @@ async function api(path, options = {}) {
   const r = await fetch(API_BASE + path, opts);
   const data = await r.json().catch(() => ({}));
   if (r.status === 401) {
-    // رمز اشتباه - برو لاگین
     logout();
     throw new Error("دسترسی غیرمجاز");
   }
@@ -258,9 +249,6 @@ function escapeHtml(s) {
   }[m]));
 }
 
-// ═══════════════════════════════════════════════
-//  Login / Logout
-// ═══════════════════════════════════════════════
 async function doLogin() {
   const pass = document.getElementById("loginPassword").value.trim();
   if (!pass) return toast("رمز را وارد کنید", "error");
@@ -297,9 +285,6 @@ function logout() {
   document.getElementById("loginPassword").value = "";
 }
 
-// ═══════════════════════════════════════════════
-//  Tabs
-// ═══════════════════════════════════════════════
 document.getElementById("tabs").addEventListener("click", e => {
   const tab = e.target.closest(".tab");
   if (!tab) return;
@@ -320,9 +305,6 @@ function renderTab() {
   else if (currentTab === "broadcast") renderBroadcast(c);
 }
 
-// ═══════════════════════════════════════════════
-//  Load All
-// ═══════════════════════════════════════════════
 async function loadAll() {
   const c = document.getElementById("content");
   c.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
@@ -333,9 +315,6 @@ async function loadAll() {
   }
 }
 
-// ═══════════════════════════════════════════════
-//  Overview
-// ═══════════════════════════════════════════════
 async function renderOverview(c) {
   const { stats } = await api("/api/stats");
   c.innerHTML = `
@@ -364,17 +343,12 @@ async function renderOverview(c) {
   `;
 }
 
-// ═══════════════════════════════════════════════
-//  Listings
-// ═══════════════════════════════════════════════
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
-
   if (pubList.length === 0 && privList.length === 0) {
     c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>';
     return;
   }
-
   let html = "";
   if (pubList.length) {
     html += `<div class="section-title">🏘️ املاک عمومی (${pubList.length})</div>`;
@@ -390,6 +364,17 @@ async function renderListings(c) {
 function listingCard(item, isPublic) {
   const typeLabel = item.type === "rent" ? "اجاره" : "فروش";
   const typeClass = item.type === "rent" ? "rent" : "sell";
+
+  let mediaHtml = "";
+  if (item.mediaFileId) {
+    const mediaUrl = API_BASE + "/api/media?fileId=" + encodeURIComponent(item.mediaFileId) + "&token=" + encodeURIComponent(PASSWORD);
+    if (item.mediaType === "video") {
+      mediaHtml = `<div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
+    } else {
+      mediaHtml = `<div class="media-wrap"><img src="${mediaUrl}" alt="ملک" loading="lazy" onclick="window.open('${mediaUrl}','_blank')"></div>`;
+    }
+  }
+
   return `
     <div class="item">
       <div class="item-header">
@@ -405,6 +390,7 @@ function listingCard(item, isPublic) {
       ${item.document ? `<div class="item-row">📄 سند: <b>${escapeHtml(item.document)}</b></div>` : ""}
       ${item.phone ? `<div class="item-row">📞 تماس: <b>${escapeHtml(item.phone)}</b></div>` : ""}
       ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
+      ${mediaHtml}
       <div class="item-actions">
         <button class="danger" onclick="deleteListing('${escapeHtml(item._key)}')">🗑️ حذف</button>
       </div>
@@ -421,9 +407,6 @@ async function deleteListing(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-//  Customers
-// ═══════════════════════════════════════════════
 async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
   if (!customers.length) {
@@ -457,9 +440,6 @@ async function deleteCustomer(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-//  Requests
-// ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
   if (!requests.length) {
@@ -496,9 +476,6 @@ async function deleteRequest(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-//  File Requests
-// ═══════════════════════════════════════════════
 async function renderFileRequests(c) {
   const { fileRequests } = await api("/api/file-requests");
   if (!fileRequests.length) {
@@ -532,9 +509,6 @@ async function deleteFileRequest(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-//  Add Listing Form
-// ═══════════════════════════════════════════════
 function renderAddForm(c) {
   c.innerHTML = `
     <div class="form-card">
@@ -578,6 +552,18 @@ function renderAddForm(c) {
           <label>شماره تماس</label>
           <input id="f_phone" placeholder="۰۹...">
         </div>
+        <div>
+          <label>نوع رسانه</label>
+          <select id="f_mediaType">
+            <option value="">بدون رسانه</option>
+            <option value="photo">عکس</option>
+            <option value="video">ویدیو</option>
+          </select>
+        </div>
+        <div>
+          <label>File ID رسانه (از تلگرام)</label>
+          <input id="f_mediaFileId" placeholder="اختیاری">
+        </div>
         <div class="full">
           <label>توضیحات</label>
           <textarea id="f_extraNotes" rows="3" placeholder="توضیحات اضافی..."></textarea>
@@ -605,12 +591,13 @@ async function submitListing() {
         location: document.getElementById("f_location").value,
         price: document.getElementById("f_price").value,
         phone: document.getElementById("f_phone").value,
+        mediaType: document.getElementById("f_mediaType").value || null,
+        mediaFileId: document.getElementById("f_mediaFileId").value || null,
         extraNotes: document.getElementById("f_extraNotes").value,
         name: "املاک نعمتی"
       })
     });
     toast("ملک ذخیره شد ✅");
-    // switch to listings
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelector('.tab[data-tab="listings"]').classList.add("active");
     currentTab = "listings";
@@ -621,9 +608,6 @@ async function submitListing() {
   }
 }
 
-// ═══════════════════════════════════════════════
-//  Broadcast
-// ═══════════════════════════════════════════════
 function renderBroadcast(c) {
   c.innerHTML = `
     <div class="form-card">
@@ -657,17 +641,12 @@ async function sendBroadcast() {
   }
 }
 
-// ═══════════════════════════════════════════════
-//  Init
-// ═══════════════════════════════════════════════
 document.getElementById("loginPassword").addEventListener("keydown", e => {
   if (e.key === "Enter") doLogin();
 });
 
-// اگه رمز قبلاً ذخیره شده، مستقیم برو داشبورد
 (async function init() {
   if (PASSWORD) {
-    // تست کن رمز هنوز معتبره
     try {
       const r = await fetch(API_BASE + "/api/stats", {
         headers: { "Authorization": "Bearer " + PASSWORD }
