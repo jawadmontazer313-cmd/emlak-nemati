@@ -28,6 +28,8 @@
   button.secondary { background: var(--card2); border: 1px solid var(--border); }
   button.secondary:hover { background: var(--border); }
   button.small { padding: 6px 12px; font-size: 13px; }
+  button.link-btn { background: #1e3a5f; padding: 6px 12px; font-size: 13px; }
+  button.link-btn:hover { background: #2563eb; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -165,6 +167,7 @@
 
 <script>
 const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
+const PUBLIC_BASE = "https://emlak-nemati.pages.dev";
 const QUICK_TAGS = ["خریدار جدی", "اجاره‌ای", "سرمایه‌گذار", "فوری", "در انتظار", "پیگیری مجدد"];
 
 let PASSWORD = localStorage.getItem("admin_pass") || "";
@@ -293,9 +296,6 @@ async function loadAll() {
   catch (e) { c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>'; }
 }
 
-// ═══════════════════════════════════════════════
-// OVERVIEW
-// ═══════════════════════════════════════════════
 async function renderOverview(c) {
   const { stats } = await api("/api/stats");
   c.innerHTML = `
@@ -310,9 +310,6 @@ async function renderOverview(c) {
   `;
 }
 
-// ═══════════════════════════════════════════════
-// ANALYTICS
-// ═══════════════════════════════════════════════
 async function renderAnalytics(c) {
   const { analytics: a } = await api("/api/analytics");
 
@@ -427,9 +424,6 @@ async function renderAnalytics(c) {
   c.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════
-// APPOINTMENTS
-// ═══════════════════════════════════════════════
 async function renderAppointments(c) {
   const { appointments } = await api("/api/appointments");
   appointmentsCache = appointments;
@@ -685,9 +679,6 @@ async function saveAppt(editKey) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════
 async function renderSettings(c) {
   const { settings } = await api("/api/settings");
   c.innerHTML = `
@@ -721,7 +712,7 @@ async function saveSettings() {
 }
 
 // ═══════════════════════════════════════════════
-// LISTINGS
+// LISTINGS (with share link)
 // ═══════════════════════════════════════════════
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
@@ -759,11 +750,35 @@ function listingCard(item, isPublic) {
       ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
       ${mediaHtml}
       <div class="item-actions">
+        ${isPublic ? `<button class="link-btn" onclick="copyListingLink('${escapeHtml(item._key)}')">🔗 کپی لینک</button>` : ""}
+        ${isPublic ? `<button class="secondary small" onclick="openListingLink('${escapeHtml(item._key)}')">👁️ نمایش</button>` : ""}
         <button class="secondary small" onclick="quickAppt('${escapeHtml(item._key)}')">📅 قرار بازدید</button>
         <button class="danger" onclick="deleteListing('${escapeHtml(item._key)}')">🗑️ حذف</button>
       </div>
     </div>
   `;
+}
+
+function buildListingUrl(key) {
+  return PUBLIC_BASE + "/p.html?id=" + encodeURIComponent(key);
+}
+
+async function copyListingLink(key) {
+  const url = buildListingUrl(key);
+  try {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+      toast("لینک کپی شد ✅");
+    } else {
+      prompt("لینک رو کپی کن:", url);
+    }
+  } catch (e) {
+    prompt("لینک رو کپی کن:", url);
+  }
+}
+
+function openListingLink(key) {
+  window.open(buildListingUrl(key), "_blank");
 }
 
 async function quickAppt(listingKey) {
@@ -1009,9 +1024,6 @@ async function deleteCustomer(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// REQUESTS
-// ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
   if (!requests.length) { c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>'; return; }
@@ -1065,9 +1077,6 @@ async function deleteFileRequest(key) {
   catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// ADD LISTING
-// ═══════════════════════════════════════════════
 function renderAddForm(c) {
   c.innerHTML = `
     <div class="form-card">
@@ -1119,9 +1128,6 @@ async function submitListing() {
   } catch (e) { toast("خطا: " + e.message, "error"); btn.disabled = false; btn.textContent = "💾 ذخیره ملک"; }
 }
 
-// ═══════════════════════════════════════════════
-// BROADCAST
-// ═══════════════════════════════════════════════
 function renderBroadcast(c) {
   c.innerHTML = `
     <div class="form-card">
