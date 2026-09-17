@@ -125,6 +125,14 @@
   .appt-done { border-right: 3px solid var(--success); }
   .appt-cancelled { border-right: 3px solid var(--danger); }
 
+  .channel-checkbox {
+    display: flex; align-items: center; gap: 10px;
+    background: #1a2c1f; border: 1px solid #2d5a3d; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 12px; cursor: pointer;
+  }
+  .channel-checkbox input { width: auto; margin: 0; cursor: pointer; width: 20px; height: 20px; }
+  .channel-checkbox label { margin: 0; color: var(--success); font-weight: bold; cursor: pointer; font-size: 14px; }
+
   @media (max-width: 500px) {
     .container { padding: 12px; }
     header h1 { font-size: 16px; }
@@ -574,7 +582,6 @@ function listingCard(item, isPublic) {
   `;
 }
 
-// ⭐ آپلود فایل به تلگرام
 async function uploadMedia() {
   const input = document.createElement("input");
   input.type = "file";
@@ -641,7 +648,7 @@ function editListing(key) {
           📤 آپلود عکس یا ویدیو از گوشی
         </button>
         <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
-          💡 فایل انتخاب کن → خودکار به تلگرام فرستاده میشه و File ID پر میشه
+          💡 فایل انتخاب کن → به چت خصوصی ربات فرستاده میشه و File ID پر میشه
         </div>
 
         <label>نوع رسانه (خودکار پر میشه)</label>
@@ -672,6 +679,13 @@ function editListing(key) {
           ${isPublic ? "🌐 این ملک <b>عمومی</b> است — توی سایت و ربات نمایش داده میشه" : "🔒 این ملک <b>خصوصی</b> است"}
         </div>
 
+        ${isPublic ? `
+          <div class="channel-checkbox" onclick="if(event.target.tagName!=='INPUT'){document.getElementById('e_sendToChannel').checked=!document.getElementById('e_sendToChannel').checked}">
+            <input type="checkbox" id="e_sendToChannel" checked>
+            <label for="e_sendToChannel">📢 بعد از ذخیره، خودکار به کانال بفرست</label>
+          </div>
+        ` : ""}
+
         <div style="display:flex;gap:8px;margin-top:16px">
           <button onclick="saveListingEdit('${escapeHtml(key)}')" style="flex:1">💾 ذخیره تغییرات</button>
           <button class="secondary" onclick="closeModal()">لغو</button>
@@ -682,6 +696,7 @@ function editListing(key) {
 }
 
 async function saveListingEdit(key) {
+  const sendChk = document.getElementById("e_sendToChannel");
   const data = {
     type: document.getElementById("e_type").value,
     propertyType: document.getElementById("e_propertyType").value,
@@ -692,11 +707,18 @@ async function saveListingEdit(key) {
     phone: document.getElementById("e_phone").value,
     mediaType: document.getElementById("e_mediaType").value || null,
     mediaFileId: document.getElementById("e_mediaFileId").value || null,
-    extraNotes: document.getElementById("e_extraNotes").value
+    extraNotes: document.getElementById("e_extraNotes").value,
+    sendToChannel: sendChk ? sendChk.checked : false
   };
   try {
-    await api("/api/listings/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify(data) });
-    toast("ملک ویرایش شد ✅");
+    const r = await api("/api/listings/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify(data) });
+    if (r.channelSent && r.channelSent.ok) {
+      toast("✅ ویرایش شد و به کانال فرستاده شد");
+    } else if (r.channelSent && !r.channelSent.ok) {
+      toast("✅ ویرایش شد، ولی ارسال به کانال خطا داد: " + r.channelSent.error, "error");
+    } else {
+      toast("✅ ویرایش شد");
+    }
     closeModal();
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
