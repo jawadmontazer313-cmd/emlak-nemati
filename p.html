@@ -202,7 +202,6 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
-    cursor: pointer;
     transition: all 0.25s;
     display: flex;
     flex-direction: column;
@@ -224,6 +223,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
   }
   .card-media img {
     width: 100%;
@@ -491,12 +491,12 @@
 
 <script>
 const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
-const P_PAGE = "/p.html";
+const P_PAGE = "https://emlak-nemati.pages.dev/p.html";
 const WHATSAPP_NUMBER = "989124527903";
 
 let allListings = [];
-let filterType = "all";      // all | sell | rent
-let filterProperty = "all";  // all | آپارتمان | ویلا | ...
+let filterType = "all";
+let filterProperty = "all";
 let searchText = "";
 
 function escapeHtml(s) {
@@ -610,12 +610,12 @@ function cardHtml(l) {
   if (l.document) infoRows.push({ icon: "📄", text: "سند: " + escapeHtml(l.document) });
 
   const url = P_PAGE + "?id=" + encodeURIComponent(l.key);
-  const waMessage = `سلام، درباره این ملک سوال داشتم:\n${l.propertyType || ""} - ${l.location || ""}\n${window.location.origin + url}`;
+  const waMessage = `سلام، درباره این ملک سوال داشتم:\n${l.propertyType || ""} - ${l.location || ""}\n${url}`;
   const waUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMessage);
 
   return `
     <div class="card">
-      <div class="card-media" onclick="location.href='${url}'">
+      <div class="card-media" onclick="window.location.href='${url}'">
         ${mediaHtml}
         <div class="type-badge ${typeClass}">${typeLabel}</div>
         ${isN ? `<div class="new-badge">✨ جدید</div>` : ""}
@@ -626,7 +626,7 @@ function cardHtml(l) {
         ${infoRows.map(r => `<div class="card-info"><span>${r.icon}</span><span>${r.text}</span></div>`).join("")}
         <div class="card-actions">
           <a class="card-btn card-btn-details" href="${url}">👁️ جزئیات</a>
-          <a class="card-btn card-btn-wa" href="${waUrl}" target="_blank" onclick="event.stopPropagation()">💬 واتساپ</a>
+          <a class="card-btn card-btn-wa" href="${waUrl}" target="_blank">💬 واتساپ</a>
         </div>
       </div>
     </div>
