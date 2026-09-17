@@ -34,6 +34,8 @@
   button.channel-btn:hover { background: #7e22ce; }
   button.suggest-btn { background: #ea580c; padding: 6px 12px; font-size: 13px; }
   button.suggest-btn:hover { background: #c2410c; }
+  button.edit-btn { background: #0891b2; padding: 6px 12px; font-size: 13px; }
+  button.edit-btn:hover { background: #0e7490; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -348,28 +350,13 @@ async function renderAnalytics(c) {
       <div class="stat-card warn"><div class="label">درخواست‌ها</div><div class="value">${a.totalRequests}</div></div>
       <div class="stat-card purple"><div class="label">قرارها</div><div class="value">${a.totalAppointments}</div></div>
     </div>
-
     <div class="stats-grid">
-      <div class="stat-card green">
-        <div class="label">⭐ میانگین امتیاز</div>
-        <div class="value">${a.avgRating || "—"}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">از ${a.ratingCount} مشتری</div>
-      </div>
-      <div class="stat-card warn">
-        <div class="label">📅 قرارهای این ماه</div>
-        <div class="value">${a.apptsThisMonth}</div>
-      </div>
-      <div class="stat-card blue">
-        <div class="label">💰 فروش</div>
-        <div class="value">${a.listingsByType.sell}</div>
-      </div>
-      <div class="stat-card red">
-        <div class="label">🏠 اجاره</div>
-        <div class="value">${a.listingsByType.rent}</div>
-      </div>
+      <div class="stat-card green"><div class="label">⭐ میانگین امتیاز</div><div class="value">${a.avgRating || "—"}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">از ${a.ratingCount} مشتری</div></div>
+      <div class="stat-card warn"><div class="label">📅 قرارهای این ماه</div><div class="value">${a.apptsThisMonth}</div></div>
+      <div class="stat-card blue"><div class="label">💰 فروش</div><div class="value">${a.listingsByType.sell}</div></div>
+      <div class="stat-card red"><div class="label">🏠 اجاره</div><div class="value">${a.listingsByType.rent}</div></div>
     </div>
   `;
-
   html += section("🏘️ پرتکرارترین نوع ملک", a.propertyTypes);
   html += section("📍 محله‌های پرملک", a.locations);
   html += section("🎯 محله‌های پرتقاضا (درخواست‌ها)", a.reqLocations);
@@ -424,7 +411,6 @@ async function renderAnalytics(c) {
       </div>
     `;
   }
-
   c.innerHTML = html;
 }
 
@@ -478,7 +464,6 @@ async function renderAppointments(c) {
   if (!appointments.length) {
     html += '<div class="empty">هنوز قرار ملاقاتی ثبت نشده</div>';
   }
-
   c.innerHTML = html;
 }
 
@@ -487,7 +472,6 @@ function apptCard(a, state) {
   const typeLabel = typeLabels[a.type] || "🏠 بازدید";
   const statusLabels = { pending: "در انتظار", done: "انجام‌شده", cancelled: "لغو‌شده" };
   const statusLabel = statusLabels[a.status] || "در انتظار";
-
   const stateClass = a.status === "done" ? "appt-done" : (a.status === "cancelled" ? "appt-cancelled" : `appt-${state}`);
 
   return `
@@ -519,8 +503,7 @@ function apptCard(a, state) {
 async function markApptDone(key) {
   try {
     await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "done" }) });
-    toast("انجام شد ✅");
-    loadAll();
+    toast("انجام شد ✅"); loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
@@ -528,8 +511,7 @@ async function markApptCancelled(key) {
   if (!confirm("این قرار لغو شود؟")) return;
   try {
     await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "cancelled" }) });
-    toast("لغو شد");
-    loadAll();
+    toast("لغو شد"); loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
@@ -537,8 +519,7 @@ async function deleteAppt(key) {
   if (!confirm("این قرار حذف شود؟")) return;
   try {
     await api("/api/appointments/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد");
-    loadAll();
+    toast("حذف شد"); loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
@@ -549,22 +530,15 @@ async function openApptForm(editKey = null) {
   if (!listingsCache.public.length && !listingsCache.private.length) {
     try { const r = await api("/api/listings?scope=all"); listingsCache = { public: r.public, private: r.private }; } catch (e) {}
   }
-
   let appt = null;
   if (editKey) appt = appointmentsCache.find(a => a._key === editKey);
   const isEdit = !!appt;
   const d = appt || {};
-
   let defaultDate = "";
   if (!isEdit) {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(10, 0, 0, 0);
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(10, 0, 0, 0);
     defaultDate = fromISOToLocalInput(tomorrow.toISOString());
-  } else {
-    defaultDate = fromISOToLocalInput(d.date);
-  }
-
+  } else { defaultDate = fromISOToLocalInput(d.date); }
   const allListings = [...(listingsCache.public || []), ...(listingsCache.private || [])];
 
   document.getElementById("modal-root").innerHTML = `
@@ -574,14 +548,12 @@ async function openApptForm(editKey = null) {
           <h2>${isEdit ? "✏️ ویرایش قرار" : "➕ قرار جدید"}</h2>
           <button class="modal-close" onclick="closeModal()">×</button>
         </div>
-
         <label>نوع قرار</label>
         <select id="ap_type">
           <option value="visit" ${d.type === 'visit' ? 'selected' : ''}>🏠 بازدید ملک</option>
           <option value="call" ${d.type === 'call' ? 'selected' : ''}>📞 تماس تلفنی</option>
           <option value="meeting" ${d.type === 'meeting' ? 'selected' : ''}>🤝 جلسه</option>
         </select>
-
         <label>مشتری (از لیست)</label>
         <select id="ap_customer" onchange="onCustomerPick()">
           <option value="">— انتخاب مشتری —</option>
@@ -591,13 +563,10 @@ async function openApptForm(editKey = null) {
             </option>
           `).join("")}
         </select>
-
         <label>نام مشتری (دستی)</label>
         <input id="ap_customerName" placeholder="نام" value="${escapeHtml(d.customerName || "")}">
-
         <label>شماره تماس</label>
         <input id="ap_customerPhone" placeholder="۰۹..." value="${escapeHtml(d.customerPhone || "")}">
-
         <label>ملک (اختیاری)</label>
         <select id="ap_property">
           <option value="">— بدون ملک —</option>
@@ -607,19 +576,14 @@ async function openApptForm(editKey = null) {
             </option>
           `).join("")}
         </select>
-
         <label>توضیح ملک (اختیاری)</label>
         <input id="ap_propertyDesc" placeholder="مثلاً آپارتمان ۱۲۰ متری" value="${escapeHtml(d.propertyDesc || "")}">
-
         <label>تاریخ و ساعت</label>
         <input type="datetime-local" id="ap_date" value="${defaultDate}">
-
         <label>مدت (دقیقه)</label>
         <input type="number" id="ap_duration" value="${d.duration || 30}" min="15" step="15">
-
         <label>یادداشت</label>
         <textarea id="ap_note" rows="3" placeholder="توضیحات...">${escapeHtml(d.note || "")}</textarea>
-
         <div style="display:flex;gap:8px;margin-top:16px">
           <button onclick="saveAppt(${isEdit ? `'${escapeHtml(editKey)}'` : 'null'})" style="flex:1">💾 ذخیره</button>
           <button class="secondary" onclick="closeModal()">لغو</button>
@@ -642,10 +606,8 @@ function openApptEdit(key) { openApptForm(key); }
 async function saveAppt(editKey) {
   const dateVal = document.getElementById("ap_date").value;
   if (!dateVal) return toast("تاریخ را وارد کنید", "error");
-
   const custSel = document.getElementById("ap_customer");
   const propSel = document.getElementById("ap_property");
-
   const data = {
     type: document.getElementById("ap_type").value,
     customerKey: custSel.value || "",
@@ -657,13 +619,11 @@ async function saveAppt(editKey) {
     duration: parseInt(document.getElementById("ap_duration").value) || 30,
     note: document.getElementById("ap_note").value
   };
-
   if (data.customerKey && !data.customerName) {
     const opt = custSel.options[custSel.selectedIndex];
     data.customerName = opt.dataset.name || "";
     data.customerPhone = opt.dataset.phone || "";
   }
-
   try {
     if (editKey) {
       await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) });
@@ -683,6 +643,9 @@ async function saveAppt(editKey) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ═══════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════
 async function renderSettings(c) {
   const { settings } = await api("/api/settings");
   c.innerHTML = `
@@ -700,16 +663,23 @@ async function renderSettings(c) {
       <label>📢 کانال تلگرام (برای آگهی خودکار)</label>
       <input id="s_channelId" placeholder="مثلاً @emlak_nemati" value="${escapeHtml(settings.channelId || "")}">
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
-        💡 آیدی کانال رو با <b>@</b> بنویس (مثلاً <b>@emlak_nemati</b>)<br>
+        💡 آیدی کانال رو با <b>@</b> بنویس<br>
         ⚠️ ربات باید توی کانال ادمین باشه
       </div>
 
-      <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
+      <label>📌 فوتر تبلیغاتی کانال</label>
+      <textarea id="s_channelFooter" rows="4" placeholder="متن تبلیغاتی که ته هر پست کانال نمایش داده میشه...
 
-      <div style="margin-top:20px;padding:14px;background:var(--card2);border-radius:10px;font-size:13px;color:var(--muted)">
-        <b style="color:var(--text)">چطور آگهی خودکار کار می‌کنه؟</b><br>
-        توی تب <b>🏘️ املاک</b>، روی هر ملک عمومی دکمه <b>📢 ارسال به کانال</b> داری. با یه کلیک، ملک میره توی کانال.
+مثال:
+🏠 املاک نعمتی
+📍 قم، خیابان کلهری
+📞 09123456789
+🌐 emlak-nemati.pages.dev">${escapeHtml(settings.channelFooter || "")}</textarea>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
+        💡 این متن ته <b>هر پست کانال</b> اضافه میشه — می‌تونی شماره تماس، آدرس، یا لینک تبلیغاتی بذاری
       </div>
+
+      <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
     </div>
   `;
 }
@@ -717,8 +687,9 @@ async function renderSettings(c) {
 async function saveSettings() {
   const adminChatId = document.getElementById("s_adminChatId").value.trim();
   const channelId = document.getElementById("s_channelId").value.trim();
+  const channelFooter = document.getElementById("s_channelFooter").value;
   try {
-    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId }) });
+    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId, channelFooter }) });
     toast("ذخیره شد ✅");
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
@@ -762,6 +733,7 @@ function listingCard(item, isPublic) {
       ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
       ${mediaHtml}
       <div class="item-actions">
+        <button class="edit-btn" onclick="editListing('${escapeHtml(item._key)}')">✏️ ویرایش</button>
         ${isPublic ? `<button class="link-btn" onclick="copyListingLink('${escapeHtml(item._key)}')">🔗 کپی لینک</button>` : ""}
         ${isPublic ? `<button class="secondary small" onclick="openListingLink('${escapeHtml(item._key)}')">👁️ نمایش</button>` : ""}
         ${isPublic ? `<button class="channel-btn" onclick="sendToChannel('${escapeHtml(item._key)}', this)">📢 ارسال به کانال</button>` : ""}
@@ -770,6 +742,105 @@ function listingCard(item, isPublic) {
       </div>
     </div>
   `;
+}
+
+// ⭐ NEW: Edit listing
+function editListing(key) {
+  const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === key);
+  if (!item) return toast("ملک پیدا نشد", "error");
+  const isPublic = key.startsWith("pub_listing_");
+
+  document.getElementById("modal-root").innerHTML = `
+    <div class="modal-bg" onclick="if(event.target===this) closeModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>✏️ ویرایش ملک</h2>
+          <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+
+        <label>نوع معامله</label>
+        <select id="e_type">
+          <option value="sell" ${item.type === 'sell' ? 'selected' : ''}>💰 فروش</option>
+          <option value="rent" ${item.type === 'rent' ? 'selected' : ''}>🏠 رهن و اجاره</option>
+        </select>
+
+        <label>نوع ملک</label>
+        <input id="e_propertyType" placeholder="آپارتمان، ویلا..." value="${escapeHtml(item.propertyType || "")}">
+
+        <label>متراژ</label>
+        <input id="e_size" placeholder="۱۲۰ متر" value="${escapeHtml(item.size || "")}">
+
+        <label>سند</label>
+        <input id="e_document" placeholder="تک‌برگ..." value="${escapeHtml(item.document || "")}">
+
+        <label>آدرس کامل (شهر + خیابان + کوچه + پلاک)</label>
+        <textarea id="e_location" rows="2" placeholder="مثال: قم، خیابان کلهری، کوچه ۶، پلاک ۱۰۰">${escapeHtml(item.location || "")}</textarea>
+
+        <label>قیمت</label>
+        <input id="e_price" placeholder="۵ میلیارد" value="${escapeHtml(item.price || "")}">
+
+        <label>شماره تماس</label>
+        <input id="e_phone" placeholder="۰۹..." value="${escapeHtml(item.phone || "")}">
+
+        <label>نوع رسانه</label>
+        <select id="e_mediaType">
+          <option value="" ${!item.mediaType ? 'selected' : ''}>بدون رسانه</option>
+          <option value="photo" ${item.mediaType === 'photo' ? 'selected' : ''}>عکس</option>
+          <option value="video" ${item.mediaType === 'video' ? 'selected' : ''}>ویدیو</option>
+        </select>
+
+        <label>File ID رسانه (از تلگرام)</label>
+        <input id="e_mediaFileId" placeholder="اختیاری" value="${escapeHtml(item.mediaFileId || "")}">
+        ${item.mediaFileId ? `
+          <div style="margin-bottom:12px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه فعلی:</div>
+            <div class="media-wrap">
+              ${item.mediaType === 'video' 
+                ? `<video src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" controls preload="metadata"></video>`
+                : `<img src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" alt="ملک">`}
+            </div>
+          </div>
+        ` : ""}
+
+        <label>توضیحات</label>
+        <textarea id="e_extraNotes" rows="3" placeholder="توضیحات...">${escapeHtml(item.extra_notes || "")}</textarea>
+
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+          ${isPublic ? "🌐 این ملک <b>عمومی</b> است — توی سایت و ربات نمایش داده میشه" : "🔒 این ملک <b>خصوصی</b> است"}
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button onclick="saveListingEdit('${escapeHtml(key)}')" style="flex:1">💾 ذخیره تغییرات</button>
+          <button class="secondary" onclick="closeModal()">لغو</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function saveListingEdit(key) {
+  const data = {
+    type: document.getElementById("e_type").value,
+    propertyType: document.getElementById("e_propertyType").value,
+    size: document.getElementById("e_size").value,
+    document: document.getElementById("e_document").value,
+    location: document.getElementById("e_location").value,
+    price: document.getElementById("e_price").value,
+    phone: document.getElementById("e_phone").value,
+    mediaType: document.getElementById("e_mediaType").value || null,
+    mediaFileId: document.getElementById("e_mediaFileId").value || null,
+    extraNotes: document.getElementById("e_extraNotes").value
+  };
+
+  try {
+    await api("/api/listings/" + encodeURIComponent(key), {
+      method: "PUT",
+      body: JSON.stringify(data)
+    });
+    toast("ملک ویرایش شد ✅");
+    closeModal();
+    loadAll();
+  } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
 function buildListingUrl(key) {
@@ -782,12 +853,8 @@ async function copyListingLink(key) {
     if (navigator.clipboard) {
       await navigator.clipboard.writeText(url);
       toast("لینک کپی شد ✅");
-    } else {
-      prompt("لینک رو کپی کن:", url);
-    }
-  } catch (e) {
-    prompt("لینک رو کپی کن:", url);
-  }
+    } else { prompt("لینک رو کپی کن:", url); }
+  } catch (e) { prompt("لینک رو کپی کن:", url); }
 }
 
 function openListingLink(key) {
@@ -802,12 +869,8 @@ async function sendToChannel(key, btn) {
   try {
     await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) });
     toast("به کانال ارسال شد ✅");
-  } catch (e) {
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = original;
-  }
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+  finally { btn.disabled = false; btn.textContent = original; }
 }
 
 async function quickAppt(listingKey) {
@@ -835,7 +898,6 @@ async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
   customersCache = customers;
   if (!customers.length) { c.innerHTML = '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>'; return; }
-
   c.innerHTML = customers.map(item => {
     const rating = parseInt(item.rating) || 0;
     const tags = item.tags || [];
@@ -884,7 +946,6 @@ function renderCustomerModal(cust) {
           <h2>👤 ${escapeHtml(cust.name || cust.phone || "کاربر")}</h2>
           <button class="modal-close" onclick="closeModal()">×</button>
         </div>
-
         <div class="modal-section">
           <h3>اطلاعات پایه</h3>
           ${cust.phone ? `<div class="item-row">📞 ${escapeHtml(cust.phone)}</div>` : ""}
@@ -893,12 +954,10 @@ function renderCustomerModal(cust) {
           ${cust.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(cust.language)}</b></div>` : ""}
           ${cust.date ? `<div class="item-row">📅 عضویت: ${escapeHtml(toPersianDate(cust.date))}</div>` : ""}
         </div>
-
         <div class="modal-section">
           <h3>⭐ امتیاز اهمیت</h3>
           <div id="ratingBox">${renderStars(rating, true)}</div>
         </div>
-
         <div class="modal-section">
           <h3>🏷️ برچسب‌ها</h3>
           <div id="tagsBox" class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("")}</div>
@@ -910,23 +969,19 @@ function renderCustomerModal(cust) {
             ${QUICK_TAGS.map(t => `<span class="qt" onclick="quickAddTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`).join("")}
           </div>
         </div>
-
         <div class="modal-section">
           <h3>📝 یادداشت</h3>
           <textarea id="notesBox" rows="3" placeholder="یادداشت...">${escapeHtml(cust.notes || "")}</textarea>
         </div>
-
         <div class="modal-section">
           <h3>📞 تاریخچه تماس</h3>
           <div id="historyBox"></div>
           <textarea id="newContactText" rows="2" placeholder="متن تماس جدید..." style="margin-top:8px"></textarea>
           <button class="small" onclick="addContact()">➕ افزودن تماس</button>
         </div>
-
         <div class="modal-section">
           <button class="secondary small" onclick="quickApptForCustomer('${escapeHtml(cust._key)}')" style="width:100%">📅 ثبت قرار برای این مشتری</button>
         </div>
-
         <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
           <button onclick="saveCustomer('${escapeHtml(cust._key)}')" style="flex:1">💾 ذخیره تغییرات</button>
           <button class="danger" onclick="deleteCustomer('${escapeHtml(cust._key)}')">🗑️ حذف</button>
@@ -934,7 +989,6 @@ function renderCustomerModal(cust) {
       </div>
     </div>
   `;
-
   renderHistoryBox();
   setupStarClicks();
 }
@@ -1054,7 +1108,7 @@ async function deleteCustomer(key) {
 }
 
 // ═══════════════════════════════════════════════
-// REQUESTS (with suggest button)
+// REQUESTS
 // ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
@@ -1087,21 +1141,11 @@ async function suggestForRequest(key, btn) {
   const original = btn.textContent;
   btn.textContent = "⏳ در حال جستجو...";
   try {
-    const r = await api("/api/suggest-for-request", {
-      method: "POST",
-      body: JSON.stringify({ requestKey: key })
-    });
-    if (r.ok) {
-      toast(`✅ ${r.sent} ملک ارسال شد`);
-    } else {
-      toast(r.error || "خطا", "error");
-    }
-  } catch (e) {
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = original;
-  }
+    const r = await api("/api/suggest-for-request", { method: "POST", body: JSON.stringify({ requestKey: key }) });
+    if (r.ok) toast(`✅ ${r.sent} ملک ارسال شد`);
+    else toast(r.error || "خطا", "error");
+  } catch (e) { toast("خطا: " + e.message, "error"); }
+  finally { btn.disabled = false; btn.textContent = original; }
 }
 
 async function deleteRequest(key) {
