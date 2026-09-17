@@ -36,6 +36,8 @@
   button.suggest-btn:hover { background: #c2410c; }
   button.edit-btn { background: #0891b2; padding: 6px 12px; font-size: 13px; }
   button.edit-btn:hover { background: #0e7490; }
+  button.upload-btn { background: #16a34a; padding: 10px; font-size: 14px; }
+  button.upload-btn:hover { background: #15803d; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -318,31 +320,15 @@ async function renderOverview(c) {
 
 async function renderAnalytics(c) {
   const { analytics: a } = await api("/api/analytics");
-
   function bar(value, max) {
     const pct = max ? Math.round((value / max) * 100) : 0;
     return `<div style="background:var(--card2);border-radius:6px;overflow:hidden;height:22px;margin-top:4px"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);display:flex;align-items:center;justify-content:flex-end;padding-inline-end:6px;font-size:11px;color:#fff;font-weight:bold">${value}</div></div>`;
   }
-
   function section(title, items) {
     if (!items || !items.length) return "";
     const max = items[0][1];
-    return `
-      <div class="form-card" style="margin-bottom:16px">
-        <div class="section-title">${title}</div>
-        ${items.map(([k, v]) => `
-          <div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <span>${escapeHtml(k)}</span>
-              <span style="color:var(--muted)">${v}</span>
-            </div>
-            ${bar(v, max)}
-          </div>
-        `).join("")}
-      </div>
-    `;
+    return `<div class="form-card" style="margin-bottom:16px"><div class="section-title">${title}</div>${items.map(([k, v]) => `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${escapeHtml(k)}</span><span style="color:var(--muted)">${v}</span></div>${bar(v, max)}</div>`).join("")}</div>`;
   }
-
   let html = `
     <div class="stats-grid">
       <div class="stat-card blue"><div class="label">کل املاک</div><div class="value">${a.totalListings}</div></div>
@@ -361,55 +347,15 @@ async function renderAnalytics(c) {
   html += section("📍 محله‌های پرملک", a.locations);
   html += section("🎯 محله‌های پرتقاضا (درخواست‌ها)", a.reqLocations);
   html += section("🏷️ پرتکرارترین برچسب مشتری‌ها", a.tags);
-
   if (a.dailyListings && a.dailyListings.length) {
     const maxDaily = Math.max(...a.dailyListings.map(x => x[1]));
-    html += `
-      <div class="form-card" style="margin-bottom:16px">
-        <div class="section-title">📊 ثبت ملک در ۳۰ روز اخیر</div>
-        <div style="display:flex;align-items:flex-end;gap:3px;height:100px;margin-top:12px;overflow-x:auto;padding-bottom:8px">
-          ${a.dailyListings.map(([day, count]) => {
-            const h = maxDaily ? Math.round((count / maxDaily) * 100) : 0;
-            return `<div title="${day}: ${count}" style="min-width:14px;width:14px;height:${h}%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:4px 4px 0 0"></div>`;
-          }).join("")}
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">${a.dailyListings.length} روز داده</div>
-      </div>
-    `;
+    html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">📊 ثبت ملک در ۳۰ روز اخیر</div><div style="display:flex;align-items:flex-end;gap:3px;height:100px;margin-top:12px;overflow-x:auto;padding-bottom:8px">${a.dailyListings.map(([day, count]) => { const h = maxDaily ? Math.round((count / maxDaily) * 100) : 0; return `<div title="${day}: ${count}" style="min-width:14px;width:14px;height:${h}%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:4px 4px 0 0"></div>`; }).join("")}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">${a.dailyListings.length} روز داده</div></div>`;
   }
-
   const totalReq = (a.requestsByType.sell + a.requestsByType.rent) || 1;
-  html += `
-    <div class="form-card" style="margin-bottom:16px">
-      <div class="section-title">📝 درخواست‌ها بر اساس نوع</div>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px">
-          <div style="font-size:24px;font-weight:bold;color:#4ade80">${a.requestsByType.sell}</div>
-          <div style="font-size:12px;color:var(--muted)">فروش (${Math.round(a.requestsByType.sell/totalReq*100)}%)</div>
-        </div>
-        <div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px">
-          <div style="font-size:24px;font-weight:bold;color:#f472b6">${a.requestsByType.rent}</div>
-          <div style="font-size:12px;color:var(--muted)">اجاره (${Math.round(a.requestsByType.rent/totalReq*100)}%)</div>
-        </div>
-      </div>
-    </div>
-  `;
-
+  html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">📝 درخواست‌ها بر اساس نوع</div><div style="display:flex;gap:12px;margin-top:8px"><div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px"><div style="font-size:24px;font-weight:bold;color:#4ade80">${a.requestsByType.sell}</div><div style="font-size:12px;color:var(--muted)">فروش (${Math.round(a.requestsByType.sell/totalReq*100)}%)</div></div><div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px"><div style="font-size:24px;font-weight:bold;color:#f472b6">${a.requestsByType.rent}</div><div style="font-size:12px;color:var(--muted)">اجاره (${Math.round(a.requestsByType.rent/totalReq*100)}%)</div></div></div></div>`;
   if (a.customersByMonth && a.customersByMonth.length) {
     const maxM = Math.max(...a.customersByMonth.map(x => x[1]));
-    html += `
-      <div class="form-card" style="margin-bottom:16px">
-        <div class="section-title">👥 مشتری‌های جدید ماهانه</div>
-        ${a.customersByMonth.map(([m, v]) => `
-          <div style="margin-bottom:8px">
-            <div style="display:flex;justify-content:space-between;font-size:12px">
-              <span>${m}</span><span style="color:var(--muted)">${v}</span>
-            </div>
-            ${bar(v, maxM)}
-          </div>
-        `).join("")}
-      </div>
-    `;
+    html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">👥 مشتری‌های جدید ماهانه</div>${a.customersByMonth.map(([m, v]) => `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${m}</span><span style="color:var(--muted)">${v}</span></div>${bar(v, maxM)}</div>`).join("")}</div>`;
   }
   c.innerHTML = html;
 }
@@ -417,17 +363,14 @@ async function renderAnalytics(c) {
 async function renderAppointments(c) {
   const { appointments } = await api("/api/appointments");
   appointmentsCache = appointments;
-
   const now = Date.now();
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
-
   const upcoming = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() >= now);
   const today = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() >= todayStart.getTime() && new Date(a.date).getTime() <= todayEnd.getTime());
   const past = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() < now);
   const done = appointments.filter(a => a.status === "done");
   const cancelled = appointments.filter(a => a.status === "cancelled");
-
   let html = `
     <div class="stats-grid">
       <div class="stat-card warn"><div class="label">امروز</div><div class="value">${today.length}</div></div>
@@ -435,35 +378,15 @@ async function renderAppointments(c) {
       <div class="stat-card green"><div class="label">انجام‌شده</div><div class="value">${done.length}</div></div>
       <div class="stat-card red"><div class="label">گذشته</div><div class="value">${past.length}</div></div>
     </div>
-    <div style="margin-bottom:16px">
-      <button onclick="openApptForm()" style="width:100%">➕ قرار جدید</button>
-    </div>
+    <div style="margin-bottom:16px"><button onclick="openApptForm()" style="width:100%">➕ قرار جدید</button></div>
   `;
-
-  if (today.length) {
-    html += `<div class="section-title">🔥 امروز (${today.length})</div>`;
-    html += today.map(a => apptCard(a, "today")).join("");
-  }
+  if (today.length) { html += `<div class="section-title">🔥 امروز (${today.length})</div>`; html += today.map(a => apptCard(a, "today")).join(""); }
   const otherUpcoming = upcoming.filter(a => !today.includes(a));
-  if (otherUpcoming.length) {
-    html += `<div class="section-title" style="margin-top:20px">⏰ پیش‌رو (${otherUpcoming.length})</div>`;
-    html += otherUpcoming.map(a => apptCard(a, "upcoming")).join("");
-  }
-  if (past.length) {
-    html += `<div class="section-title" style="margin-top:20px">⌛ گذشته (${past.length})</div>`;
-    html += past.map(a => apptCard(a, "past")).join("");
-  }
-  if (done.length) {
-    html += `<div class="section-title" style="margin-top:20px">✅ انجام‌شده (${done.length})</div>`;
-    html += done.map(a => apptCard(a, "done")).join("");
-  }
-  if (cancelled.length) {
-    html += `<div class="section-title" style="margin-top:20px">❌ لغو‌شده (${cancelled.length})</div>`;
-    html += cancelled.map(a => apptCard(a, "cancelled")).join("");
-  }
-  if (!appointments.length) {
-    html += '<div class="empty">هنوز قرار ملاقاتی ثبت نشده</div>';
-  }
+  if (otherUpcoming.length) { html += `<div class="section-title" style="margin-top:20px">⏰ پیش‌رو (${otherUpcoming.length})</div>`; html += otherUpcoming.map(a => apptCard(a, "upcoming")).join(""); }
+  if (past.length) { html += `<div class="section-title" style="margin-top:20px">⌛ گذشته (${past.length})</div>`; html += past.map(a => apptCard(a, "past")).join(""); }
+  if (done.length) { html += `<div class="section-title" style="margin-top:20px">✅ انجام‌شده (${done.length})</div>`; html += done.map(a => apptCard(a, "done")).join(""); }
+  if (cancelled.length) { html += `<div class="section-title" style="margin-top:20px">❌ لغو‌شده (${cancelled.length})</div>`; html += cancelled.map(a => apptCard(a, "cancelled")).join(""); }
+  if (!appointments.length) html += '<div class="empty">هنوز قرار ملاقاتی ثبت نشده</div>';
   c.innerHTML = html;
 }
 
@@ -473,26 +396,16 @@ function apptCard(a, state) {
   const statusLabels = { pending: "در انتظار", done: "انجام‌شده", cancelled: "لغو‌شده" };
   const statusLabel = statusLabels[a.status] || "در انتظار";
   const stateClass = a.status === "done" ? "appt-done" : (a.status === "cancelled" ? "appt-cancelled" : `appt-${state}`);
-
   return `
     <div class="item ${stateClass} ${a.status === 'done' || a.status === 'cancelled' ? 'done' : ''}">
-      <div class="item-header">
-        <div>
-          <span class="item-title">${escapeHtml(a.customerName || "مشتری")}</span>
-          <span class="item-badge appt-type-${a.type || 'visit'}">${typeLabel}</span>
-          <span class="item-badge ${a.status === 'done' ? 'done' : (a.status === 'cancelled' ? 'cancelled' : 'pending')}">${statusLabel}</span>
-        </div>
-      </div>
+      <div class="item-header"><div><span class="item-title">${escapeHtml(a.customerName || "مشتری")}</span><span class="item-badge appt-type-${a.type || 'visit'}">${typeLabel}</span><span class="item-badge ${a.status === 'done' ? 'done' : (a.status === 'cancelled' ? 'cancelled' : 'pending')}">${statusLabel}</span></div></div>
       <div class="item-row">📅 ${escapeHtml(toPersianDate(a.date))}</div>
       ${a.customerPhone ? `<div class="item-row">📞 ${escapeHtml(a.customerPhone)}</div>` : ""}
       ${a.propertyDesc ? `<div class="item-row">🏘️ ${escapeHtml(a.propertyDesc)}</div>` : ""}
       ${a.note ? `<div class="item-row">📝 ${escapeHtml(a.note)}</div>` : ""}
       ${a.reminderSent ? `<div class="item-row" style="color:var(--success)">✅ یادآور ارسال شد</div>` : ""}
       <div class="item-actions">
-        ${a.status === 'pending' ? `
-          <button class="success small" onclick="markApptDone('${escapeHtml(a._key)}')">✅ انجام شد</button>
-          <button class="secondary small" onclick="markApptCancelled('${escapeHtml(a._key)}')">❌ لغو</button>
-        ` : ""}
+        ${a.status === 'pending' ? `<button class="success small" onclick="markApptDone('${escapeHtml(a._key)}')">✅ انجام شد</button><button class="secondary small" onclick="markApptCancelled('${escapeHtml(a._key)}')">❌ لغو</button>` : ""}
         <button class="secondary small" onclick="openApptEdit('${escapeHtml(a._key)}')">✏️ ویرایش</button>
         <button class="danger" onclick="deleteAppt('${escapeHtml(a._key)}')">🗑️ حذف</button>
       </div>
@@ -501,81 +414,45 @@ function apptCard(a, state) {
 }
 
 async function markApptDone(key) {
-  try {
-    await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "done" }) });
-    toast("انجام شد ✅"); loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "done" }) }); toast("انجام شد ✅"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
-
 async function markApptCancelled(key) {
   if (!confirm("این قرار لغو شود؟")) return;
-  try {
-    await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "cancelled" }) });
-    toast("لغو شد"); loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "cancelled" }) }); toast("لغو شد"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
-
 async function deleteAppt(key) {
   if (!confirm("این قرار حذف شود؟")) return;
-  try {
-    await api("/api/appointments/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد"); loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
 async function openApptForm(editKey = null) {
-  if (!customersCache.length) {
-    try { const r = await api("/api/customers"); customersCache = r.customers; } catch (e) {}
-  }
-  if (!listingsCache.public.length && !listingsCache.private.length) {
-    try { const r = await api("/api/listings?scope=all"); listingsCache = { public: r.public, private: r.private }; } catch (e) {}
-  }
+  if (!customersCache.length) { try { const r = await api("/api/customers"); customersCache = r.customers; } catch (e) {} }
+  if (!listingsCache.public.length && !listingsCache.private.length) { try { const r = await api("/api/listings?scope=all"); listingsCache = { public: r.public, private: r.private }; } catch (e) {} }
   let appt = null;
   if (editKey) appt = appointmentsCache.find(a => a._key === editKey);
   const isEdit = !!appt;
   const d = appt || {};
   let defaultDate = "";
-  if (!isEdit) {
-    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(10, 0, 0, 0);
-    defaultDate = fromISOToLocalInput(tomorrow.toISOString());
-  } else { defaultDate = fromISOToLocalInput(d.date); }
+  if (!isEdit) { const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(10, 0, 0, 0); defaultDate = fromISOToLocalInput(tomorrow.toISOString()); }
+  else { defaultDate = fromISOToLocalInput(d.date); }
   const allListings = [...(listingsCache.public || []), ...(listingsCache.private || [])];
-
   document.getElementById("modal-root").innerHTML = `
     <div class="modal-bg" onclick="if(event.target===this) closeModal()">
       <div class="modal">
-        <div class="modal-header">
-          <h2>${isEdit ? "✏️ ویرایش قرار" : "➕ قرار جدید"}</h2>
-          <button class="modal-close" onclick="closeModal()">×</button>
-        </div>
+        <div class="modal-header"><h2>${isEdit ? "✏️ ویرایش قرار" : "➕ قرار جدید"}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
         <label>نوع قرار</label>
-        <select id="ap_type">
-          <option value="visit" ${d.type === 'visit' ? 'selected' : ''}>🏠 بازدید ملک</option>
-          <option value="call" ${d.type === 'call' ? 'selected' : ''}>📞 تماس تلفنی</option>
-          <option value="meeting" ${d.type === 'meeting' ? 'selected' : ''}>🤝 جلسه</option>
-        </select>
+        <select id="ap_type"><option value="visit" ${d.type === 'visit' ? 'selected' : ''}>🏠 بازدید ملک</option><option value="call" ${d.type === 'call' ? 'selected' : ''}>📞 تماس تلفنی</option><option value="meeting" ${d.type === 'meeting' ? 'selected' : ''}>🤝 جلسه</option></select>
         <label>مشتری (از لیست)</label>
-        <select id="ap_customer" onchange="onCustomerPick()">
-          <option value="">— انتخاب مشتری —</option>
-          ${customersCache.map(c => `
-            <option value="${escapeHtml(c._key)}" ${d.customerKey === c._key ? 'selected' : ''} data-name="${escapeHtml(c.name || c.phone || '')}" data-phone="${escapeHtml(c.phone || '')}">
-              ${escapeHtml(c.name || c.phone || "بدون نام")} ${c.phone ? `- ${escapeHtml(c.phone)}` : ""}
-            </option>
-          `).join("")}
-        </select>
+        <select id="ap_customer" onchange="onCustomerPick()"><option value="">— انتخاب مشتری —</option>${customersCache.map(c => `<option value="${escapeHtml(c._key)}" ${d.customerKey === c._key ? 'selected' : ''} data-name="${escapeHtml(c.name || c.phone || '')}" data-phone="${escapeHtml(c.phone || '')}">${escapeHtml(c.name || c.phone || "بدون نام")} ${c.phone ? `- ${escapeHtml(c.phone)}` : ""}</option>`).join("")}</select>
         <label>نام مشتری (دستی)</label>
         <input id="ap_customerName" placeholder="نام" value="${escapeHtml(d.customerName || "")}">
         <label>شماره تماس</label>
         <input id="ap_customerPhone" placeholder="۰۹..." value="${escapeHtml(d.customerPhone || "")}">
         <label>ملک (اختیاری)</label>
-        <select id="ap_property">
-          <option value="">— بدون ملک —</option>
-          ${allListings.map(l => `
-            <option value="${escapeHtml(l._key)}" ${d.propertyKey === l._key ? 'selected' : ''} data-desc="${escapeHtml((l.propertyType || '') + ' - ' + (l.location || ''))}">
-              ${escapeHtml((l.propertyType || 'ملک') + ' - ' + (l.location || 'بدون موقعیت'))}
-            </option>
-          `).join("")}
-        </select>
+        <select id="ap_property"><option value="">— بدون ملک —</option>${allListings.map(l => `<option value="${escapeHtml(l._key)}" ${d.propertyKey === l._key ? 'selected' : ''} data-desc="${escapeHtml((l.propertyType || '') + ' - ' + (l.location || ''))}">${escapeHtml((l.propertyType || 'ملک') + ' - ' + (l.location || 'بدون موقعیت'))}</option>`).join("")}</select>
         <label>توضیح ملک (اختیاری)</label>
         <input id="ap_propertyDesc" placeholder="مثلاً آپارتمان ۱۲۰ متری" value="${escapeHtml(d.propertyDesc || "")}">
         <label>تاریخ و ساعت</label>
@@ -584,10 +461,7 @@ async function openApptForm(editKey = null) {
         <input type="number" id="ap_duration" value="${d.duration || 30}" min="15" step="15">
         <label>یادداشت</label>
         <textarea id="ap_note" rows="3" placeholder="توضیحات...">${escapeHtml(d.note || "")}</textarea>
-        <div style="display:flex;gap:8px;margin-top:16px">
-          <button onclick="saveAppt(${isEdit ? `'${escapeHtml(editKey)}'` : 'null'})" style="flex:1">💾 ذخیره</button>
-          <button class="secondary" onclick="closeModal()">لغو</button>
-        </div>
+        <div style="display:flex;gap:8px;margin-top:16px"><button onclick="saveAppt(${isEdit ? `'${escapeHtml(editKey)}'` : 'null'})" style="flex:1">💾 ذخیره</button><button class="secondary" onclick="closeModal()">لغو</button></div>
       </div>
     </div>
   `;
@@ -600,7 +474,6 @@ function onCustomerPick() {
   document.getElementById("ap_customerName").value = opt.dataset.name || "";
   document.getElementById("ap_customerPhone").value = opt.dataset.phone || "";
 }
-
 function openApptEdit(key) { openApptForm(key); }
 
 async function saveAppt(editKey) {
@@ -625,60 +498,28 @@ async function saveAppt(editKey) {
     data.customerPhone = opt.dataset.phone || "";
   }
   try {
-    if (editKey) {
-      await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) });
-      toast("ویرایش شد ✅");
-    } else {
-      await api("/api/appointments", { method: "POST", body: JSON.stringify(data) });
-      toast("قرار ثبت شد ✅");
-    }
+    if (editKey) { await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) }); toast("ویرایش شد ✅"); }
+    else { await api("/api/appointments", { method: "POST", body: JSON.stringify(data) }); toast("قرار ثبت شد ✅"); }
     closeModal();
     if (currentTab === "appointments") loadAll();
-    else {
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      document.querySelector('.tab[data-tab="appointments"]').classList.add("active");
-      currentTab = "appointments";
-      renderTab();
-    }
+    else { document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); document.querySelector('.tab[data-tab="appointments"]').classList.add("active"); currentTab = "appointments"; renderTab(); }
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════
 async function renderSettings(c) {
   const { settings } = await api("/api/settings");
   c.innerHTML = `
     <div class="form-card" style="margin-bottom:16px">
       <div class="section-title">⚙️ تنظیمات</div>
-
       <label>Chat ID مدیر (برای دریافت یادآورها)</label>
       <input id="s_adminChatId" placeholder="مثلاً 123456789" value="${escapeHtml(settings.adminChatId || "")}">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
-        💡 برای پیدا کردن Chat ID خودت:<br>
-        ۱. توی تلگرام به ربات <b>@userinfobot</b> پیام بده<br>
-        ۲. عددی که برمی‌گردونه رو اینجا بذار
-      </div>
-
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 برای پیدا کردن Chat ID خودت:<br>۱. توی تلگرام به ربات <b>@userinfobot</b> پیام بده<br>۲. عددی که برمی‌گردونه رو اینجا بذار</div>
       <label>📢 کانال تلگرام (برای آگهی خودکار)</label>
       <input id="s_channelId" placeholder="مثلاً @emlak_nemati" value="${escapeHtml(settings.channelId || "")}">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
-        💡 آیدی کانال رو با <b>@</b> بنویس<br>
-        ⚠️ ربات باید توی کانال ادمین باشه
-      </div>
-
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 آیدی کانال رو با <b>@</b> بنویس<br>⚠️ ربات باید توی کانال ادمین باشه</div>
       <label>📌 فوتر تبلیغاتی کانال</label>
-      <textarea id="s_channelFooter" rows="4" placeholder="متن تبلیغاتی که ته هر پست کانال نمایش داده میشه...
-
-مثال:
-🏠 املاک نعمتی
-📍 قم، خیابان کلهری
-📞 09123456789
-🌐 emlak-nemati.pages.dev">${escapeHtml(settings.channelFooter || "")}</textarea>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">
-        💡 این متن ته <b>هر پست کانال</b> اضافه میشه — می‌تونی شماره تماس، آدرس، یا لینک تبلیغاتی بذاری
-      </div>
-
+      <textarea id="s_channelFooter" rows="4" placeholder="متن تبلیغاتی که ته هر پست کانال نمایش داده میشه...">${escapeHtml(settings.channelFooter || "")}</textarea>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 این متن ته <b>هر پست کانال</b> اضافه میشه</div>
       <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
     </div>
   `;
@@ -688,15 +529,10 @@ async function saveSettings() {
   const adminChatId = document.getElementById("s_adminChatId").value.trim();
   const channelId = document.getElementById("s_channelId").value.trim();
   const channelFooter = document.getElementById("s_channelFooter").value;
-  try {
-    await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId, channelFooter }) });
-    toast("ذخیره شد ✅");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId, channelFooter }) }); toast("ذخیره شد ✅"); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// LISTINGS
-// ═══════════════════════════════════════════════
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
   listingsCache = { public: pubList, private: privList };
@@ -718,13 +554,7 @@ function listingCard(item, isPublic) {
   }
   return `
     <div class="item">
-      <div class="item-header">
-        <div>
-          <span class="item-title">${escapeHtml(item.propertyType || "ملک")}</span>
-          <span class="item-badge ${typeClass}">${typeLabel}</span>
-          <span class="item-badge ${isPublic ? "pub" : "priv"}">${isPublic ? "عمومی" : "خصوصی"}</span>
-        </div>
-      </div>
+      <div class="item-header"><div><span class="item-title">${escapeHtml(item.propertyType || "ملک")}</span><span class="item-badge ${typeClass}">${typeLabel}</span><span class="item-badge ${isPublic ? "pub" : "priv"}">${isPublic ? "عمومی" : "خصوصی"}</span></div></div>
       ${item.location ? `<div class="item-row">📍 موقعیت: <b>${escapeHtml(item.location)}</b></div>` : ""}
       ${item.size ? `<div class="item-row">📐 متراژ: <b>${escapeHtml(item.size)}</b></div>` : ""}
       ${item.price ? `<div class="item-row">💰 قیمت: <b>${escapeHtml(item.price)}</b></div>` : ""}
@@ -744,65 +574,98 @@ function listingCard(item, isPublic) {
   `;
 }
 
-// ⭐ NEW: Edit listing
+// ⭐ آپلود فایل به تلگرام
+async function uploadMedia() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*,video/*";
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const maxSize = 20 * 1024 * 1024;
+    if (file.size > maxSize) { toast("حجم فایل بیشتر از ۲۰ مگابایته", "error"); return; }
+    const isVideo = file.type.startsWith("video/");
+    const btn = document.getElementById("uploadMediaBtn");
+    const original = btn ? btn.textContent : "";
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ در حال آپلود..."; }
+    try {
+      const r = await fetch(API_BASE + "/api/upload-media", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + PASSWORD, "Content-Type": file.type },
+        body: file
+      });
+      const data = await r.json();
+      if (!data.ok) throw new Error(data.error || "خطای آپلود");
+      const mediaTypeEl = document.getElementById("e_mediaType");
+      const mediaFileIdEl = document.getElementById("e_mediaFileId");
+      if (mediaTypeEl) mediaTypeEl.value = data.mediaType;
+      if (mediaFileIdEl) mediaFileIdEl.value = data.fileId;
+      const previewBox = document.getElementById("mediaPreviewBox");
+      if (previewBox) {
+        const mediaUrl = API_BASE + "/api/media?fileId=" + encodeURIComponent(data.fileId) + "&token=" + encodeURIComponent(PASSWORD);
+        if (data.mediaType === "video") previewBox.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه جدید:</div><div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
+        else previewBox.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه جدید:</div><div class="media-wrap"><img src="${mediaUrl}" alt="پیش‌نمایش"></div>`;
+      }
+      toast("فایل آپلود شد ✅");
+    } catch (err) { toast("خطا: " + err.message, "error"); }
+    finally { if (btn) { btn.disabled = false; btn.textContent = original; } }
+  };
+  input.click();
+}
+
 function editListing(key) {
   const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === key);
   if (!item) return toast("ملک پیدا نشد", "error");
   const isPublic = key.startsWith("pub_listing_");
-
   document.getElementById("modal-root").innerHTML = `
     <div class="modal-bg" onclick="if(event.target===this) closeModal()">
       <div class="modal">
-        <div class="modal-header">
-          <h2>✏️ ویرایش ملک</h2>
-          <button class="modal-close" onclick="closeModal()">×</button>
-        </div>
-
+        <div class="modal-header"><h2>✏️ ویرایش ملک</h2><button class="modal-close" onclick="closeModal()">×</button></div>
         <label>نوع معامله</label>
-        <select id="e_type">
-          <option value="sell" ${item.type === 'sell' ? 'selected' : ''}>💰 فروش</option>
-          <option value="rent" ${item.type === 'rent' ? 'selected' : ''}>🏠 رهن و اجاره</option>
-        </select>
-
+        <select id="e_type"><option value="sell" ${item.type === 'sell' ? 'selected' : ''}>💰 فروش</option><option value="rent" ${item.type === 'rent' ? 'selected' : ''}>🏠 رهن و اجاره</option></select>
         <label>نوع ملک</label>
         <input id="e_propertyType" placeholder="آپارتمان، ویلا..." value="${escapeHtml(item.propertyType || "")}">
-
         <label>متراژ</label>
         <input id="e_size" placeholder="۱۲۰ متر" value="${escapeHtml(item.size || "")}">
-
         <label>سند</label>
         <input id="e_document" placeholder="تک‌برگ..." value="${escapeHtml(item.document || "")}">
-
         <label>آدرس کامل (شهر + خیابان + کوچه + پلاک)</label>
         <textarea id="e_location" rows="2" placeholder="مثال: قم، خیابان کلهری، کوچه ۶، پلاک ۱۰۰">${escapeHtml(item.location || "")}</textarea>
-
         <label>قیمت</label>
         <input id="e_price" placeholder="۵ میلیارد" value="${escapeHtml(item.price || "")}">
-
         <label>شماره تماس</label>
         <input id="e_phone" placeholder="۰۹..." value="${escapeHtml(item.phone || "")}">
 
-        <label>نوع رسانه</label>
+        <label>عکس / ویدیو</label>
+        <button id="uploadMediaBtn" type="button" class="upload-btn" style="width:100%;margin-bottom:8px" onclick="uploadMedia()">
+          📤 آپلود عکس یا ویدیو از گوشی
+        </button>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+          💡 فایل انتخاب کن → خودکار به تلگرام فرستاده میشه و File ID پر میشه
+        </div>
+
+        <label>نوع رسانه (خودکار پر میشه)</label>
         <select id="e_mediaType">
           <option value="" ${!item.mediaType ? 'selected' : ''}>بدون رسانه</option>
           <option value="photo" ${item.mediaType === 'photo' ? 'selected' : ''}>عکس</option>
           <option value="video" ${item.mediaType === 'video' ? 'selected' : ''}>ویدیو</option>
         </select>
 
-        <label>File ID رسانه (از تلگرام)</label>
-        <input id="e_mediaFileId" placeholder="اختیاری" value="${escapeHtml(item.mediaFileId || "")}">
-        ${item.mediaFileId ? `
-          <div style="margin-bottom:12px">
+        <label>File ID رسانه</label>
+        <input id="e_mediaFileId" placeholder="خودکار پر میشه" value="${escapeHtml(item.mediaFileId || "")}">
+
+        <div id="mediaPreviewBox">
+          ${item.mediaFileId ? `
             <div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه فعلی:</div>
             <div class="media-wrap">
-              ${item.mediaType === 'video' 
+              ${item.mediaType === 'video'
                 ? `<video src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" controls preload="metadata"></video>`
                 : `<img src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" alt="ملک">`}
             </div>
-          </div>
-        ` : ""}
+          ` : ""}
+        </div>
 
-        <label>توضیحات</label>
+        <label style="margin-top:12px">توضیحات</label>
         <textarea id="e_extraNotes" rows="3" placeholder="توضیحات...">${escapeHtml(item.extra_notes || "")}</textarea>
 
         <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
@@ -831,48 +694,28 @@ async function saveListingEdit(key) {
     mediaFileId: document.getElementById("e_mediaFileId").value || null,
     extraNotes: document.getElementById("e_extraNotes").value
   };
-
   try {
-    await api("/api/listings/" + encodeURIComponent(key), {
-      method: "PUT",
-      body: JSON.stringify(data)
-    });
+    await api("/api/listings/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify(data) });
     toast("ملک ویرایش شد ✅");
     closeModal();
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-function buildListingUrl(key) {
-  return PUBLIC_BASE + "/p.html?id=" + encodeURIComponent(key);
-}
-
+function buildListingUrl(key) { return PUBLIC_BASE + "/p.html?id=" + encodeURIComponent(key); }
 async function copyListingLink(key) {
   const url = buildListingUrl(key);
-  try {
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      toast("لینک کپی شد ✅");
-    } else { prompt("لینک رو کپی کن:", url); }
-  } catch (e) { prompt("لینک رو کپی کن:", url); }
+  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast("لینک کپی شد ✅"); } else { prompt("لینک رو کپی کن:", url); } }
+  catch (e) { prompt("لینک رو کپی کن:", url); }
 }
-
-function openListingLink(key) {
-  window.open(buildListingUrl(key), "_blank");
-}
-
+function openListingLink(key) { window.open(buildListingUrl(key), "_blank"); }
 async function sendToChannel(key, btn) {
   if (!confirm("این ملک به کانال تلگرام ارسال شود؟")) return;
-  btn.disabled = true;
-  const original = btn.textContent;
-  btn.textContent = "در حال ارسال...";
-  try {
-    await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) });
-    toast("به کانال ارسال شد ✅");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  btn.disabled = true; const original = btn.textContent; btn.textContent = "در حال ارسال...";
+  try { await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) }); toast("به کانال ارسال شد ✅"); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = original; }
 }
-
 async function quickAppt(listingKey) {
   const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === listingKey);
   if (!item) return;
@@ -884,16 +727,12 @@ async function quickAppt(listingKey) {
     if (desc) desc.value = (item.propertyType || "") + " - " + (item.location || "");
   }, 100);
 }
-
 async function deleteListing(key) {
   if (!confirm("این ملک حذف شود؟")) return;
   try { await api("/api/listings/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
   catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// CUSTOMERS
-// ═══════════════════════════════════════════════
 async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
   customersCache = customers;
@@ -905,13 +744,7 @@ async function renderCustomers(c) {
     const contactCount = (item.contactHistory || []).length;
     return `
       <div class="item clickable" onclick="openCustomer('${escapeHtml(item._key)}')">
-        <div class="item-header">
-          <div>
-            <span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>
-            ${rating ? `<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">${"★".repeat(rating)}</span>` : ""}
-          </div>
-          <div style="font-size:20px;color:var(--muted)">›</div>
-        </div>
+        <div class="item-header"><div><span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>${rating ? `<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">${"★".repeat(rating)}</span>` : ""}</div><div style="font-size:20px;color:var(--muted)">›</div></div>
         ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
         ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
         ${tags.length ? `<div class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
@@ -927,65 +760,34 @@ function openCustomer(key) {
   renderCustomerModal(cust);
 }
 
-let currentRating = 0;
-let currentTags = [];
-let currentHistory = [];
+let currentRating = 0, currentTags = [], currentHistory = [];
 
 function renderCustomerModal(cust) {
   const rating = parseInt(cust.rating) || 0;
   const tags = cust.tags || [];
   const history = cust.contactHistory || [];
-  currentRating = rating;
-  currentTags = [...tags];
-  currentHistory = [...history];
-
+  currentRating = rating; currentTags = [...tags]; currentHistory = [...history];
   document.getElementById("modal-root").innerHTML = `
     <div class="modal-bg" onclick="if(event.target===this) closeModal()">
       <div class="modal">
-        <div class="modal-header">
-          <h2>👤 ${escapeHtml(cust.name || cust.phone || "کاربر")}</h2>
-          <button class="modal-close" onclick="closeModal()">×</button>
-        </div>
-        <div class="modal-section">
-          <h3>اطلاعات پایه</h3>
+        <div class="modal-header"><h2>👤 ${escapeHtml(cust.name || cust.phone || "کاربر")}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+        <div class="modal-section"><h3>اطلاعات پایه</h3>
           ${cust.phone ? `<div class="item-row">📞 ${escapeHtml(cust.phone)}</div>` : ""}
           ${cust.username ? `<div class="item-row">👤 @${escapeHtml(cust.username)}</div>` : ""}
           ${cust.chatId ? `<div class="item-row">💬 Chat ID: <b>${escapeHtml(cust.chatId)}</b></div>` : ""}
           ${cust.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(cust.language)}</b></div>` : ""}
           ${cust.date ? `<div class="item-row">📅 عضویت: ${escapeHtml(toPersianDate(cust.date))}</div>` : ""}
         </div>
-        <div class="modal-section">
-          <h3>⭐ امتیاز اهمیت</h3>
-          <div id="ratingBox">${renderStars(rating, true)}</div>
-        </div>
-        <div class="modal-section">
-          <h3>🏷️ برچسب‌ها</h3>
+        <div class="modal-section"><h3>⭐ امتیاز اهمیت</h3><div id="ratingBox">${renderStars(rating, true)}</div></div>
+        <div class="modal-section"><h3>🏷️ برچسب‌ها</h3>
           <div id="tagsBox" class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("")}</div>
-          <div class="tag-input-wrap">
-            <input id="newTagInput" placeholder="برچسب جدید...">
-            <button class="small" onclick="addTag()">افزودن</button>
-          </div>
-          <div class="quick-tags">
-            ${QUICK_TAGS.map(t => `<span class="qt" onclick="quickAddTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`).join("")}
-          </div>
+          <div class="tag-input-wrap"><input id="newTagInput" placeholder="برچسب جدید..."><button class="small" onclick="addTag()">افزودن</button></div>
+          <div class="quick-tags">${QUICK_TAGS.map(t => `<span class="qt" onclick="quickAddTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`).join("")}</div>
         </div>
-        <div class="modal-section">
-          <h3>📝 یادداشت</h3>
-          <textarea id="notesBox" rows="3" placeholder="یادداشت...">${escapeHtml(cust.notes || "")}</textarea>
-        </div>
-        <div class="modal-section">
-          <h3>📞 تاریخچه تماس</h3>
-          <div id="historyBox"></div>
-          <textarea id="newContactText" rows="2" placeholder="متن تماس جدید..." style="margin-top:8px"></textarea>
-          <button class="small" onclick="addContact()">➕ افزودن تماس</button>
-        </div>
-        <div class="modal-section">
-          <button class="secondary small" onclick="quickApptForCustomer('${escapeHtml(cust._key)}')" style="width:100%">📅 ثبت قرار برای این مشتری</button>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
-          <button onclick="saveCustomer('${escapeHtml(cust._key)}')" style="flex:1">💾 ذخیره تغییرات</button>
-          <button class="danger" onclick="deleteCustomer('${escapeHtml(cust._key)}')">🗑️ حذف</button>
-        </div>
+        <div class="modal-section"><h3>📝 یادداشت</h3><textarea id="notesBox" rows="3" placeholder="یادداشت...">${escapeHtml(cust.notes || "")}</textarea></div>
+        <div class="modal-section"><h3>📞 تاریخچه تماس</h3><div id="historyBox"></div><textarea id="newContactText" rows="2" placeholder="متن تماس جدید..." style="margin-top:8px"></textarea><button class="small" onclick="addContact()">➕ افزودن تماس</button></div>
+        <div class="modal-section"><button class="secondary small" onclick="quickApptForCustomer('${escapeHtml(cust._key)}')" style="width:100%">📅 ثبت قرار برای این مشتری</button></div>
+        <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap"><button onclick="saveCustomer('${escapeHtml(cust._key)}')" style="flex:1">💾 ذخیره تغییرات</button><button class="danger" onclick="deleteCustomer('${escapeHtml(cust._key)}')">🗑️ حذف</button></div>
       </div>
     </div>
   `;
@@ -996,10 +798,7 @@ function renderCustomerModal(cust) {
 async function quickApptForCustomer(custKey) {
   closeModal();
   await openApptForm();
-  setTimeout(() => {
-    const sel = document.getElementById("ap_customer");
-    if (sel) { sel.value = custKey; onCustomerPick(); }
-  }, 100);
+  setTimeout(() => { const sel = document.getElementById("ap_customer"); if (sel) { sel.value = custKey; onCustomerPick(); } }, 100);
 }
 
 function setupStarClicks() {
@@ -1007,81 +806,25 @@ function setupStarClicks() {
   if (!box) return;
   currentRating = parseInt(box.querySelector(".stars").dataset.rating) || 0;
   box.querySelectorAll(".star").forEach(s => {
-    s.addEventListener("click", () => {
-      currentRating = parseInt(s.dataset.val);
-      box.innerHTML = renderStars(currentRating, true);
-      setupStarClicks();
-    });
+    s.addEventListener("click", () => { currentRating = parseInt(s.dataset.val); box.innerHTML = renderStars(currentRating, true); setupStarClicks(); });
   });
 }
-
-function addTag() {
-  const input = document.getElementById("newTagInput");
-  const v = input.value.trim();
-  if (!v) return;
-  if (!currentTags.includes(v)) { currentTags.push(v); refreshTagsBox(); }
-  input.value = "";
-}
-
-function quickAddTag(t) {
-  if (!currentTags.includes(t)) { currentTags.push(t); refreshTagsBox(); }
-}
-
-function removeTag(t) {
-  currentTags = currentTags.filter(x => x !== t);
-  refreshTagsBox();
-}
-
-function refreshTagsBox() {
-  const box = document.getElementById("tagsBox");
-  if (!box) return;
-  box.innerHTML = currentTags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("");
-}
-
-function addContact() {
-  const ta = document.getElementById("newContactText");
-  const text = ta.value.trim();
-  if (!text) return toast("متن تماس خالی است", "error");
-  currentHistory.push({ date: new Date().toISOString(), text });
-  ta.value = "";
-  renderHistoryBox();
-}
-
-function removeContact(i) {
-  currentHistory = currentHistory.filter((_, idx) => idx !== i);
-  renderHistoryBox();
-}
-
+function addTag() { const input = document.getElementById("newTagInput"); const v = input.value.trim(); if (!v) return; if (!currentTags.includes(v)) { currentTags.push(v); refreshTagsBox(); } input.value = ""; }
+function quickAddTag(t) { if (!currentTags.includes(t)) { currentTags.push(t); refreshTagsBox(); } }
+function removeTag(t) { currentTags = currentTags.filter(x => x !== t); refreshTagsBox(); }
+function refreshTagsBox() { const box = document.getElementById("tagsBox"); if (!box) return; box.innerHTML = currentTags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join(""); }
+function addContact() { const ta = document.getElementById("newContactText"); const text = ta.value.trim(); if (!text) return toast("متن تماس خالی است", "error"); currentHistory.push({ date: new Date().toISOString(), text }); ta.value = ""; renderHistoryBox(); }
+function removeContact(i) { currentHistory = currentHistory.filter((_, idx) => idx !== i); renderHistoryBox(); }
 function renderHistoryBox() {
   const box = document.getElementById("historyBox");
   if (!box) return;
-  if (!currentHistory.length) {
-    box.innerHTML = '<div class="empty" style="padding:20px;font-size:13px">هنوز تماسی ثبت نشده</div>';
-    return;
-  }
-  box.innerHTML = currentHistory.map((h, i) => `
-    <div class="contact-item">
-      <div class="date">${escapeHtml(toPersianDate(h.date))}</div>
-      <div>${escapeHtml(h.text)}</div>
-      <div style="text-align:left;margin-top:6px">
-        <button class="danger" style="padding:4px 10px;font-size:11px" onclick="removeContact(${i})">حذف</button>
-      </div>
-    </div>
-  `).join("");
+  if (!currentHistory.length) { box.innerHTML = '<div class="empty" style="padding:20px;font-size:13px">هنوز تماسی ثبت نشده</div>'; return; }
+  box.innerHTML = currentHistory.map((h, i) => `<div class="contact-item"><div class="date">${escapeHtml(toPersianDate(h.date))}</div><div>${escapeHtml(h.text)}</div><div style="text-align:left;margin-top:6px"><button class="danger" style="padding:4px 10px;font-size:11px" onclick="removeContact(${i})">حذف</button></div></div>`).join("");
 }
-
 async function saveCustomer(key) {
   try {
     const notes = document.getElementById("notesBox").value;
-    const r = await api("/api/customers/" + encodeURIComponent(key), {
-      method: "PUT",
-      body: JSON.stringify({
-        rating: currentRating,
-        tags: currentTags,
-        notes: notes,
-        contactHistory: currentHistory
-      })
-    });
+    const r = await api("/api/customers/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ rating: currentRating, tags: currentTags, notes, contactHistory: currentHistory }) });
     toast("ذخیره شد ✅");
     const idx = customersCache.findIndex(x => x._key === key);
     if (idx >= 0) customersCache[idx] = { ...customersCache[idx], ...r.customer };
@@ -1089,57 +832,32 @@ async function saveCustomer(key) {
     renderTab();
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
-
-function closeModal() {
-  document.getElementById("modal-root").innerHTML = "";
-  currentRating = 0;
-  currentTags = [];
-  currentHistory = [];
-}
-
+function closeModal() { document.getElementById("modal-root").innerHTML = ""; currentRating = 0; currentTags = []; currentHistory = []; }
 async function deleteCustomer(key) {
   if (!confirm("این مشتری حذف شود؟")) return;
-  try {
-    await api("/api/customers/" + encodeURIComponent(key), { method: "DELETE" });
-    toast("حذف شد");
-    closeModal();
-    loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
+  try { await api("/api/customers/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); closeModal(); loadAll(); }
+  catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ═══════════════════════════════════════════════
-// REQUESTS
-// ═══════════════════════════════════════════════
 async function renderRequests(c) {
   const { requests } = await api("/api/requests");
   if (!requests.length) { c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>'; return; }
   c.innerHTML = requests.map(item => `
     <div class="item">
-      <div class="item-header">
-        <div>
-          <span class="item-title">${escapeHtml(item.propertyType || "درخواست ملک")}</span>
-          <span class="item-badge ${item.type === "rent" ? "rent" : "sell"}">${item.type === "rent" ? "اجاره" : "فروش"}</span>
-        </div>
-      </div>
+      <div class="item-header"><div><span class="item-title">${escapeHtml(item.propertyType || "درخواست ملک")}</span><span class="item-badge ${item.type === "rent" ? "rent" : "sell"}">${item.type === "rent" ? "اجاره" : "فروش"}</span></div></div>
       ${item.location ? `<div class="item-row">📍 ${escapeHtml(item.location)}</div>` : ""}
       ${item.budget ? `<div class="item-row">💰 بودجه: <b>${escapeHtml(item.budget)}</b></div>` : ""}
       ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
       ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
       ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
       ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions">
-        <button class="suggest-btn" onclick="suggestForRequest('${escapeHtml(item._key)}', this)">🎯 پیشنهاد ملک</button>
-        <button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button>
-      </div>
+      <div class="item-actions"><button class="suggest-btn" onclick="suggestForRequest('${escapeHtml(item._key)}', this)">🎯 پیشنهاد ملک</button><button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
     </div>
   `).join("");
 }
-
 async function suggestForRequest(key, btn) {
   if (!confirm("ملک‌های مناسب برای این مشتری پیدا و ارسال شود؟")) return;
-  btn.disabled = true;
-  const original = btn.textContent;
-  btn.textContent = "⏳ در حال جستجو...";
+  btn.disabled = true; const original = btn.textContent; btn.textContent = "⏳ در حال جستجو...";
   try {
     const r = await api("/api/suggest-for-request", { method: "POST", body: JSON.stringify({ requestKey: key }) });
     if (r.ok) toast(`✅ ${r.sent} ملک ارسال شد`);
@@ -1147,7 +865,6 @@ async function suggestForRequest(key, btn) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = original; }
 }
-
 async function deleteRequest(key) {
   if (!confirm("این درخواست حذف شود؟")) return;
   try { await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
@@ -1164,13 +881,10 @@ async function renderFileRequests(c) {
       ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
       ${item.text ? `<div class="item-row">📝 ${escapeHtml(item.text)}</div>` : ""}
       ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions">
-        <button class="danger" onclick="deleteFileRequest('${escapeHtml(item._key)}')">🗑️ حذف</button>
-      </div>
+      <div class="item-actions"><button class="danger" onclick="deleteFileRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
     </div>
   `).join("");
 }
-
 async function deleteFileRequest(key) {
   if (!confirm("این درخواست حذف شود؟")) return;
   try { await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
@@ -1198,28 +912,24 @@ function renderAddForm(c) {
     </div>
   `;
 }
-
 async function submitListing() {
   const btn = document.getElementById("submitBtn");
   btn.disabled = true; btn.textContent = "در حال ذخیره...";
   try {
-    await api("/api/listings", {
-      method: "POST",
-      body: JSON.stringify({
-        type: document.getElementById("f_type").value,
-        isPublic: document.getElementById("f_isPublic").value === "true",
-        propertyType: document.getElementById("f_propertyType").value,
-        size: document.getElementById("f_size").value,
-        document: document.getElementById("f_document").value,
-        location: document.getElementById("f_location").value,
-        price: document.getElementById("f_price").value,
-        phone: document.getElementById("f_phone").value,
-        mediaType: document.getElementById("f_mediaType").value || null,
-        mediaFileId: document.getElementById("f_mediaFileId").value || null,
-        extraNotes: document.getElementById("f_extraNotes").value,
-        name: "املاک نعمتی"
-      })
-    });
+    await api("/api/listings", { method: "POST", body: JSON.stringify({
+      type: document.getElementById("f_type").value,
+      isPublic: document.getElementById("f_isPublic").value === "true",
+      propertyType: document.getElementById("f_propertyType").value,
+      size: document.getElementById("f_size").value,
+      document: document.getElementById("f_document").value,
+      location: document.getElementById("f_location").value,
+      price: document.getElementById("f_price").value,
+      phone: document.getElementById("f_phone").value,
+      mediaType: document.getElementById("f_mediaType").value || null,
+      mediaFileId: document.getElementById("f_mediaFileId").value || null,
+      extraNotes: document.getElementById("f_extraNotes").value,
+      name: "املاک نعمتی"
+    }) });
     toast("ملک ذخیره شد ✅");
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelector('.tab[data-tab="listings"]').classList.add("active");
@@ -1239,7 +949,6 @@ function renderBroadcast(c) {
     </div>
   `;
 }
-
 async function sendBroadcast() {
   const text = document.getElementById("b_text").value.trim();
   if (!text) return toast("متن پیام خالی است", "error");
