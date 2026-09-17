@@ -32,7 +32,6 @@
     overflow-x: hidden;
   }
 
-  /* HEADER */
   .header {
     background: linear-gradient(135deg, #1e3a5f 0%, #0a0e17 100%);
     padding: 24px 16px 28px;
@@ -91,14 +90,12 @@
     font-weight: bold;
   }
 
-  /* CONTAINER */
   .container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 16px;
   }
 
-  /* SEARCH */
   .search-wrap {
     position: relative;
     margin-bottom: 16px;
@@ -130,7 +127,6 @@
     pointer-events: none;
   }
 
-  /* FILTERS SECTION */
   .filters-section {
     background: var(--card);
     border: 1px solid var(--border);
@@ -180,7 +176,6 @@
     box-shadow: 0 4px 12px rgba(59,130,246,0.3);
   }
 
-  /* RESULTS COUNT */
   .results-count {
     font-size: 13px;
     color: var(--muted);
@@ -189,14 +184,12 @@
   }
   .results-count b { color: var(--text); }
 
-  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
   }
 
-  /* CARD */
   .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -332,7 +325,6 @@
   }
   .card-btn-wa:hover { filter: brightness(1.1); }
 
-  /* EMPTY / LOADING */
   .empty {
     text-align: center;
     padding: 80px 20px;
@@ -361,7 +353,6 @@
     margin-bottom: 16px;
   }
 
-  /* FOOTER */
   .footer {
     text-align: center;
     padding: 30px 16px;
@@ -399,7 +390,6 @@
     filter: brightness(1.1);
   }
 
-  /* ANIMATIONS */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
@@ -421,7 +411,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-inner">
     <div class="brand-row">
@@ -438,16 +427,13 @@
   </div>
 </div>
 
-<!-- CONTENT -->
 <div class="container">
 
-  <!-- SEARCH -->
   <div class="search-wrap">
     <input type="text" id="searchInput" placeholder="جستجو در موقعیت، نوع ملک، قیمت...">
     <span class="icon">🔍</span>
   </div>
 
-  <!-- FILTERS -->
   <div class="filters-section">
     <div class="filter-row">
       <div class="filter-label">🏠 نوع معامله</div>
@@ -471,13 +457,11 @@
     </div>
   </div>
 
-  <!-- RESULTS -->
   <div class="results-count" id="resultsCount"></div>
   <div id="listingsGrid" class="grid"></div>
 
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <div class="footer-brand">🏠 املاک نعمتی</div>
   <div class="footer-info">📍 قم، خیابان کلهری</div>
@@ -615,7 +599,7 @@ function cardHtml(l) {
 
   return `
     <div class="card">
-      <div class="card-media" onclick="window.location.href='${url}'">
+      <div class="card-media" onclick="openDetails('${escapeHtml(l.key)}')">
         ${mediaHtml}
         <div class="type-badge ${typeClass}">${typeLabel}</div>
         ${isN ? `<div class="new-badge">✨ جدید</div>` : ""}
@@ -625,7 +609,7 @@ function cardHtml(l) {
         ${l.price ? `<div class="card-price">${escapeHtml(l.price)}</div>` : ""}
         ${infoRows.map(r => `<div class="card-info"><span>${r.icon}</span><span>${r.text}</span></div>`).join("")}
         <div class="card-actions">
-          <a class="card-btn card-btn-details" href="${url}">👁️ جزئیات</a>
+          <button class="card-btn card-btn-details" onclick="openDetails('${escapeHtml(l.key)}')">👁️ جزئیات</button>
           <a class="card-btn card-btn-wa" href="${waUrl}" target="_blank">💬 واتساپ</a>
         </div>
       </div>
@@ -633,7 +617,12 @@ function cardHtml(l) {
   `;
 }
 
-// FILTERS - Type
+// ⭐ باز کردن جزئیات در تب جدید
+function openDetails(key) {
+  const url = P_PAGE + "?id=" + encodeURIComponent(key);
+  window.open(url, "_blank");
+}
+
 document.getElementById("filtersType").addEventListener("click", e => {
   const f = e.target.closest(".filter");
   if (!f) return;
@@ -643,7 +632,6 @@ document.getElementById("filtersType").addEventListener("click", e => {
   renderAll();
 });
 
-// FILTERS - Property
 document.getElementById("filtersProperty").addEventListener("click", e => {
   const f = e.target.closest(".filter");
   if (!f) return;
@@ -653,17 +641,14 @@ document.getElementById("filtersProperty").addEventListener("click", e => {
   renderAll();
 });
 
-// SEARCH
 document.getElementById("searchInput").addEventListener("input", e => {
   searchText = e.target.value.trim();
   renderAll();
 });
 
-// FOOTER WHATSAPP
 const footerWa = document.getElementById("footerWa");
 footerWa.href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent("سلام، از سایت املاک نعمتی تماس می‌گیرم.");
 
-// INIT
 loadListings();
 </script>
 </body>
