@@ -38,6 +38,8 @@
   button.edit-btn:hover { background: #0e7490; }
   button.upload-btn { background: #16a34a; padding: 10px; font-size: 14px; }
   button.upload-btn:hover { background: #15803d; }
+  button.backup-btn { background: #7c3aed; padding: 14px; font-size: 15px; }
+  button.backup-btn:hover { background: #6d28d9; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
   header h1 { font-size: 18px; }
   header .actions { display: flex; gap: 8px; }
@@ -132,6 +134,26 @@
   }
   .channel-checkbox input { width: auto; margin: 0; cursor: pointer; width: 20px; height: 20px; }
   .channel-checkbox label { margin: 0; color: var(--success); font-weight: bold; cursor: pointer; font-size: 14px; }
+
+  .backup-section {
+    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05));
+    border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .backup-section .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #a78bfa;
+  }
+  .backup-section .desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
 
   @media (max-width: 500px) {
     .container { padding: 12px; }
@@ -530,6 +552,18 @@ async function renderSettings(c) {
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 این متن ته <b>هر پست کانال</b> اضافه میشه</div>
       <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
     </div>
+
+    <div class="backup-section">
+      <div class="title">📥 پشتیبان‌گیری از داده‌ها</div>
+      <div class="desc">
+        با زدن دکمه زیر، <b>همه داده‌ها</b> (املاک، مشتری‌ها، قرارها، درخواست‌ها و تنظیمات) توی یه فایل <b>JSON</b> دانلود میشه.<br>
+        📌 این فایل رو یه جای امن نگه دار. اگه یه وقت سیستم خراب شد، همه چیز رو داری.
+      </div>
+      <button class="backup-btn" id="backupBtn" onclick="downloadBackup()" style="width:100%">
+        📥 دانلود فایل پشتیبان
+      </button>
+      <div id="backupResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
+    </div>
   `;
 }
 
@@ -539,6 +573,36 @@ async function saveSettings() {
   const channelFooter = document.getElementById("s_channelFooter").value;
   try { await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId, channelFooter }) }); toast("ذخیره شد ✅"); }
   catch (e) { toast("خطا: " + e.message, "error"); }
+}
+
+async function downloadBackup() {
+  const btn = document.getElementById("backupBtn");
+  const result = document.getElementById("backupResult");
+  btn.disabled = true;
+  btn.textContent = "⏳ در حال آماده‌سازی...";
+  result.textContent = "";
+  try {
+    const r = await api("/api/backup");
+    const jsonStr = JSON.stringify(r, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `emlak-nemati-backup-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    result.innerHTML = `✅ پشتیبان با <b>${r.totalKeys}</b> رکورد دانلود شد`;
+    toast("پشتیبان دانلود شد ✅");
+  } catch (e) {
+    result.innerHTML = `❌ خطا: ${escapeHtml(e.message)}`;
+    toast("خطا: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📥 دانلود فایل پشتیبان";
+  }
 }
 
 async function renderListings(c) {
