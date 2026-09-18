@@ -724,7 +724,10 @@ async function saveListingEdit(key) {
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-function buildListingUrl(key) { return PUBLIC_BASE + "/p.html?id=" + encodeURIComponent(key); }
+function buildListingUrl(key) {
+  return PUBLIC_BASE + "/listings.html?id=" + encodeURIComponent(key);
+}
+
 async function copyListingLink(key) {
   const url = buildListingUrl(key);
   try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast("لینک کپی شد ✅"); } else { prompt("لینک رو کپی کن:", url); } }
