@@ -110,7 +110,7 @@
 
   .card-media {
     width: 100%;
-    height: 200px;
+    height: 220px;
     background: #223046;
     overflow: hidden;
     position: relative;
@@ -118,22 +118,22 @@
   }
   .card-media img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
     display: block;
   }
   .card-media .placeholder {
-    font-size: 64px;
+    font-size: 80px;
     color: #2d3e5a;
-    line-height: 200px;
+    line-height: 220px;
   }
   .card-media .type-badge {
     position: absolute;
     top: 12px;
     right: 12px;
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
     background: #000;
     color: #fff;
@@ -145,103 +145,81 @@
     position: absolute;
     top: 12px;
     left: 12px;
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 8px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     background: #f59e0b;
     color: #000;
   }
 
-  .card-body { padding: 16px; }
-  .card-title { font-size: 17px; font-weight: bold; margin-bottom: 8px; }
+  .card-body { padding: 18px; }
+  .card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
   .card-price {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: bold;
     color: #22c55e;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #2d3e5a;
+    padding: 12px 14px;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 12px;
+    margin-bottom: 14px;
   }
-  .card-info { font-size: 13px; color: #8fa3bf; margin: 5px 0; }
-  .card-actions { padding-top: 12px; }
-  .card-btn {
-    display: inline-block;
-    width: 48%;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    color: #fff;
-    -webkit-appearance: none;
-  }
-  .card-btn-details { background: #3b82f6; margin-left: 2%; }
-  .card-btn-wa { background: #25D366; }
 
-  /* ⭐ بخش جزئیات که با کلیک باز میشه - داخل خود کارت */
-  .card-details {
-    display: none;
-    padding: 16px;
-    background: #0a0e17;
-    border-top: 1px solid #2d3e5a;
-  }
-  .card-details.show {
-    display: block;
-  }
-  .details-title {
+  .card-info {
     font-size: 14px;
-    color: #60a5fa;
-    margin-bottom: 12px;
-    font-weight: bold;
-  }
-  .details-row {
-    background: #223046;
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    font-size: 14px;
-  }
-  .details-row .lbl {
-    color: #8fa3bf;
-    font-size: 11px;
-    margin-bottom: 2px;
-  }
-  .details-row .vlu {
-    font-weight: bold;
     color: #e6edf5;
-    word-wrap: break-word;
-    word-break: break-word;
+    padding: 8px 0;
+    border-bottom: 1px solid #223046;
   }
-  .details-notes {
+  .card-info:last-of-type { border-bottom: none; }
+  .card-info .lbl {
+    color: #8fa3bf;
+    display: inline-block;
+    min-width: 80px;
+  }
+
+  .card-notes {
     background: rgba(59,130,246,0.08);
     border: 1px solid rgba(59,130,246,0.2);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 14px;
-    margin-top: 12px;
+    margin-top: 14px;
     font-size: 14px;
     white-space: pre-wrap;
     line-height: 1.8;
     word-wrap: break-word;
     word-break: break-word;
   }
-  .details-close {
+  .card-notes-title {
+    color: #60a5fa;
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .card-actions {
+    padding-top: 16px;
+    margin-top: 14px;
+    border-top: 1px solid #2d3e5a;
+  }
+  .card-btn-wa {
     display: block;
     width: 100%;
-    padding: 12px;
-    margin-top: 14px;
-    background: #223046;
-    border: 1px solid #2d3e5a;
-    border-radius: 10px;
-    color: #e6edf5;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
-    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background: #25D366;
     -webkit-appearance: none;
   }
 
@@ -297,8 +275,11 @@
     .container { padding: 12px; }
     .brand-name { font-size: 18px; }
     .logo { width: 50px; height: 50px; line-height: 50px; font-size: 26px; }
-    .card-media { height: 180px; }
-    .card-media img { height: 180px; }
+    .card-media { height: 190px; }
+    .card-media img { height: 190px; }
+    .card-media .placeholder { line-height: 190px; font-size: 70px; }
+    .card-title { font-size: 18px; }
+    .card-price { font-size: 17px; }
   }
 </style>
 </head>
@@ -442,49 +423,43 @@ function renderAll() {
 
   var html = "";
   for (var i = 0; i < list.length; i++) {
-    html += cardHtml(list[i], i);
+    html += cardHtml(list[i]);
   }
   grid.innerHTML = html;
 }
 
-function cardHtml(l, idx) {
+function cardHtml(l) {
   var typeLabel = l.type === "rent" ? "🏠 اجاره" : "💰 فروش";
   var typeClass = l.type === "rent" ? "rent" : "sell";
   var isN = isNew(l.date);
-  var cardId = "card_" + idx;
-  var detailsId = "details_" + idx;
 
   var mediaHtml = "";
   if (l.mediaFileId && l.mediaType === "photo") {
     var url = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
     mediaHtml = '<img src="' + url + '" alt="' + escapeHtml(l.propertyType || "ملک") + '">';
   } else if (l.mediaFileId && l.mediaType === "video") {
-    mediaHtml = '<div class="placeholder">🎬</div>';
+    var vurl = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    mediaHtml = '<video src="' + vurl + '" controls preload="metadata" playsinline style="width:100%;height:220px;object-fit:cover;display:block"></video>';
   } else {
     var icons = { "آپارتمان": "🏢", "ویلا": "🏡", "ویلایی": "🏡", "زمین": "🌳", "تجاری": "🏪", "اداری": "🏛️", "مغازه": "🏬" };
     var icon = icons[l.propertyType] || "🏘️";
     mediaHtml = '<div class="placeholder">' + icon + '</div>';
   }
 
-  var infoRows = "";
-  if (l.location) infoRows += '<div class="card-info">📍 ' + escapeHtml(l.location) + '</div>';
-  if (l.size) infoRows += '<div class="card-info">📐 ' + escapeHtml(l.size) + (l.size.indexOf("متر") !== -1 ? "" : " متر") + '</div>';
-  if (l.document) infoRows += '<div class="card-info">📄 سند: ' + escapeHtml(l.document) + '</div>';
+  var infoHtml = "";
+  if (l.location) infoHtml += '<div class="card-info"><span class="lbl">📍 موقعیت:</span> ' + escapeHtml(l.location) + '</div>';
+  if (l.size) infoHtml += '<div class="card-info"><span class="lbl">📐 متراژ:</span> ' + escapeHtml(l.size) + '</div>';
+  if (l.document) infoHtml += '<div class="card-info"><span class="lbl">📄 سند:</span> ' + escapeHtml(l.document) + '</div>';
+
+  var notesHtml = "";
+  if (l.extra_notes) {
+    notesHtml = '<div class="card-notes"><div class="card-notes-title">📝 توضیحات ملک</div>' + escapeHtml(l.extra_notes) + '</div>';
+  }
 
   var waMsg = "سلام، درباره این ملک سوال داشتم:\n" + (l.propertyType || "") + " - " + (l.location || "");
   var waUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
 
-  // Details content
-  var detailsHtml = '<div class="details-title">📋 جزئیات کامل ملک</div>';
-  if (l.location) detailsHtml += '<div class="details-row"><div class="lbl">📍 موقعیت</div><div class="vlu">' + escapeHtml(l.location) + '</div></div>';
-  if (l.size) detailsHtml += '<div class="details-row"><div class="lbl">📐 متراژ</div><div class="vlu">' + escapeHtml(l.size) + '</div></div>';
-  if (l.document) detailsHtml += '<div class="details-row"><div class="lbl">📄 سند</div><div class="vlu">' + escapeHtml(l.document) + '</div></div>';
-  if (l.price) detailsHtml += '<div class="details-row"><div class="lbl">💰 قیمت</div><div class="vlu" style="color:#22c55e">' + escapeHtml(l.price) + '</div></div>';
-  if (l.extra_notes) detailsHtml += '<div class="details-notes">📝 ' + escapeHtml(l.extra_notes) + '</div>';
-  detailsHtml += '<a href="' + waUrl + '" target="_blank" class="details-close" style="background:#25D366;border-color:#25D366;color:#fff;text-decoration:none;display:block;text-align:center">💬 تماس در واتساپ</a>';
-  detailsHtml += '<button type="button" class="details-close" onclick="toggleDetails(\'' + detailsId + '\')">❌ بستن</button>';
-
-  return '<div class="card" id="' + cardId + '">' +
+  return '<div class="card">' +
     '<div class="card-media">' +
       mediaHtml +
       '<div class="type-badge ' + typeClass + '">' + typeLabel + '</div>' +
@@ -492,25 +467,14 @@ function cardHtml(l, idx) {
     '</div>' +
     '<div class="card-body">' +
       '<div class="card-title">' + escapeHtml(l.propertyType || "ملک") + '</div>' +
-      (l.price ? '<div class="card-price">' + escapeHtml(l.price) + '</div>' : '') +
-      infoRows +
+      (l.price ? '<div class="card-price">💰 ' + escapeHtml(l.price) + '</div>' : '') +
+      infoHtml +
+      notesHtml +
       '<div class="card-actions">' +
-        '<button type="button" class="card-btn card-btn-details" onclick="toggleDetails(\'' + detailsId + '\')">👁️ جزئیات</button>' +
-        '<a class="card-btn card-btn-wa" href="' + waUrl + '" target="_blank">💬 واتساپ</a>' +
+        '<a class="card-btn-wa" href="' + waUrl + '" target="_blank">💬 تماس در واتساپ</a>' +
       '</div>' +
     '</div>' +
-    '<div class="card-details" id="' + detailsId + '">' + detailsHtml + '</div>' +
   '</div>';
-}
-
-function toggleDetails(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  if (el.className.indexOf("show") !== -1) {
-    el.className = "card-details";
-  } else {
-    el.className = "card-details show";
-  }
 }
 
 document.getElementById("filtersType").addEventListener("click", function(e) {
