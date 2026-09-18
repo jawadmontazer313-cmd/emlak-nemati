@@ -343,6 +343,7 @@
 <script>
 var API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
 var WHATSAPP_NUMBER = "989124527903";
+var P_PAGE = "https://emlak-nemati.pages.dev/p.html";
 
 var allListings = [];
 var filterType = "all";
@@ -456,7 +457,15 @@ function cardHtml(l) {
     notesHtml = '<div class="card-notes"><div class="card-notes-title">📝 توضیحات ملک</div>' + escapeHtml(l.extra_notes) + '</div>';
   }
 
-  var waMsg = "سلام، درباره این ملک سوال داشتم:\n" + (l.propertyType || "") + " - " + (l.location || "");
+  // ⭐ لینک صفحه ملک برای واتساپ
+  var listingUrl = P_PAGE + "?id=" + encodeURIComponent(l.key);
+
+  // ⭐ پیام واتساپ با لینک کامل
+  var waMsg = "سلام، درباره این ملک سوال داشتم:\n" +
+              "🏘️ " + (l.propertyType || "") + "\n" +
+              "📍 " + (l.location || "") + "\n" +
+              (l.price ? "💰 " + l.price + "\n" : "") +
+              "\n🔗 " + listingUrl;
   var waUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
 
   return '<div class="card">' +
