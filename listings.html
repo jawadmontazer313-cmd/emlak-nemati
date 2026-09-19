@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <title>املاک نعمتی</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -493,7 +494,6 @@ function isNew(dateIso) {
   return days <= 3;
 }
 
-// ============= INIT =============
 function init() {
   document.getElementById("footerWa").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent("سلام، از سایت املاک نعمتی تماس می‌گیرم.");
 
@@ -505,7 +505,6 @@ function init() {
   }
 }
 
-// ============= LIST VIEW =============
 function showListings() {
   document.getElementById("totalBadge").style.display = "inline-block";
   document.getElementById("singleFixed").style.display = "none";
@@ -693,7 +692,6 @@ function cardHtml(l) {
   '</div>';
 }
 
-// ============= SINGLE VIEW =============
 function showSingleListing(id) {
   document.getElementById("totalBadge").style.display = "none";
   var app = document.getElementById("appContent");
@@ -770,14 +768,12 @@ function renderSingle(l) {
 
   document.getElementById("singleContent").innerHTML = html;
 
-  // Footer برای صفحه تک
   var singleFooterHtml = '<div class="footer-brand">🏠 املاک نعمتی</div>' +
     '<div class="footer-info">📍 قم، خیابان کلهری</div>' +
     '<div class="footer-info">📞 0912 452 7903</div>' +
     '<div style="margin-top:16px">© تمام حقوق محفوظ است</div>';
   document.getElementById("mainFooter").innerHTML = singleFooterHtml;
 
-  // دکمه‌های پایین
   document.getElementById("singleFixed").style.display = "block";
 
   if (l.phone) {
