@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>املاک نعمتی</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -240,17 +241,19 @@
   }
   .footer-brand { font-size: 16px; color: #e6edf5; margin-bottom: 8px; font-weight: bold; }
   .footer-info { margin: 4px 0; }
-  .footer-wa {
+  .footer-btns { margin-top: 16px; }
+  .footer-btn {
     display: inline-block;
-    margin-top: 12px;
+    margin: 4px 4px;
     padding: 10px 20px;
-    background: #25D366;
     color: #fff;
     text-decoration: none;
     border-radius: 12px;
     font-weight: bold;
     font-size: 14px;
   }
+  .footer-wa { background: #25D366; }
+  .footer-tg { background: #0088cc; }
   .single-wrap { max-width: 700px; margin: 0 auto; }
   .back-btn {
     display: inline-block;
@@ -405,6 +408,7 @@
     .single-title { font-size: 20px; }
     .single-price { font-size: 18px; }
     .single-btn { padding: 13px; font-size: 14px; }
+    .footer-btn { padding: 9px 16px; font-size: 13px; }
   }
 </style>
 </head>
@@ -439,7 +443,10 @@
   <div class="footer-brand">🏠 املاک نعمتی</div>
   <div class="footer-info">📍 قم، خیابان کلهری</div>
   <div class="footer-info">📞 0912 452 7903</div>
-  <a class="footer-wa" id="footerWa" href="#">💬 تماس در واتساپ</a>
+  <div class="footer-btns">
+    <a class="footer-btn footer-wa" id="footerWa" href="#" target="_blank">💬 واتساپ</a>
+    <a class="footer-btn footer-tg" href="https://t.me/emlak_nemati" target="_blank">📢 کانال تلگرام</a>
+  </div>
   <div style="margin-top:16px">© تمام حقوق محفوظ است</div>
 </div>
 
@@ -760,6 +767,10 @@ function renderSingle(l) {
   var singleFooterHtml = '<div class="footer-brand">🏠 املاک نعمتی</div>' +
     '<div class="footer-info">📍 قم، خیابان کلهری</div>' +
     '<div class="footer-info">📞 0912 452 7903</div>' +
+    '<div class="footer-btns">' +
+      '<a class="footer-btn footer-wa" href="https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent("سلام، از سایت املاک نعمتی تماس می‌گیرم.") + '" target="_blank">💬 واتساپ</a>' +
+      '<a class="footer-btn footer-tg" href="https://t.me/emlak_nemati" target="_blank">📢 کانال تلگرام</a>' +
+    '</div>' +
     '<div style="margin-top:16px">© تمام حقوق محفوظ است</div>';
   document.getElementById("mainFooter").innerHTML = singleFooterHtml;
 
