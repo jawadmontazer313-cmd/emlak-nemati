@@ -5,1387 +5,804 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<title>داشبورد املاک نعمتی</title>
+<title>املاک نعمتی</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0f1720; --card: #1a2433; --card2: #223046; --border: #2d3e5a;
-    --text: #e6edf5; --muted: #8fa3bf; --primary: #3b82f6;
-    --primary-hover: #2563eb; --danger: #ef4444; --success: #22c55e; --warn: #f59e0b;
+  html, body {
+    font-family: Tahoma, Arial, sans-serif;
+    background: #0a0e17;
+    color: #e6edf5;
+    min-height: 100%;
+    line-height: 1.7;
+    -webkit-text-size-adjust: 100%;
   }
-  body { font-family: Tahoma, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  .header { background: #1e3a5f; padding: 24px 16px 28px; }
+  .header-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+  .logo {
+    width: 58px; height: 58px;
+    background: #3b82f6;
+    border-radius: 16px;
+    display: inline-block;
+    line-height: 58px;
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  .brand-name { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+  .brand-tag { font-size: 13px; color: #8fa3bf; }
+  .stats-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: #60a5fa;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
   .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
-  #loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-  .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; width: 100%; max-width: 400px; }
-  .login-box h1 { font-size: 22px; margin-bottom: 8px; text-align: center; }
-  .login-box p { color: var(--muted); text-align: center; margin-bottom: 24px; font-size: 14px; }
-  input, textarea, select { width: 100%; padding: 12px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 12px; outline: none; }
-  input:focus, textarea:focus, select:focus { border-color: var(--primary); }
-  button { background: var(--primary); color: #fff; border: none; padding: 12px 18px; border-radius: 10px; font-size: 15px; font-family: inherit; cursor: pointer; transition: .2s; font-weight: 600; }
-  button:hover { background: var(--primary-hover); }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
-  button.danger { background: var(--danger); padding: 6px 12px; font-size: 13px; }
-  button.danger:hover { background: #dc2626; }
-  button.success { background: var(--success); padding: 6px 12px; font-size: 13px; }
-  button.secondary { background: var(--card2); border: 1px solid var(--border); }
-  button.secondary:hover { background: var(--border); }
-  button.small { padding: 6px 12px; font-size: 13px; }
-  button.link-btn { background: #1e3a5f; padding: 6px 12px; font-size: 13px; }
-  button.link-btn:hover { background: #2563eb; }
-  button.channel-btn { background: #9333ea; padding: 6px 12px; font-size: 13px; }
-  button.channel-btn:hover { background: #7e22ce; }
-  button.suggest-btn { background: #ea580c; padding: 6px 12px; font-size: 13px; }
-  button.suggest-btn:hover { background: #c2410c; }
-  button.edit-btn { background: #0891b2; padding: 6px 12px; font-size: 13px; }
-  button.edit-btn:hover { background: #0e7490; }
-  button.upload-btn { background: #16a34a; padding: 10px; font-size: 14px; }
-  button.upload-btn:hover { background: #15803d; }
-  button.backup-btn { background: #7c3aed; padding: 14px; font-size: 15px; }
-  button.backup-btn:hover { background: #6d28d9; }
-  button.excel-btn { background: #3b82f6; padding: 14px; font-size: 15px; }
-  button.excel-btn:hover { background: #2563eb; }
-  button.test-report-btn { background: #16a34a; padding: 14px; font-size: 15px; }
-  button.test-report-btn:hover { background: #15803d; }
-  header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
-  header h1 { font-size: 18px; }
-  header .actions { display: flex; gap: 8px; }
-  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { padding: 10px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; white-space: nowrap; font-size: 14px; color: var(--muted); transition: .2s; }
-  .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-  .stat-card .label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-  .stat-card .value { font-size: 26px; font-weight: bold; }
-  .stat-card.blue .value { color: var(--primary); }
-  .stat-card.green .value { color: var(--success); }
-  .stat-card.warn .value { color: var(--warn); }
-  .stat-card.red .value { color: var(--danger); }
-  .stat-card.purple .value { color: #a78bfa; }
-  .item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-  .item.clickable { cursor: pointer; transition: .2s; }
-  .item.clickable:hover { border-color: var(--primary); }
-  .item.done { opacity: 0.6; }
-  .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-  .item-title { font-weight: bold; font-size: 15px; }
-  .item-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; background: var(--card2); color: var(--muted); margin-inline-start: 6px; }
-  .item-badge.pub { background: #1e3a5f; color: #60a5fa; }
-  .item-badge.priv { background: #3f2e1a; color: #fbbf24; }
-  .item-badge.sell { background: #14532d; color: #4ade80; }
-  .item-badge.rent { background: #4a1d3f; color: #f472b6; }
-  .item-badge.pending { background: #3a2a0e; color: #fbbf24; }
-  .item-badge.done { background: #14532d; color: #4ade80; }
-  .item-badge.cancelled { background: #3f1a1a; color: #f87171; }
-  .item-row { font-size: 13px; color: var(--muted); margin: 4px 0; }
-  .item-row b { color: var(--text); font-weight: normal; }
-  .item-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-  .media-wrap { margin-top: 10px; border-radius: 10px; overflow: hidden; background: var(--card2); }
-  .media-wrap img, .media-wrap video { width: 100%; max-height: 400px; object-fit: cover; display: block; cursor: pointer; }
-  .media-wrap video { cursor: default; }
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); background: var(--card); border: 1px dashed var(--border); border-radius: 12px; }
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-  .form-grid .full { grid-column: 1 / -1; }
-  .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
-  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--card2); border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: .3s; z-index: 9999; max-width: 90vw; }
-  #toast.show { opacity: 1; }
-  #toast.success { border-color: var(--success); }
-  #toast.error { border-color: var(--danger); }
-  .loading { text-align: center; padding: 30px; color: var(--muted); }
-  .section-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .search-box { position: relative; margin-bottom: 16px; }
-  .search-box input { width: 100%; padding: 14px 48px 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 0; outline: none; }
-  .search-box input:focus { border-color: var(--primary); }
-  .search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--muted); pointer-events: none; }
-  .search-box .clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: var(--card2); border: none; color: var(--muted); font-size: 16px; line-height: 1; padding: 0; cursor: pointer; display: none; align-items: center; justify-content: center; }
-  .search-box.has-text .clear-btn { display: flex; }
-  .search-box .clear-btn:hover { background: var(--danger); color: #fff; }
-  .search-results-info { font-size: 13px; color: var(--muted); margin-bottom: 10px; padding: 0 4px; }
-  .search-results-info b { color: var(--text); }
-  .today-banner { background: linear-gradient(135deg, #1e3a5f, #1a2433); border: 1px solid #2d3e5a; border-radius: 16px; padding: 22px; margin-bottom: 20px; text-align: center; }
-  .today-greeting { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
-  .today-summary { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
-  .pill { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-  .pill.red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-  .pill.warn { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-  .pill.blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
-  .pill.green { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-  .stars { display: inline-flex; gap: 3px; font-size: 20px; cursor: pointer; user-select: none; }
-  .stars .star { color: #4a5568; transition: .15s; }
-  .stars .star.on { color: #fbbf24; }
-  .stars .star:hover { transform: scale(1.15); }
-  .stars.readonly { cursor: default; font-size: 16px; }
-  .stars.readonly .star:hover { transform: none; }
-  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .tag { background: #2a1f47; color: #a78bfa; padding: 3px 10px; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
-  .tag .rm { cursor: pointer; opacity: 0.6; font-weight: bold; }
-  .tag .rm:hover { opacity: 1; }
-  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
-  .modal { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 700px; padding: 20px; margin: auto; }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .modal-header h2 { font-size: 18px; }
-  .modal-close { background: transparent; color: var(--muted); font-size: 24px; padding: 0 8px; }
-  .modal-close:hover { color: var(--text); background: transparent; }
-  .modal-section { margin-bottom: 20px; }
-  .modal-section h3 { font-size: 14px; color: var(--muted); margin-bottom: 8px; font-weight: normal; }
-  .contact-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; }
-  .contact-item .date { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
-  .tag-input-wrap { display: flex; gap: 6px; margin-top: 8px; }
-  .tag-input-wrap input { margin-bottom: 0; }
-  .tag-input-wrap button { padding: 8px 14px; }
-  .quick-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .quick-tags .qt { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 12px; font-size: 12px; cursor: pointer; }
-  .quick-tags .qt:hover { background: var(--border); color: var(--text); }
-  .appt-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; margin-inline-start: 6px; }
-  .appt-type-visit { background: #1e3a5f; color: #60a5fa; }
-  .appt-type-call { background: #3a2a0e; color: #fbbf24; }
-  .appt-type-meeting { background: #2a1f47; color: #a78bfa; }
-  .appt-upcoming { border-right: 3px solid var(--primary); }
-  .appt-today { border-right: 3px solid var(--warn); background: #1f1a0e; }
-  .appt-past { border-right: 3px solid var(--muted); }
-  .appt-done { border-right: 3px solid var(--success); }
-  .appt-cancelled { border-right: 3px solid var(--danger); }
-  .channel-checkbox { display: flex; align-items: center; gap: 10px; background: #1a2c1f; border: 1px solid #2d5a3d; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; cursor: pointer; }
-  .channel-checkbox input { width: auto; margin: 0; cursor: pointer; width: 20px; height: 20px; }
-  .channel-checkbox label { margin: 0; color: var(--success); font-weight: bold; cursor: pointer; font-size: 14px; }
-  .action-section { border-radius: 14px; padding: 20px; margin-top: 16px; }
-  .action-section .title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
-  .action-section .desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.8; }
-  .backup-section { background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05)); border: 1px solid rgba(124,58,237,0.4); }
-  .backup-section .title { color: #a78bfa; }
-  .test-report-section { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.4); }
-  .test-report-section .title { color: #22c55e; }
-  .excel-section { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.4); }
-  .excel-section .title { color: #3b82f6; }
+  .search-wrap { margin-bottom: 16px; }
+  .search-wrap input {
+    width: 100%;
+    padding: 15px 18px;
+    background: #1a2433;
+    border: 1px solid #2d3e5a;
+    border-radius: 14px;
+    color: #e6edf5;
+    font-size: 15px;
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+  .filters-section {
+    background: #1a2433;
+    border: 1px solid #2d3e5a;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .filter-row { margin-bottom: 12px; }
+  .filter-row:last-child { margin-bottom: 0; }
+  .filter-label { font-size: 12px; color: #8fa3bf; margin-bottom: 8px; font-weight: bold; }
+  .filters {
+    display: block;
+    white-space: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #223046;
+    border: 1px solid #2d3e5a;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #8fa3bf;
+    font-family: inherit;
+    font-weight: 600;
+    margin-left: 6px;
+    -webkit-appearance: none;
+  }
+  .filter.active {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+  }
+  .results-count { font-size: 13px; color: #8fa3bf; margin-bottom: 12px; }
+  .results-count b { color: #e6edf5; }
+  .grid { display: block; }
+  .card {
+    background: #1a2433;
+    border: 1px solid #2d3e5a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-media {
+    width: 100%;
+    height: 220px;
+    background: #223046;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+  }
+  .card-media img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-media .placeholder {
+    font-size: 80px;
+    color: #2d3e5a;
+    line-height: 220px;
+  }
+  .card-media .type-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    background: #000;
+    color: #fff;
+  }
+  .card-media .type-badge.sell { color: #4ade80; }
+  .card-media .type-badge.rent { color: #f472b6; }
+  .card-media .new-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #f59e0b;
+    color: #000;
+  }
+  .card-body { padding: 18px; }
+  .card-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+  .card-price {
+    font-size: 19px;
+    font-weight: bold;
+    color: #22c55e;
+    padding: 12px 14px;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+  .card-info {
+    font-size: 14px;
+    color: #e6edf5;
+    padding: 8px 0;
+    border-bottom: 1px solid #223046;
+  }
+  .card-info:last-of-type { border-bottom: none; }
+  .card-info .lbl {
+    color: #8fa3bf;
+    display: inline-block;
+    min-width: 80px;
+  }
+  .card-notes {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 14px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  .card-notes-title {
+    color: #60a5fa;
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .card-actions {
+    padding-top: 16px;
+    margin-top: 14px;
+    border-top: 1px solid #2d3e5a;
+    white-space: nowrap;
+  }
+  .card-btn {
+    display: inline-block;
+    width: 48%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    -webkit-appearance: none;
+  }
+  .card-btn-details { background: #3b82f6; margin-left: 2%; }
+  .card-btn-wa { background: #25D366; }
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: #8fa3bf;
+    background: #1a2433;
+    border: 1px dashed #2d3e5a;
+    border-radius: 16px;
+  }
+  .empty .icon { font-size: 70px; margin-bottom: 16px; opacity: 0.5; }
+  .empty h2 { font-size: 20px; margin-bottom: 8px; color: #e6edf5; }
+  .loading { text-align: center; padding: 100px 20px; color: #8fa3bf; }
+  .spinner {
+    display: inline-block;
+    width: 44px; height: 44px;
+    border: 4px solid #223046;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    -webkit-animation: spin 0.8s linear infinite;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .footer {
+    text-align: center;
+    padding: 30px 16px;
+    margin-top: 30px;
+    border-top: 1px solid #2d3e5a;
+    color: #8fa3bf;
+    font-size: 13px;
+  }
+  .footer-brand { font-size: 16px; color: #e6edf5; margin-bottom: 8px; font-weight: bold; }
+  .footer-info { margin: 4px 0; }
+  .footer-btns { margin-top: 16px; }
+  .footer-btn {
+    display: inline-block;
+    margin: 4px 4px;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .footer-wa { background: #25D366; }
+  .footer-tg { background: #0088cc; }
+  .single-wrap { max-width: 700px; margin: 0 auto; }
+  .back-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #223046;
+    border: 1px solid #2d3e5a;
+    border-radius: 10px;
+    color: #e6edf5;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 14px;
+  }
+  .single-media {
+    background: #1a2433;
+    border: 1px solid #2d3e5a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .single-media img, .single-media video {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    display: block;
+  }
+  .single-media .placeholder {
+    text-align: center;
+    font-size: 90px;
+    padding: 60px 20px;
+    color: #2d3e5a;
+  }
+  .single-card {
+    background: #1a2433;
+    border: 1px solid #2d3e5a;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .single-badges { margin-bottom: 14px; }
+  .single-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 6px;
+    color: #fff;
+  }
+  .single-badge.sell { background: #16a34a; }
+  .single-badge.rent { background: #be185d; }
+  .single-badge.new { background: #f59e0b; color: #000; }
+  .single-title { font-size: 26px; font-weight: bold; margin-bottom: 14px; }
+  .single-price {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #22c55e;
+    margin-bottom: 18px;
+  }
+  .single-info-item {
+    background: #223046;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .single-info-item .lbl {
+    color: #8fa3bf;
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .single-info-item .vlu {
+    font-weight: bold;
+    color: #e6edf5;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  .single-notes {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  .single-notes-title {
+    color: #60a5fa;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .single-share {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #223046;
+    border: 1px solid #2d3e5a;
+    border-radius: 12px;
+    color: #e6edf5;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+  }
+  .single-fixed {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0a0e17;
+    border-top: 1px solid #2d3e5a;
+    padding: 12px 16px;
+    z-index: 100;
+  }
+  .single-btn-group {
+    display: block;
+    max-width: 700px;
+    margin: 0 auto;
+    white-space: nowrap;
+  }
+  .single-btn {
+    display: inline-block;
+    width: 48%;
+    padding: 15px;
+    border-radius: 12px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+  }
+  .single-btn-call { background: #22c55e; margin-left: 2%; }
+  .single-btn-wa { background: #25D366; }
   @media (max-width: 500px) {
     .container { padding: 12px; }
-    header h1 { font-size: 16px; }
-    .stat-card .value { font-size: 22px; }
+    .brand-name { font-size: 18px; }
+    .logo { width: 50px; height: 50px; line-height: 50px; font-size: 26px; }
+    .card-media { height: 190px; }
+    .card-media img { height: 190px; }
+    .card-media .placeholder { line-height: 190px; font-size: 70px; }
+    .card-title { font-size: 18px; }
+    .card-price { font-size: 17px; }
+    .single-title { font-size: 20px; }
+    .single-price { font-size: 18px; }
+    .single-btn { padding: 13px; font-size: 14px; }
+    .footer-btn { padding: 9px 16px; font-size: 13px; }
   }
 </style>
-</head><body>
+</head>
+<body>
 
-<div id="loginScreen">
-  <div class="login-box">
-    <h1>🏠 داشبورد املاک</h1>
-    <p>برای ورود رمز عبور را وارد کنید</p>
-    <input type="password" id="loginPassword" placeholder="رمز عبور" autocomplete="current-password">
-    <button onclick="doLogin()" id="loginBtn" style="width:100%">ورود</button>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">🏠</div>
+    <div class="brand-name">املاک نعمتی</div>
+    <div class="brand-tag">خرید، فروش و اجاره ملک</div>
+    <div class="stats-badge" id="totalBadge" style="display:none">در حال بارگذاری...</div>
   </div>
 </div>
 
-<div id="dashboard" style="display:none">
-  <div class="container">
-    <header>
-      <h1>🏠 داشبورد املاک نعمتی</h1>
-      <div class="actions">
-        <button class="secondary" onclick="loadAll()">🔄 بروزرسانی</button>
-        <button class="secondary" onclick="logout()">خروج</button>
-      </div>
-    </header>
-
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-tab="today">🎯 امروز من</div>
-      <div class="tab" data-tab="overview">📊 آمار</div>
-      <div class="tab" data-tab="analytics">📈 تحلیل‌ها</div>
-      <div class="tab" data-tab="appointments">📅 قرارها</div>
-      <div class="tab" data-tab="listings">🏘️ املاک</div>
-      <div class="tab" data-tab="customers">👥 مشتری‌ها</div>
-      <div class="tab" data-tab="requests">📝 درخواست‌ها</div>
-      <div class="tab" data-tab="fileRequests">🔍 فایل‌یابی</div>
-      <div class="tab" data-tab="add">➕ افزودن ملک</div>
-      <div class="tab" data-tab="broadcast">📢 پیام گروهی</div>
-      <div class="tab" data-tab="settings">⚙️ تنظیمات</div>
+<div class="container">
+  <div id="appContent">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>در حال بارگذاری...</div>
     </div>
-
-    <div id="content"></div>
   </div>
 </div>
 
-<div id="modal-root"></div>
-<div id="toast"></div>
+<div id="singleFixed" style="display:none" class="single-fixed">
+  <div class="single-btn-group">
+    <a class="single-btn single-btn-wa" id="singleWaBtn" href="#" target="_blank">💬 واتساپ</a>
+    <a class="single-btn single-btn-call" id="singleCallBtn" href="#">📞 تماس</a>
+  </div>
+</div>
+
+<div class="footer" id="mainFooter">
+  <div class="footer-brand">🏠 املاک نعمتی</div>
+  <div class="footer-info">📍 قم، خیابان کلهری</div>
+  <div class="footer-info">📞 0912 452 7903</div>
+  <div class="footer-btns">
+    <a class="footer-btn footer-wa" id="footerWa" href="#" target="_blank">💬 واتساپ</a>
+    <a class="footer-btn footer-tg" href="https://t.me/emlak_nemati" target="_blank">📢 کانال تلگرام</a>
+  </div>
+  <div style="margin-top:16px">© تمام حقوق محفوظ است</div>
+</div>
 
 <script>
-const API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
-const PUBLIC_BASE = "https://emlak-nemati.pages.dev";
-const QUICK_TAGS = ["خریدار جدی", "اجاره‌ای", "سرمایه‌گذار", "فوری", "در انتظار", "پیگیری مجدد"];
+var API_BASE = "https://estate-admin-api.jawadmontazer313.workers.dev";
+var WHATSAPP_NUMBER = "989124527903";
 
-let PASSWORD = localStorage.getItem("admin_pass") || "";
-let currentTab = "today";
-let customersCache = [];
-let listingsCache = { public: [], private: [] };
-let appointmentsCache = [];
-let customerSearchText = "";
-let listingSearchText = "";
-
-function toast(msg, type = "success") {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "show " + type;
-  setTimeout(() => { t.className = ""; }, 2500);
-}
-
-async function api(path, options = {}) {
-  const opts = {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + PASSWORD,
-      ...(options.headers || {})
-    }
-  };
-  const r = await fetch(API_BASE + path, opts);
-  const data = await r.json().catch(() => ({}));
-  if (r.status === 401) { logout(); throw new Error("دسترسی غیرمجاز"); }
-  if (!r.ok) throw new Error(data.error || "خطا");
-  return data;
-}
+var allListings = [];
+var filterType = "all";
+var filterProperty = "all";
+var searchText = "";
 
 function escapeHtml(s) {
   if (s === null || s === undefined) return "";
-  return String(s).replace(/[&<>"']/g, m => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[m]));
-}
-
-function renderStars(n, editable = false) {
-  n = parseInt(n) || 0;
-  let html = `<div class="stars ${editable ? '' : 'readonly'}" data-rating="${n}">`;
-  for (let i = 1; i <= 5; i++) {
-    html += `<span class="star ${i <= n ? 'on' : ''}" data-val="${i}">★</span>`;
-  }
-  html += `</div>`;
-  return html;
-}
-
-function toPersianDate(iso) {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleString("fa-IR", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-  } catch (e) { return iso; }
-}
-
-function toISODateTimeLocal(dateStr) {
-  if (!dateStr) return "";
-  return new Date(dateStr).toISOString();
-}
-
-function fromISOToLocalInput(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const pad = n => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function normalizeSearch(s) {
-  if (!s) return "";
-  const persian = "۰۱۲۳۴۵۶۷۸۹";
-  const arabic = "٠١٢٣٤٥٦٧٨٩";
-  const english = "0123456789";
-  let result = String(s).toLowerCase();
-  for (let i = 0; i < 10; i++) {
-    result = result.replace(new RegExp(persian[i], "g"), english[i]);
-    result = result.replace(new RegExp(arabic[i], "g"), english[i]);
-  }
-  return result;
-}
-
-function matchSearch(text, query) {
-  if (!query) return true;
-  return normalizeSearch(text).indexOf(normalizeSearch(query)) !== -1;
-}
-
-async function doLogin() {
-  const pass = document.getElementById("loginPassword").value.trim();
-  if (!pass) return toast("رمز را وارد کنید", "error");
-  const btn = document.getElementById("loginBtn");
-  btn.disabled = true; btn.textContent = "در حال بررسی...";
-  try {
-    const r = await fetch(API_BASE + "/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: pass })
-    });
-    const data = await r.json();
-    if (data.ok) {
-      PASSWORD = pass;
-      localStorage.setItem("admin_pass", pass);
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      loadAll();
-    } else { toast("رمز اشتباه است", "error"); }
-  } catch (e) { toast("خطا در ارتباط با سرور", "error"); }
-  finally { btn.disabled = false; btn.textContent = "ورود"; }
-}
-
-function logout() {
-  PASSWORD = "";
-  localStorage.removeItem("admin_pass");
-  document.getElementById("loginScreen").style.display = "flex";
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("loginPassword").value = "";
-}
-
-document.getElementById("tabs").addEventListener("click", e => {
-  const tab = e.target.closest(".tab");
-  if (!tab) return;
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  tab.classList.add("active");
-  currentTab = tab.dataset.tab;
-  renderTab();
-});
-
-function renderTab() {
-  const c = document.getElementById("content");
-  if (currentTab === "today") renderToday(c);
-  else if (currentTab === "overview") renderOverview(c);
-  else if (currentTab === "analytics") renderAnalytics(c);
-  else if (currentTab === "appointments") renderAppointments(c);
-  else if (currentTab === "listings") renderListings(c);
-  else if (currentTab === "customers") renderCustomers(c);
-  else if (currentTab === "requests") renderRequests(c);
-  else if (currentTab === "fileRequests") renderFileRequests(c);
-  else if (currentTab === "add") renderAddForm(c);
-  else if (currentTab === "broadcast") renderBroadcast(c);
-  else if (currentTab === "settings") renderSettings(c);
-}
-
-async function loadAll() {
-  const c = document.getElementById("content");
-  c.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
-  try { await renderTab(); }
-  catch (e) { c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>'; }
-}
-
-async function renderToday(c) {
-  const { today: t } = await api("/api/today");
-  const now = new Date();
-  const hour = now.getHours();
-  let greeting = "سلام رفیق";
-  if (hour < 12) greeting = "☀️ صبح بخیر";
-  else if (hour < 17) greeting = "🌤️ ظهر بخیر";
-  else if (hour < 21) greeting = "🌆 عصر بخیر";
-  else greeting = "🌙 شب بخیر";
-
-  const persianDate = now.toLocaleDateString("fa-IR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-
-  let html = '<div class="today-banner">' +
-    '<div class="today-greeting">' + greeting + '</div>' +
-    '<div style="font-size:13px;color:var(--muted);margin-bottom:14px">' + persianDate + '</div>' +
-    '<div class="today-summary">';
-
-  if (t.counts.todayAppts > 0) html += '<span class="pill red">📅 ' + t.counts.todayAppts + ' قرار امروز</span>';
-  if (t.counts.needFollowUp > 0) html += '<span class="pill warn">📞 ' + t.counts.needFollowUp + ' نیاز پیگیری</span>';
-  if (t.counts.newRequests > 0) html += '<span class="pill blue">📝 ' + t.counts.newRequests + ' درخواست جدید</span>';
-  if (t.counts.newFileReqs > 0) html += '<span class="pill blue">🔍 ' + t.counts.newFileReqs + ' فایل‌یابی</span>';
-  if (t.counts.vip > 0) html += '<span class="pill green">⭐ ' + t.counts.vip + ' مشتری مهم</span>';
-
-  if (t.counts.todayAppts === 0 && t.counts.needFollowUp === 0 && t.counts.newRequests === 0 && t.counts.newFileReqs === 0) {
-    html += '<span class="pill green">✨ امروز روز آرومی داری!</span>';
-  }
-
-  html += '</div></div>';
-
-  if (t.todayAppts.length > 0) {
-    html += '<div class="section-title">🔥 قرارهای امروز (' + t.todayAppts.length + ')</div>';
-    html += t.todayAppts.map(a => apptCard(a, "today")).join("");
-  }
-
-  if (t.needFollowUp.length > 0) {
-    html += '<div class="section-title" style="margin-top:20px">📞 پیگیری مشتری‌ها (' + t.needFollowUp.length + ')</div>';
-    html += t.needFollowUp.map(cust => {
-      const rating = parseInt(cust.rating) || 0;
-      const stars = rating ? "★".repeat(rating) : "";
-      return '<div class="item clickable" onclick="openCustomer(\'' + escapeHtml(cust._key) + '\')">' +
-        '<div class="item-header"><div><span class="item-title">' + escapeHtml(cust.name || cust.phone || "کاربر") + '</span>' +
-        (stars ? '<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">' + stars + '</span>' : '') +
-        '<span class="item-badge" style="background:#3f1a1a;color:#f87171">' + cust.daysSince + ' روز پیش</span></div>' +
-        '<div style="font-size:20px;color:var(--muted)">›</div></div>' +
-        (cust.phone ? '<div class="item-row">📞 ' + escapeHtml(cust.phone) + '</div>' : '') +
-        (cust.notes ? '<div class="item-row">📝 ' + escapeHtml(cust.notes.substring(0, 80)) + '</div>' : '') +
-        '</div>';
-    }).join("");
-  }
-
-  if (t.newRequests.length > 0) {
-    html += '<div class="section-title" style="margin-top:20px">📝 درخواست‌های جدید (' + t.newRequests.length + ')</div>';
-    html += t.newRequests.map(r => {
-      return '<div class="item">' +
-        '<div class="item-header"><div><span class="item-title">' + escapeHtml(r.propertyType || "درخواست") + '</span>' +
-        '<span class="item-badge ' + (r.type === "rent" ? "rent" : "sell") + '">' + (r.type === "rent" ? "اجاره" : "فروش") + '</span></div></div>' +
-        (r.location ? '<div class="item-row">📍 ' + escapeHtml(r.location) + '</div>' : '') +
-        (r.budget ? '<div class="item-row">💰 بودجه: <b>' + escapeHtml(r.budget) + '</b></div>' : '') +
-        (r.phone ? '<div class="item-row">📞 ' + escapeHtml(r.phone) + '</div>' : '') +
-        '<div class="item-actions"><button class="suggest-btn" onclick="suggestForRequest(\'' + escapeHtml(r._key) + '\', this)">🎯 پیشنهاد ملک</button></div>' +
-        '</div>';
-    }).join("");
-  }
-
-  if (t.newFileReqs.length > 0) {
-    html += '<div class="section-title" style="margin-top:20px">🔍 فایل‌یابی‌های جدید (' + t.newFileReqs.length + ')</div>';
-    html += t.newFileReqs.map(f => {
-      return '<div class="item">' +
-        '<div class="item-header"><div><span class="item-title">🔍 درخواست فایل‌یابی</span></div></div>' +
-        (f.phone ? '<div class="item-row">📞 ' + escapeHtml(f.phone) + '</div>' : '') +
-        (f.text ? '<div class="item-row">📝 ' + escapeHtml(f.text) + '</div>' : '') +
-        '</div>';
-    }).join("");
-  }
-
-  if (t.vipList.length > 0) {
-    html += '<div class="section-title" style="margin-top:20px">⭐ مشتری‌های مهم (' + t.vipList.length + ')</div>';
-    html += t.vipList.map(cust => {
-      const rating = parseInt(cust.rating) || 0;
-      return '<div class="item clickable" onclick="openCustomer(\'' + escapeHtml(cust._key) + '\')">' +
-        '<div class="item-header"><div><span class="item-title">' + escapeHtml(cust.name || cust.phone || "کاربر") + '</span>' +
-        '<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">' + "★".repeat(rating) + '</span></div>' +
-        '<div style="font-size:20px;color:var(--muted)">›</div></div>' +
-        (cust.phone ? '<div class="item-row">📞 ' + escapeHtml(cust.phone) + '</div>' : '') +
-        '</div>';
-    }).join("");
-  }
-
-  if (t.upcomingAppts.length > 0) {
-    html += '<div class="section-title" style="margin-top:20px">📅 قرارهای پیش‌رو</div>';
-    html += t.upcomingAppts.map(a => apptCard(a, "upcoming")).join("");
-  }
-
-  c.innerHTML = html;
-}
-
-async function renderOverview(c) {
-  const { stats } = await api("/api/stats");
-  c.innerHTML = `
-    <div class="stats-grid">
-      <div class="stat-card blue"><div class="label">املاک عمومی</div><div class="value">${stats.publicListings}</div></div>
-      <div class="stat-card warn"><div class="label">املاک خصوصی</div><div class="value">${stats.privateListings}</div></div>
-      <div class="stat-card green"><div class="label">مشتری‌ها</div><div class="value">${stats.customers}</div></div>
-      <div class="stat-card blue"><div class="label">درخواست‌ها</div><div class="value">${stats.requests}</div></div>
-      <div class="stat-card red"><div class="label">فایل‌یابی</div><div class="value">${stats.fileRequests}</div></div>
-      <div class="stat-card purple"><div class="label">قرارها</div><div class="value">${stats.appointments || 0}</div></div>
-    </div>
-  `;
-}
-
-async function renderAnalytics(c) {
-  const { analytics: a } = await api("/api/analytics");
-  function bar(value, max) {
-    const pct = max ? Math.round((value / max) * 100) : 0;
-    return `<div style="background:var(--card2);border-radius:6px;overflow:hidden;height:22px;margin-top:4px"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);display:flex;align-items:center;justify-content:flex-end;padding-inline-end:6px;font-size:11px;color:#fff;font-weight:bold">${value}</div></div>`;
-  }
-  function section(title, items) {
-    if (!items || !items.length) return "";
-    const max = items[0][1];
-    return `<div class="form-card" style="margin-bottom:16px"><div class="section-title">${title}</div>${items.map(([k, v]) => `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${escapeHtml(k)}</span><span style="color:var(--muted)">${v}</span></div>${bar(v, max)}</div>`).join("")}</div>`;
-  }
-  let html = `
-    <div class="stats-grid">
-      <div class="stat-card blue"><div class="label">کل املاک</div><div class="value">${a.totalListings}</div></div>
-      <div class="stat-card green"><div class="label">کل مشتری‌ها</div><div class="value">${a.totalCustomers}</div></div>
-      <div class="stat-card warn"><div class="label">درخواست‌ها</div><div class="value">${a.totalRequests}</div></div>
-      <div class="stat-card purple"><div class="label">قرارها</div><div class="value">${a.totalAppointments}</div></div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card green"><div class="label">⭐ میانگین امتیاز</div><div class="value">${a.avgRating || "—"}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">از ${a.ratingCount} مشتری</div></div>
-      <div class="stat-card warn"><div class="label">📅 قرارهای این ماه</div><div class="value">${a.apptsThisMonth}</div></div>
-      <div class="stat-card blue"><div class="label">💰 فروش</div><div class="value">${a.listingsByType.sell}</div></div>
-      <div class="stat-card red"><div class="label">🏠 اجاره</div><div class="value">${a.listingsByType.rent}</div></div>
-    </div>
-  `;
-  html += section("🏘️ پرتکرارترین نوع ملک", a.propertyTypes);
-  html += section("📍 محله‌های پرملک", a.locations);
-  html += section("🎯 محله‌های پرتقاضا (درخواست‌ها)", a.reqLocations);
-  html += section("🏷️ پرتکرارترین برچسب مشتری‌ها", a.tags);
-  if (a.dailyListings && a.dailyListings.length) {
-    const maxDaily = Math.max(...a.dailyListings.map(x => x[1]));
-    html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">📊 ثبت ملک در ۳۰ روز اخیر</div><div style="display:flex;align-items:flex-end;gap:3px;height:100px;margin-top:12px;overflow-x:auto;padding-bottom:8px">${a.dailyListings.map(([day, count]) => { const h = maxDaily ? Math.round((count / maxDaily) * 100) : 0; return `<div title="${day}: ${count}" style="min-width:14px;width:14px;height:${h}%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:4px 4px 0 0"></div>`; }).join("")}</div><div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">${a.dailyListings.length} روز داده</div></div>`;
-  }
-  const totalReq = (a.requestsByType.sell + a.requestsByType.rent) || 1;
-  html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">📝 درخواست‌ها بر اساس نوع</div><div style="display:flex;gap:12px;margin-top:8px"><div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px"><div style="font-size:24px;font-weight:bold;color:#4ade80">${a.requestsByType.sell}</div><div style="font-size:12px;color:var(--muted)">فروش (${Math.round(a.requestsByType.sell/totalReq*100)}%)</div></div><div style="flex:1;text-align:center;background:var(--card2);border-radius:10px;padding:14px"><div style="font-size:24px;font-weight:bold;color:#f472b6">${a.requestsByType.rent}</div><div style="font-size:12px;color:var(--muted)">اجاره (${Math.round(a.requestsByType.rent/totalReq*100)}%)</div></div></div></div>`;
-  if (a.customersByMonth && a.customersByMonth.length) {
-    const maxM = Math.max(...a.customersByMonth.map(x => x[1]));
-    html += `<div class="form-card" style="margin-bottom:16px"><div class="section-title">👥 مشتری‌های جدید ماهانه</div>${a.customersByMonth.map(([m, v]) => `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${m}</span><span style="color:var(--muted)">${v}</span></div>${bar(v, maxM)}</div>`).join("")}</div>`;
-  }
-  c.innerHTML = html;
-}
-
-async function renderAppointments(c) {
-  const { appointments } = await api("/api/appointments");
-  appointmentsCache = appointments;
-  const now = Date.now();
-  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
-  const upcoming = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() >= now);
-  const today = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() >= todayStart.getTime() && new Date(a.date).getTime() <= todayEnd.getTime());
-  const past = appointments.filter(a => a.status === "pending" && new Date(a.date).getTime() < now);
-  const done = appointments.filter(a => a.status === "done");
-  const cancelled = appointments.filter(a => a.status === "cancelled");
-  let html = `
-    <div class="stats-grid">
-      <div class="stat-card warn"><div class="label">امروز</div><div class="value">${today.length}</div></div>
-      <div class="stat-card blue"><div class="label">پیش‌رو</div><div class="value">${upcoming.length}</div></div>
-      <div class="stat-card green"><div class="label">انجام‌شده</div><div class="value">${done.length}</div></div>
-      <div class="stat-card red"><div class="label">گذشته</div><div class="value">${past.length}</div></div>
-    </div>
-    <div style="margin-bottom:16px"><button onclick="openApptForm()" style="width:100%">➕ قرار جدید</button></div>
-  `;
-  if (today.length) { html += `<div class="section-title">🔥 امروز (${today.length})</div>`; html += today.map(a => apptCard(a, "today")).join(""); }
-  const otherUpcoming = upcoming.filter(a => !today.includes(a));
-  if (otherUpcoming.length) { html += `<div class="section-title" style="margin-top:20px">⏰ پیش‌رو (${otherUpcoming.length})</div>`; html += otherUpcoming.map(a => apptCard(a, "upcoming")).join(""); }
-  if (past.length) { html += `<div class="section-title" style="margin-top:20px">⌛ گذشته (${past.length})</div>`; html += past.map(a => apptCard(a, "past")).join(""); }
-  if (done.length) { html += `<div class="section-title" style="margin-top:20px">✅ انجام‌شده (${done.length})</div>`; html += done.map(a => apptCard(a, "done")).join(""); }
-  if (cancelled.length) { html += `<div class="section-title" style="margin-top:20px">❌ لغو‌شده (${cancelled.length})</div>`; html += cancelled.map(a => apptCard(a, "cancelled")).join(""); }
-  if (!appointments.length) html += '<div class="empty">هنوز قرار ملاقاتی ثبت نشده</div>';
-  c.innerHTML = html;
-}
-
-function apptCard(a, state) {
-  const typeLabels = { visit: "🏠 بازدید", call: "📞 تماس", meeting: "🤝 جلسه" };
-  const typeLabel = typeLabels[a.type] || "🏠 بازدید";
-  const statusLabels = { pending: "در انتظار", done: "انجام‌شده", cancelled: "لغو‌شده" };
-  const statusLabel = statusLabels[a.status] || "در انتظار";
-  const stateClass = a.status === "done" ? "appt-done" : (a.status === "cancelled" ? "appt-cancelled" : `appt-${state}`);
-  return `
-    <div class="item ${stateClass} ${a.status === 'done' || a.status === 'cancelled' ? 'done' : ''}">
-      <div class="item-header"><div><span class="item-title">${escapeHtml(a.customerName || "مشتری")}</span><span class="item-badge appt-type-${a.type || 'visit'}">${typeLabel}</span><span class="item-badge ${a.status === 'done' ? 'done' : (a.status === 'cancelled' ? 'cancelled' : 'pending')}">${statusLabel}</span></div></div>
-      <div class="item-row">📅 ${escapeHtml(toPersianDate(a.date))}</div>
-      ${a.customerPhone ? `<div class="item-row">📞 ${escapeHtml(a.customerPhone)}</div>` : ""}
-      ${a.propertyDesc ? `<div class="item-row">🏘️ ${escapeHtml(a.propertyDesc)}</div>` : ""}
-      ${a.note ? `<div class="item-row">📝 ${escapeHtml(a.note)}</div>` : ""}
-      ${a.reminderSent ? `<div class="item-row" style="color:var(--success)">✅ یادآور ۲۴ ساعته ارسال شد</div>` : ""}
-      ${a.reminder1hSent ? `<div class="item-row" style="color:var(--warn)">🔔 یادآور ۱ ساعته ارسال شد</div>` : ""}
-      <div class="item-actions">
-        ${a.status === 'pending' ? `<button class="success small" onclick="markApptDone('${escapeHtml(a._key)}')">✅ انجام شد</button><button class="secondary small" onclick="markApptCancelled('${escapeHtml(a._key)}')">❌ لغو</button>` : ""}
-        <button class="secondary small" onclick="openApptEdit('${escapeHtml(a._key)}')">✏️ ویرایش</button>
-        <button class="danger" onclick="deleteAppt('${escapeHtml(a._key)}')">🗑️ حذف</button>
-      </div>
-    </div>
-  `;
-}
-
-async function markApptDone(key) {
-  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "done" }) }); toast("انجام شد ✅"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-async function markApptCancelled(key) {
-  if (!confirm("این قرار لغو شود؟")) return;
-  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ status: "cancelled" }) }); toast("لغو شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-async function deleteAppt(key) {
-  if (!confirm("این قرار حذف شود؟")) return;
-  try { await api("/api/appointments/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function openApptForm(editKey = null) {
-  if (!customersCache.length) { try { const r = await api("/api/customers"); customersCache = r.customers; } catch (e) {} }
-  if (!listingsCache.public.length && !listingsCache.private.length) { try { const r = await api("/api/listings?scope=all"); listingsCache = { public: r.public, private: r.private }; } catch (e) {} }
-  let appt = null;
-  if (editKey) appt = appointmentsCache.find(a => a._key === editKey);
-  const isEdit = !!appt;
-  const d = appt || {};
-  let defaultDate = "";
-  if (!isEdit) { const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(10, 0, 0, 0); defaultDate = fromISOToLocalInput(tomorrow.toISOString()); }
-  else { defaultDate = fromISOToLocalInput(d.date); }
-  const allListings = [...(listingsCache.public || []), ...(listingsCache.private || [])];
-  document.getElementById("modal-root").innerHTML = `
-    <div class="modal-bg" onclick="if(event.target===this) closeModal()">
-      <div class="modal">
-        <div class="modal-header"><h2>${isEdit ? "✏️ ویرایش قرار" : "➕ قرار جدید"}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-        <label>نوع قرار</label>
-        <select id="ap_type"><option value="visit" ${d.type === 'visit' ? 'selected' : ''}>🏠 بازدید ملک</option><option value="call" ${d.type === 'call' ? 'selected' : ''}>📞 تماس تلفنی</option><option value="meeting" ${d.type === 'meeting' ? 'selected' : ''}>🤝 جلسه</option></select>
-        <label>مشتری (از لیست)</label>
-        <select id="ap_customer" onchange="onCustomerPick()"><option value="">— انتخاب مشتری —</option>${customersCache.map(c => `<option value="${escapeHtml(c._key)}" ${d.customerKey === c._key ? 'selected' : ''} data-name="${escapeHtml(c.name || c.phone || '')}" data-phone="${escapeHtml(c.phone || '')}">${escapeHtml(c.name || c.phone || "بدون نام")} ${c.phone ? `- ${escapeHtml(c.phone)}` : ""}</option>`).join("")}</select>
-        <label>نام مشتری (دستی)</label>
-        <input id="ap_customerName" placeholder="نام" value="${escapeHtml(d.customerName || "")}">
-        <label>شماره تماس</label>
-        <input id="ap_customerPhone" placeholder="۰۹..." value="${escapeHtml(d.customerPhone || "")}">
-        <label>ملک (اختیاری)</label>
-        <select id="ap_property"><option value="">— بدون ملک —</option>${allListings.map(l => `<option value="${escapeHtml(l._key)}" ${d.propertyKey === l._key ? 'selected' : ''} data-desc="${escapeHtml((l.propertyType || '') + ' - ' + (l.location || ''))}">${escapeHtml((l.propertyType || 'ملک') + ' - ' + (l.location || 'بدون موقعیت'))}</option>`).join("")}</select>
-        <label>توضیح ملک (اختیاری)</label>
-        <input id="ap_propertyDesc" placeholder="مثلاً آپارتمان ۱۲۰ متری" value="${escapeHtml(d.propertyDesc || "")}">
-        <label>تاریخ و ساعت</label>
-        <input type="datetime-local" id="ap_date" value="${defaultDate}">
-        <label>مدت (دقیقه)</label>
-        <input type="number" id="ap_duration" value="${d.duration || 30}" min="15" step="15">
-        <label>یادداشت</label>
-        <textarea id="ap_note" rows="3" placeholder="توضیحات...">${escapeHtml(d.note || "")}</textarea>
-        <div style="display:flex;gap:8px;margin-top:16px"><button onclick="saveAppt(${isEdit ? `'${escapeHtml(editKey)}'` : 'null'})" style="flex:1">💾 ذخیره</button><button class="secondary" onclick="closeModal()">لغو</button></div>
-      </div>
-    </div>
-  `;
-}
-
-function onCustomerPick() {
-  const sel = document.getElementById("ap_customer");
-  const opt = sel.options[sel.selectedIndex];
-  if (!opt || !opt.value) return;
-  document.getElementById("ap_customerName").value = opt.dataset.name || "";
-  document.getElementById("ap_customerPhone").value = opt.dataset.phone || "";
-}
-function openApptEdit(key) { openApptForm(key); }
-
-async function saveAppt(editKey) {
-  const dateVal = document.getElementById("ap_date").value;
-  if (!dateVal) return toast("تاریخ را وارد کنید", "error");
-  const custSel = document.getElementById("ap_customer");
-  const propSel = document.getElementById("ap_property");
-  const data = {
-    type: document.getElementById("ap_type").value,
-    customerKey: custSel.value || "",
-    customerName: document.getElementById("ap_customerName").value,
-    customerPhone: document.getElementById("ap_customerPhone").value,
-    propertyKey: propSel.value || "",
-    propertyDesc: document.getElementById("ap_propertyDesc").value,
-    date: toISODateTimeLocal(dateVal),
-    duration: parseInt(document.getElementById("ap_duration").value) || 30,
-    note: document.getElementById("ap_note").value
-  };
-  if (data.customerKey && !data.customerName) {
-    const opt = custSel.options[custSel.selectedIndex];
-    data.customerName = opt.dataset.name || "";
-    data.customerPhone = opt.dataset.phone || "";
-  }
-  try {
-    if (editKey) { await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) }); toast("ویرایش شد ✅"); }
-    else { await api("/api/appointments", { method: "POST", body: JSON.stringify(data) }); toast("قرار ثبت شد ✅"); }
-    closeModal();
-    if (currentTab === "appointments" || currentTab === "today") loadAll();
-    else { document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); document.querySelector('.tab[data-tab="appointments"]').classList.add("active"); currentTab = "appointments"; renderTab(); }
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function renderSettings(c) {
-  const { settings } = await api("/api/settings");
-  c.innerHTML = `
-    <div class="form-card" style="margin-bottom:16px">
-      <div class="section-title">⚙️ تنظیمات</div>
-      <label>Chat ID مدیر (برای دریافت یادآورها)</label>
-      <input id="s_adminChatId" placeholder="مثلاً 123456789" value="${escapeHtml(settings.adminChatId || "")}">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 برای پیدا کردن Chat ID خودت:<br>۱. توی تلگرام به ربات <b>@userinfobot</b> پیام بده<br>۲. عددی که برمی‌گردونه رو اینجا بذار</div>
-      <label>📢 کانال تلگرام (برای آگهی خودکار)</label>
-      <input id="s_channelId" placeholder="مثلاً @emlak_nemati" value="${escapeHtml(settings.channelId || "")}">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 آیدی کانال رو با <b>@</b> بنویس<br>⚠️ ربات باید توی کانال ادمین باشه</div>
-      <label>📌 فوتر تبلیغاتی کانال</label>
-      <textarea id="s_channelFooter" rows="4" placeholder="متن تبلیغاتی که ته هر پست کانال نمایش داده میشه...">${escapeHtml(settings.channelFooter || "")}</textarea>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">💡 این متن ته <b>هر پست کانال</b> اضافه میشه</div>
-      <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
-    </div>
-
-    <div class="action-section test-report-section">
-      <div class="title">🧪 تست گزارش هفتگی</div>
-      <div class="desc">
-        با زدن این دکمه، <b>گزارش هفتگی</b> همین الان به تلگرامت فرستاده میشه.<br>
-        📌 فقط برای تست — گزارش اصلی هر جمعه صبح خودکار میاد.
-      </div>
-      <button class="test-report-btn" id="testReportBtn" onclick="testWeeklyReport()" style="width:100%">
-        🧪 ارسال گزارش تستی
-      </button>
-      <div id="testReportResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
-    </div>
-
-    <div class="action-section excel-section">
-      <div class="title">📊 خروجی Excel</div>
-      <div class="desc">
-        با زدن این دکمه، یه فایل <b>Excel</b> با ۴ شیت جدا دانلود میشه:<br>
-        🏘️ املاک &nbsp;·&nbsp; 👥 مشتری‌ها &nbsp;·&nbsp; 📅 قرارها &nbsp;·&nbsp; 📝 درخواست‌ها<br>
-        📌 فایل رو توی Excel یا Google Sheets باز کن.
-      </div>
-      <button class="excel-btn" id="excelBtn" onclick="downloadExcel()" style="width:100%">
-        📊 دانلود فایل Excel
-      </button>
-      <div id="excelResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
-    </div>
-
-    <div class="action-section backup-section">
-      <div class="title">📥 پشتیبان‌گیری از داده‌ها</div>
-      <div class="desc">
-        با زدن دکمه زیر، <b>همه داده‌ها</b> (املاک، مشتری‌ها، قرارها، درخواست‌ها و تنظیمات) توی یه فایل <b>JSON</b> دانلود میشه.<br>
-        📌 این فایل رو یه جای امن نگه دار. اگه یه وقت سیستم خراب شد، همه چیز رو داری.
-      </div>
-      <button class="backup-btn" id="backupBtn" onclick="downloadBackup()" style="width:100%">
-        📥 دانلود فایل پشتیبان
-      </button>
-      <div id="backupResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
-    </div>
-  `;
-}
-
-async function saveSettings() {
-  const adminChatId = document.getElementById("s_adminChatId").value.trim();
-  const channelId = document.getElementById("s_channelId").value.trim();
-  const channelFooter = document.getElementById("s_channelFooter").value;
-  try { await api("/api/settings", { method: "PUT", body: JSON.stringify({ adminChatId, channelId, channelFooter }) }); toast("ذخیره شد ✅"); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function testWeeklyReport() {
-  const btn = document.getElementById("testReportBtn");
-  const result = document.getElementById("testReportResult");
-  btn.disabled = true;
-  btn.textContent = "⏳ در حال ارسال...";
-  result.textContent = "";
-  try {
-    await api("/api/test-weekly-report", { method: "POST" });
-    result.innerHTML = `✅ گزارش به تلگرام ارسال شد`;
-    toast("گزارش ارسال شد ✅");
-  } catch (e) {
-    result.innerHTML = `❌ خطا: ${escapeHtml(e.message)}`;
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "🧪 ارسال گزارش تستی";
-  }
-}
-
-async function downloadExcel() {
-  const btn = document.getElementById("excelBtn");
-  const result = document.getElementById("excelResult");
-  btn.disabled = true;
-  btn.textContent = "⏳ در حال آماده‌سازی...";
-  result.textContent = "";
-  try {
-    const r = await fetch(API_BASE + "/api/export-excel", {
-      headers: { "Authorization": "Bearer " + PASSWORD }
-    });
-    if (!r.ok) throw new Error("خطا در دریافت فایل");
-    const blob = await r.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const dateStr = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `emlak-nemati-${dateStr}.xls`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    result.innerHTML = `✅ فایل Excel دانلود شد`;
-    toast("Excel دانلود شد ✅");
-  } catch (e) {
-    result.innerHTML = `❌ خطا: ${escapeHtml(e.message)}`;
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "📊 دانلود فایل Excel";
-  }
-}
-
-async function downloadBackup() {
-  const btn = document.getElementById("backupBtn");
-  const result = document.getElementById("backupResult");
-  btn.disabled = true;
-  btn.textContent = "⏳ در حال آماده‌سازی...";
-  result.textContent = "";
-  try {
-    const r = await api("/api/backup");
-    const jsonStr = JSON.stringify(r, null, 2);
-    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const dateStr = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `emlak-nemati-backup-${dateStr}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    result.innerHTML = `✅ پشتیبان با <b>${r.totalKeys}</b> رکورد دانلود شد`;
-    toast("پشتیبان دانلود شد ✅");
-  } catch (e) {
-    result.innerHTML = `❌ خطا: ${escapeHtml(e.message)}`;
-    toast("خطا: " + e.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "📥 دانلود فایل پشتیبان";
-  }
-}
-
-async function renderListings(c) {
-  const { public: pubList, private: privList } = await api("/api/listings?scope=all");
-  listingsCache = { public: pubList, private: privList };
-
-  let html = `
-    <div class="search-box ${listingSearchText ? 'has-text' : ''}" id="listSearchBox">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="listingSearchInput" placeholder="جستجو در موقعیت، نوع ملک، قیمت، شماره..." value="${escapeHtml(listingSearchText)}">
-      <button type="button" class="clear-btn" onclick="clearListingSearch()">×</button>
-    </div>
-  `;
-
-  let filteredPub = pubList;
-  let filteredPriv = privList;
-
-  if (listingSearchText) {
-    filteredPub = pubList.filter(item => {
-      const searchable = [item.propertyType, item.type === "rent" ? "اجاره" : "فروش", item.location, item.price, item.size, item.document, item.phone, item.extra_notes, item.name].join(" ");
-      return matchSearch(searchable, listingSearchText);
-    });
-    filteredPriv = privList.filter(item => {
-      const searchable = [item.propertyType, item.type === "rent" ? "اجاره" : "فروش", item.location, item.price, item.size, item.document, item.phone, item.extra_notes, item.name].join(" ");
-      return matchSearch(searchable, listingSearchText);
-    });
-  }
-
-  const totalFiltered = filteredPub.length + filteredPriv.length;
-  const totalAll = pubList.length + privList.length;
-
-  if (totalAll === 0) {
-    c.innerHTML = html + '<div class="empty">هیچ ملکی ثبت نشده</div>';
-    bindListingSearch();
-    return;
-  }
-
-  if (listingSearchText) {
-    html += `<div class="search-results-info">نمایش <b>${totalFiltered}</b> از <b>${totalAll}</b> ملک برای «<b>${escapeHtml(listingSearchText)}</b>»</div>`;
-  }
-
-  if (totalFiltered === 0) {
-    html += '<div class="empty">🔍 ملکی با این جستجو پیدا نشد</div>';
-    c.innerHTML = html;
-    bindListingSearch();
-    return;
-  }
-
-  if (filteredPub.length) {
-    html += `<div class="section-title">🏘️ املاک عمومی (${filteredPub.length})</div>`;
-    html += filteredPub.map(item => listingCard(item, true)).join("");
-  }
-  if (filteredPriv.length) {
-    html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${filteredPriv.length})</div>`;
-    html += filteredPriv.map(item => listingCard(item, false)).join("");
-  }
-
-  c.innerHTML = html;
-  bindListingSearch();
-}
-
-function bindListingSearch() {
-  const input = document.getElementById("listingSearchInput");
-  if (!input) return;
-  if (listingSearchText) {
-    input.focus();
-    input.setSelectionRange(input.value.length, input.value.length);
-  }
-  input.addEventListener("input", e => {
-    listingSearchText = e.target.value;
-    const c = document.getElementById("content");
-    renderListings(c);
+  return String(s).replace(/[&<>"']/g, function(m) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m];
   });
 }
 
-function clearListingSearch() {
-  listingSearchText = "";
-  const c = document.getElementById("content");
-  renderListings(c);
-}
-
-function listingCard(item, isPublic) {
-  const typeLabel = item.type === "rent" ? "اجاره" : "فروش";
-  const typeClass = item.type === "rent" ? "rent" : "sell";
-  let mediaHtml = "";
-  if (item.mediaFileId) {
-    const mediaUrl = API_BASE + "/api/media?fileId=" + encodeURIComponent(item.mediaFileId) + "&token=" + encodeURIComponent(PASSWORD);
-    if (item.mediaType === "video") mediaHtml = `<div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
-    else mediaHtml = `<div class="media-wrap"><img src="${mediaUrl}" alt="ملک" loading="lazy" onclick="window.open('${mediaUrl}','_blank')"></div>`;
+function getQueryParam(name) {
+  var params = window.location.search.substring(1).split("&");
+  for (var i = 0; i < params.length; i++) {
+    var pair = params[i].split("=");
+    if (pair[0] === name) return decodeURIComponent(pair[1] || "");
   }
-  return `
-    <div class="item">
-      <div class="item-header"><div><span class="item-title">${escapeHtml(item.propertyType || "ملک")}</span><span class="item-badge ${typeClass}">${typeLabel}</span><span class="item-badge ${isPublic ? "pub" : "priv"}">${isPublic ? "عمومی" : "خصوصی"}</span></div></div>
-      ${item.location ? `<div class="item-row">📍 موقعیت: <b>${escapeHtml(item.location)}</b></div>` : ""}
-      ${item.size ? `<div class="item-row">📐 متراژ: <b>${escapeHtml(item.size)}</b></div>` : ""}
-      ${item.price ? `<div class="item-row">💰 قیمت: <b>${escapeHtml(item.price)}</b></div>` : ""}
-      ${item.document ? `<div class="item-row">📄 سند: <b>${escapeHtml(item.document)}</b></div>` : ""}
-      ${item.phone ? `<div class="item-row">📞 تماس: <b>${escapeHtml(item.phone)}</b></div>` : ""}
-      ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
-      ${mediaHtml}
-      <div class="item-actions">
-        <button class="edit-btn" onclick="editListing('${escapeHtml(item._key)}')">✏️ ویرایش</button>
-        ${isPublic ? `<button class="link-btn" onclick="copyListingLink('${escapeHtml(item._key)}')">🔗 کپی لینک</button>` : ""}
-        ${isPublic ? `<button class="secondary small" onclick="openListingLink('${escapeHtml(item._key)}')">👁️ نمایش</button>` : ""}
-        ${isPublic ? `<button class="channel-btn" onclick="sendToChannel('${escapeHtml(item._key)}', this)">📢 ارسال به کانال</button>` : ""}
-        <button class="secondary small" onclick="quickAppt('${escapeHtml(item._key)}')">📅 قرار بازدید</button>
-        <button class="danger" onclick="deleteListing('${escapeHtml(item._key)}')">🗑️ حذف</button>
-      </div>
-    </div>
-  `;
+  return "";
 }
 
-async function uploadMedia() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*,video/*";
-  input.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const maxSize = 20 * 1024 * 1024;
-    if (file.size > maxSize) { toast("حجم فایل بیشتر از ۲۰ مگابایته", "error"); return; }
-    const isVideo = file.type.startsWith("video/");
-    const btn = document.getElementById("uploadMediaBtn");
-    const original = btn ? btn.textContent : "";
-    if (btn) { btn.disabled = true; btn.textContent = "⏳ در حال آپلود..."; }
-    try {
-      const r = await fetch(API_BASE + "/api/upload-media", {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + PASSWORD, "Content-Type": file.type },
-        body: file
+function isNew(dateIso) {
+  if (!dateIso) return false;
+  var days = (Date.now() - new Date(dateIso).getTime()) / (1000*60*60*24);
+  return days <= 3;
+}
+
+function init() {
+  document.getElementById("footerWa").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent("سلام، از سایت املاک نعمتی تماس می‌گیرم.");
+
+  var id = getQueryParam("id");
+  if (id) {
+    showSingleListing(id);
+  } else {
+    showListings();
+  }
+}
+
+function showListings() {
+  document.getElementById("totalBadge").style.display = "inline-block";
+  document.getElementById("singleFixed").style.display = "none";
+
+  var html = '<div class="search-wrap">' +
+    '<input type="text" id="searchInput" placeholder="جستجو در موقعیت، نوع ملک، قیمت...">' +
+    '</div>' +
+
+    '<div class="filters-section">' +
+      '<div class="filter-row">' +
+        '<div class="filter-label">🏠 نوع معامله</div>' +
+        '<div class="filters" id="filtersType">' +
+          '<button type="button" class="filter active" data-filter-type="all">📂 همه</button>' +
+          '<button type="button" class="filter" data-filter-type="sell">💰 فروش</button>' +
+          '<button type="button" class="filter" data-filter-type="rent">🏠 اجاره</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="filter-row">' +
+        '<div class="filter-label">🏘️ نوع ملک</div>' +
+        '<div class="filters" id="filtersProperty">' +
+          '<button type="button" class="filter active" data-filter-prop="all">📂 همه</button>' +
+          '<button type="button" class="filter" data-filter-prop="آپارتمان">🏢 آپارتمان</button>' +
+          '<button type="button" class="filter" data-filter-prop="ویلا">🏡 ویلا / ویلایی</button>' +
+          '<button type="button" class="filter" data-filter-prop="زمین">🌳 زمین</button>' +
+          '<button type="button" class="filter" data-filter-prop="تجاری">🏪 تجاری</button>' +
+          '<button type="button" class="filter" data-filter-prop="اداری">🏛️ اداری</button>' +
+          '<button type="button" class="filter" data-filter-prop="مغازه">🏬 مغازه</button>' +
+          '<button type="button" class="filter" data-filter-prop="واحد">🏠 واحد</button>' +
+          '<button type="button" class="filter" data-filter-prop="سایر">📦 سایر</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="results-count" id="resultsCount"></div>' +
+    '<div id="listingsGrid" class="grid"></div>';
+
+  document.getElementById("appContent").innerHTML = html;
+
+  document.getElementById("filtersType").addEventListener("click", function(e) {
+    var t = e.target || e.srcElement;
+    while (t && t.className && t.className.indexOf("filter") === -1) t = t.parentNode;
+    if (!t || !t.getAttribute) return;
+    var all = document.querySelectorAll("#filtersType .filter");
+    for (var i = 0; i < all.length; i++) all[i].className = "filter";
+    t.className = "filter active";
+    filterType = t.getAttribute("data-filter-type");
+    renderList();
+  });
+
+  document.getElementById("filtersProperty").addEventListener("click", function(e) {
+    var t = e.target || e.srcElement;
+    while (t && t.className && t.className.indexOf("filter") === -1) t = t.parentNode;
+    if (!t || !t.getAttribute) return;
+    var all = document.querySelectorAll("#filtersProperty .filter");
+    for (var i = 0; i < all.length; i++) all[i].className = "filter";
+    t.className = "filter active";
+    filterProperty = t.getAttribute("data-filter-prop");
+    renderList();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", function(e) {
+    searchText = e.target.value;
+    renderList();
+  });
+
+  loadListings();
+}
+
+function loadListings() {
+  var grid = document.getElementById("listingsGrid");
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><div>در حال بارگذاری املاک...</div></div>';
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", API_BASE + "/api/public/listings", true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (!data.ok) throw new Error(data.error || "خطا");
+          allListings = data.listings || [];
+          renderList();
+        } catch (e) {
+          grid.innerHTML = '<div class="empty"><div class="icon">😔</div><h2>خطا</h2><p>' + escapeHtml(e.message) + '</p></div>';
+        }
+      } else {
+        grid.innerHTML = '<div class="empty"><div class="icon">😔</div><h2>خطا</h2><p>کد: ' + xhr.status + '</p></div>';
+      }
+    }
+  };
+  xhr.send();
+}
+
+function applyFilters() {
+  var list = allListings.slice();
+  if (filterType === "sell" || filterType === "rent") {
+    list = list.filter(function(l) { return l.type === filterType; });
+  }
+  if (filterProperty !== "all") {
+    if (filterProperty === "ویلا") {
+      list = list.filter(function(l) {
+        var pt = l.propertyType || "";
+        return pt.indexOf("ویلا") !== -1 || pt.indexOf("ویلایی") !== -1;
       });
-      const data = await r.json();
-      if (!data.ok) throw new Error(data.error || "خطای آپلود");
-      const mediaTypeEl = document.getElementById("e_mediaType");
-      const mediaFileIdEl = document.getElementById("e_mediaFileId");
-      if (mediaTypeEl) mediaTypeEl.value = data.mediaType;
-      if (mediaFileIdEl) mediaFileIdEl.value = data.fileId;
-      const previewBox = document.getElementById("mediaPreviewBox");
-      if (previewBox) {
-        const mediaUrl = API_BASE + "/api/media?fileId=" + encodeURIComponent(data.fileId) + "&token=" + encodeURIComponent(PASSWORD);
-        if (data.mediaType === "video") previewBox.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه جدید:</div><div class="media-wrap"><video src="${mediaUrl}" controls preload="metadata"></video></div>`;
-        else previewBox.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه جدید:</div><div class="media-wrap"><img src="${mediaUrl}" alt="پیش‌نمایش"></div>`;
-      }
-      toast("فایل آپلود شد ✅");
-    } catch (err) { toast("خطا: " + err.message, "error"); }
-    finally { if (btn) { btn.disabled = false; btn.textContent = original; } }
-  };
-  input.click();
-}
-
-function editListing(key) {
-  const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === key);
-  if (!item) return toast("ملک پیدا نشد", "error");
-  const isPublic = key.startsWith("pub_listing_");
-  document.getElementById("modal-root").innerHTML = `
-    <div class="modal-bg" onclick="if(event.target===this) closeModal()">
-      <div class="modal">
-        <div class="modal-header"><h2>✏️ ویرایش ملک</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-        <label>نوع معامله</label>
-        <select id="e_type"><option value="sell" ${item.type === 'sell' ? 'selected' : ''}>💰 فروش</option><option value="rent" ${item.type === 'rent' ? 'selected' : ''}>🏠 رهن و اجاره</option></select>
-        <label>نوع ملک</label>
-        <input id="e_propertyType" placeholder="آپارتمان، ویلا..." value="${escapeHtml(item.propertyType || "")}">
-        <label>متراژ</label>
-        <input id="e_size" placeholder="۱۲۰ متر" value="${escapeHtml(item.size || "")}">
-        <label>سند</label>
-        <input id="e_document" placeholder="تک‌برگ..." value="${escapeHtml(item.document || "")}">
-        <label>آدرس کامل</label>
-        <textarea id="e_location" rows="2" placeholder="مثال: قم، خیابان کلهری، کوچه ۶، پلاک ۱۰۰">${escapeHtml(item.location || "")}</textarea>
-        <label>قیمت</label>
-        <input id="e_price" placeholder="۵ میلیارد" value="${escapeHtml(item.price || "")}">
-        <label>شماره تماس</label>
-        <input id="e_phone" placeholder="۰۹..." value="${escapeHtml(item.phone || "")}">
-
-        <label>عکس / ویدیو</label>
-        <button id="uploadMediaBtn" type="button" class="upload-btn" style="width:100%;margin-bottom:8px" onclick="uploadMedia()">
-          📤 آپلود عکس یا ویدیو از گوشی
-        </button>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
-          💡 فایل انتخاب کن → به چت خصوصی ربات فرستاده میشه و File ID پر میشه
-        </div>
-
-        <label>نوع رسانه (خودکار پر میشه)</label>
-        <select id="e_mediaType">
-          <option value="" ${!item.mediaType ? 'selected' : ''}>بدون رسانه</option>
-          <option value="photo" ${item.mediaType === 'photo' ? 'selected' : ''}>عکس</option>
-          <option value="video" ${item.mediaType === 'video' ? 'selected' : ''}>ویدیو</option>
-        </select>
-
-        <label>File ID رسانه</label>
-        <input id="e_mediaFileId" placeholder="خودکار پر میشه" value="${escapeHtml(item.mediaFileId || "")}">
-
-        <div id="mediaPreviewBox">
-          ${item.mediaFileId ? `
-            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">رسانه فعلی:</div>
-            <div class="media-wrap">
-              ${item.mediaType === 'video'
-                ? `<video src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" controls preload="metadata"></video>`
-                : `<img src="${API_BASE}/api/media?fileId=${encodeURIComponent(item.mediaFileId)}&token=${encodeURIComponent(PASSWORD)}" alt="ملک">`}
-            </div>
-          ` : ""}
-        </div>
-
-        <label style="margin-top:12px">توضیحات</label>
-        <textarea id="e_extraNotes" rows="3" placeholder="توضیحات...">${escapeHtml(item.extra_notes || "")}</textarea>
-
-        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
-          ${isPublic ? "🌐 این ملک <b>عمومی</b> است — توی سایت و ربات نمایش داده میشه" : "🔒 این ملک <b>خصوصی</b> است"}
-        </div>
-
-        ${isPublic ? `
-          <div class="channel-checkbox" onclick="if(event.target.tagName!=='INPUT'){document.getElementById('e_sendToChannel').checked=!document.getElementById('e_sendToChannel').checked}">
-            <input type="checkbox" id="e_sendToChannel" checked>
-            <label for="e_sendToChannel">📢 بعد از ذخیره، خودکار به کانال بفرست</label>
-          </div>
-        ` : ""}
-
-        <div style="display:flex;gap:8px;margin-top:16px">
-          <button onclick="saveListingEdit('${escapeHtml(key)}')" style="flex:1">💾 ذخیره تغییرات</button>
-          <button class="secondary" onclick="closeModal()">لغو</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-async function saveListingEdit(key) {
-  const sendChk = document.getElementById("e_sendToChannel");
-  const data = {
-    type: document.getElementById("e_type").value,
-    propertyType: document.getElementById("e_propertyType").value,
-    size: document.getElementById("e_size").value,
-    document: document.getElementById("e_document").value,
-    location: document.getElementById("e_location").value,
-    price: document.getElementById("e_price").value,
-    phone: document.getElementById("e_phone").value,
-    mediaType: document.getElementById("e_mediaType").value || null,
-    mediaFileId: document.getElementById("e_mediaFileId").value || null,
-    extraNotes: document.getElementById("e_extraNotes").value,
-    sendToChannel: sendChk ? sendChk.checked : false
-  };
-  try {
-    const r = await api("/api/listings/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify(data) });
-    if (r.channelSent && r.channelSent.ok) toast("✅ ویرایش شد و به کانال فرستاده شد");
-    else if (r.channelSent && !r.channelSent.ok) toast("✅ ویرایش شد، ولی کانال خطا داد: " + r.channelSent.error, "error");
-    else toast("✅ ویرایش شد");
-    closeModal();
-    loadAll();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-function buildListingUrl(key) {
-  return PUBLIC_BASE + "/listings.html?id=" + encodeURIComponent(key);
-}
-
-async function copyListingLink(key) {
-  const url = buildListingUrl(key);
-  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast("لینک کپی شد ✅"); } else { prompt("لینک:", url); } }
-  catch (e) { prompt("لینک:", url); }
-}
-function openListingLink(key) { window.open(buildListingUrl(key), "_blank"); }
-async function sendToChannel(key, btn) {
-  if (!confirm("این ملک به کانال تلگرام ارسال شود؟")) return;
-  btn.disabled = true; const original = btn.textContent; btn.textContent = "در حال ارسال...";
-  try { await api("/api/send-to-channel", { method: "POST", body: JSON.stringify({ key }) }); toast("به کانال ارسال شد ✅"); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-  finally { btn.disabled = false; btn.textContent = original; }
-}
-async function quickAppt(listingKey) {
-  const item = [...listingsCache.public, ...listingsCache.private].find(l => l._key === listingKey);
-  if (!item) return;
-  await openApptForm();
-  setTimeout(() => {
-    const propSel = document.getElementById("ap_property");
-    if (propSel) propSel.value = listingKey;
-    const desc = document.getElementById("ap_propertyDesc");
-    if (desc) desc.value = (item.propertyType || "") + " - " + (item.location || "");
-  }, 100);
-}
-async function deleteListing(key) {
-  if (!confirm("این ملک حذف شود؟")) return;
-  try { await api("/api/listings/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function renderCustomers(c) {
-  const { customers } = await api("/api/customers");
-  customersCache = customers;
-
-  let html = `
-    <div class="search-box ${customerSearchText ? 'has-text' : ''}" id="custSearchBox">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="customerSearchInput" placeholder="جستجو در نام، شماره، یوزرنیم، برچسب..." value="${escapeHtml(customerSearchText)}">
-      <button type="button" class="clear-btn" onclick="clearCustomerSearch()">×</button>
-    </div>
-  `;
-
-  if (!customers.length) {
-    html += '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>';
-    c.innerHTML = html;
-    bindCustomerSearch();
-    return;
+    } else {
+      list = list.filter(function(l) { return (l.propertyType || "").indexOf(filterProperty) !== -1; });
+    }
   }
-
-  let filtered = customers;
-  if (customerSearchText) {
-    filtered = customers.filter(cust => {
-      const searchable = [cust.name, cust.phone, cust.username, cust.chatId, cust.language, cust.notes, (cust.tags || []).join(" "), String(cust.rating || "")].join(" ");
-      return matchSearch(searchable, customerSearchText);
+  if (searchText) {
+    var q = searchText.toLowerCase();
+    list = list.filter(function(l) {
+      return (l.location || "").toLowerCase().indexOf(q) !== -1 ||
+             (l.propertyType || "").toLowerCase().indexOf(q) !== -1 ||
+             (l.extra_notes || "").toLowerCase().indexOf(q) !== -1 ||
+             (l.price || "").toLowerCase().indexOf(q) !== -1;
     });
   }
+  return list;
+}
 
-  if (customerSearchText) {
-    html += `<div class="search-results-info">نمایش <b>${filtered.length}</b> از <b>${customers.length}</b> مشتری برای «<b>${escapeHtml(customerSearchText)}</b>»</div>`;
-  }
+function renderList() {
+  var grid = document.getElementById("listingsGrid");
+  var list = applyFilters();
 
-  if (filtered.length === 0) {
-    html += '<div class="empty">🔍 مشتری‌ای با این جستجو پیدا نشد</div>';
-    c.innerHTML = html;
-    bindCustomerSearch();
+  document.getElementById("totalBadge").innerHTML = '🏘️ ' + allListings.length + ' ملک موجود';
+  document.getElementById("resultsCount").innerHTML = list.length === allListings.length
+    ? 'نمایش <b>' + list.length + '</b> ملک'
+    : 'نمایش <b>' + list.length + '</b> از <b>' + allListings.length + '</b> ملک';
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty"><div class="icon">🔍</div><h2>ملکی پیدا نشد</h2><p>فیلترها رو تغییر بده</p></div>';
     return;
   }
 
-  html += filtered.map(item => {
-    const rating = parseInt(item.rating) || 0;
-    const tags = item.tags || [];
-    const noteCount = item.notes ? 1 : 0;
-    const contactCount = (item.contactHistory || []).length;
-    return `
-      <div class="item clickable" onclick="openCustomer('${escapeHtml(item._key)}')">
-        <div class="item-header"><div><span class="item-title">${escapeHtml(item.name || item.phone || "کاربر")}</span>${rating ? `<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">${"★".repeat(rating)}</span>` : ""}</div><div style="font-size:20px;color:var(--muted)">›</div></div>
-        ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-        ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-        ${tags.length ? `<div class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-        ${(noteCount || contactCount) ? `<div class="item-row" style="margin-top:8px">${noteCount ? "📝 یادداشت · " : ""}${contactCount ? `📞 ${contactCount} تماس` : ""}</div>` : ""}
-      </div>
-    `;
-  }).join("");
-
-  c.innerHTML = html;
-  bindCustomerSearch();
-}
-
-function bindCustomerSearch() {
-  const input = document.getElementById("customerSearchInput");
-  if (!input) return;
-  if (customerSearchText) {
-    input.focus();
-    input.setSelectionRange(input.value.length, input.value.length);
+  var html = "";
+  for (var i = 0; i < list.length; i++) {
+    html += cardHtml(list[i]);
   }
-  input.addEventListener("input", e => {
-    customerSearchText = e.target.value;
-    const c = document.getElementById("content");
-    renderCustomers(c);
-  });
+  grid.innerHTML = html;
 }
 
-function clearCustomerSearch() {
-  customerSearchText = "";
-  const c = document.getElementById("content");
-  renderCustomers(c);
+function cardHtml(l) {
+  var typeLabel = l.type === "rent" ? "🏠 اجاره" : "💰 فروش";
+  var typeClass = l.type === "rent" ? "rent" : "sell";
+  var isN = isNew(l.date);
+
+  var mediaHtml = "";
+  if (l.mediaFileId && l.mediaType === "photo") {
+    var url = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    mediaHtml = '<img src="' + url + '" alt="' + escapeHtml(l.propertyType || "ملک") + '">';
+  } else if (l.mediaFileId && l.mediaType === "video") {
+    var vurl = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    mediaHtml = '<video src="' + vurl + '" controls preload="metadata" playsinline style="width:100%;height:220px;object-fit:cover;display:block"></video>';
+  } else {
+    var icons = { "آپارتمان": "🏢", "ویلا": "🏡", "ویلایی": "🏡", "زمین": "🌳", "تجاری": "🏪", "اداری": "🏛️", "مغازه": "🏬", "واحد": "🏠" };
+    var icon = icons[l.propertyType] || "🏘️";
+    mediaHtml = '<div class="placeholder">' + icon + '</div>';
+  }
+
+  var infoHtml = "";
+  if (l.location) infoHtml += '<div class="card-info"><span class="lbl">📍 موقعیت:</span> ' + escapeHtml(l.location) + '</div>';
+  if (l.size) infoHtml += '<div class="card-info"><span class="lbl">📐 متراژ:</span> ' + escapeHtml(l.size) + '</div>';
+  if (l.document) infoHtml += '<div class="card-info"><span class="lbl">📄 سند:</span> ' + escapeHtml(l.document) + '</div>';
+
+  var notesHtml = "";
+  if (l.extra_notes) {
+    notesHtml = '<div class="card-notes"><div class="card-notes-title">📝 توضیحات</div>' + escapeHtml(l.extra_notes) + '</div>';
+  }
+
+  var listingUrl = "listings.html?id=" + encodeURIComponent(l.key);
+  var waMsg = "سلام، درباره این ملک سوال داشتم:\n" +
+              "🏘️ " + (l.propertyType || "") + "\n" +
+              "📍 " + (l.location || "") + "\n" +
+              (l.price ? "💰 " + l.price + "\n" : "") +
+              "\n🔗 " + "https://emlak-nemati.pages.dev/" + listingUrl;
+  var waUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
+
+  return '<div class="card">' +
+    '<div class="card-media" onclick="window.location.href=\'' + listingUrl + '\'">' +
+      mediaHtml +
+      '<div class="type-badge ' + typeClass + '">' + typeLabel + '</div>' +
+      (isN ? '<div class="new-badge">✨ جدید</div>' : '') +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="card-title">' + escapeHtml(l.propertyType || "ملک") + '</div>' +
+      (l.price ? '<div class="card-price">💰 ' + escapeHtml(l.price) + '</div>' : '') +
+      infoHtml +
+      notesHtml +
+      '<div class="card-actions">' +
+        '<a class="card-btn card-btn-details" href="' + listingUrl + '">👁️ جزئیات</a>' +
+        '<a class="card-btn card-btn-wa" href="' + waUrl + '" target="_blank">💬 واتساپ</a>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
 }
 
-function openCustomer(key) {
-  const cust = customersCache.find(x => x._key === key);
-  if (!cust) return;
-  renderCustomerModal(cust);
-}
+function showSingleListing(id) {
+  document.getElementById("totalBadge").style.display = "none";
+  var app = document.getElementById("appContent");
+  app.innerHTML = '<div class="single-wrap">' +
+    '<a class="back-btn" href="listings.html">← بازگشت به لیست</a>' +
+    '<div id="singleContent">' +
+      '<div class="loading"><div class="spinner"></div><div>در حال بارگذاری...</div></div>' +
+    '</div>' +
+  '</div>';
 
-let currentRating = 0, currentTags = [], currentHistory = [];
-
-function renderCustomerModal(cust) {
-  const rating = parseInt(cust.rating) || 0;
-  const tags = cust.tags || [];
-  const history = cust.contactHistory || [];
-  currentRating = rating; currentTags = [...tags]; currentHistory = [...history];
-  document.getElementById("modal-root").innerHTML = `
-    <div class="modal-bg" onclick="if(event.target===this) closeModal()">
-      <div class="modal">
-        <div class="modal-header"><h2>👤 ${escapeHtml(cust.name || cust.phone || "کاربر")}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-        <div class="modal-section"><h3>اطلاعات پایه</h3>
-          ${cust.phone ? `<div class="item-row">📞 ${escapeHtml(cust.phone)}</div>` : ""}
-          ${cust.username ? `<div class="item-row">👤 @${escapeHtml(cust.username)}</div>` : ""}
-          ${cust.chatId ? `<div class="item-row">💬 Chat ID: <b>${escapeHtml(cust.chatId)}</b></div>` : ""}
-          ${cust.language ? `<div class="item-row">🌐 زبان: <b>${escapeHtml(cust.language)}</b></div>` : ""}
-          ${cust.date ? `<div class="item-row">📅 عضویت: ${escapeHtml(toPersianDate(cust.date))}</div>` : ""}
-        </div>
-        <div class="modal-section"><h3>⭐ امتیاز اهمیت</h3><div id="ratingBox">${renderStars(rating, true)}</div></div>
-        <div class="modal-section"><h3>🏷️ برچسب‌ها</h3>
-          <div id="tagsBox" class="tag-list">${tags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join("")}</div>
-          <div class="tag-input-wrap"><input id="newTagInput" placeholder="برچسب جدید..."><button class="small" onclick="addTag()">افزودن</button></div>
-          <div class="quick-tags">${QUICK_TAGS.map(t => `<span class="qt" onclick="quickAddTag('${escapeHtml(t)}')">${escapeHtml(t)}</span>`).join("")}</div>
-        </div>
-        <div class="modal-section"><h3>📝 یادداشت</h3><textarea id="notesBox" rows="3" placeholder="یادداشت...">${escapeHtml(cust.notes || "")}</textarea></div>
-        <div class="modal-section"><h3>📞 تاریخچه تماس</h3><div id="historyBox"></div><textarea id="newContactText" rows="2" placeholder="متن تماس جدید..." style="margin-top:8px"></textarea><button class="small" onclick="addContact()">➕ افزودن تماس</button></div>
-        <div class="modal-section"><button class="secondary small" onclick="quickApptForCustomer('${escapeHtml(cust._key)}')" style="width:100%">📅 ثبت قرار برای این مشتری</button></div>
-        <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap"><button onclick="saveCustomer('${escapeHtml(cust._key)}')" style="flex:1">💾 ذخیره تغییرات</button><button class="danger" onclick="deleteCustomer('${escapeHtml(cust._key)}')">🗑️ حذف</button></div>
-      </div>
-    </div>
-  `;
-  renderHistoryBox();
-  setupStarClicks();
-}
-
-async function quickApptForCustomer(custKey) {
-  closeModal();
-  await openApptForm();
-  setTimeout(() => { const sel = document.getElementById("ap_customer"); if (sel) { sel.value = custKey; onCustomerPick(); } }, 100);
-}
-
-function setupStarClicks() {
-  const box = document.getElementById("ratingBox");
-  if (!box) return;
-  currentRating = parseInt(box.querySelector(".stars").dataset.rating) || 0;
-  box.querySelectorAll(".star").forEach(s => {
-    s.addEventListener("click", () => { currentRating = parseInt(s.dataset.val); box.innerHTML = renderStars(currentRating, true); setupStarClicks(); });
-  });
-}
-function addTag() { const input = document.getElementById("newTagInput"); const v = input.value.trim(); if (!v) return; if (!currentTags.includes(v)) { currentTags.push(v); refreshTagsBox(); } input.value = ""; }
-function quickAddTag(t) { if (!currentTags.includes(t)) { currentTags.push(t); refreshTagsBox(); } }
-function removeTag(t) { currentTags = currentTags.filter(x => x !== t); refreshTagsBox(); }
-function refreshTagsBox() { const box = document.getElementById("tagsBox"); if (!box) return; box.innerHTML = currentTags.map(t => `<span class="tag">${escapeHtml(t)}<span class="rm" onclick="removeTag('${escapeHtml(t)}')">×</span></span>`).join(""); }
-function addContact() { const ta = document.getElementById("newContactText"); const text = ta.value.trim(); if (!text) return toast("متن تماس خالی است", "error"); currentHistory.push({ date: new Date().toISOString(), text }); ta.value = ""; renderHistoryBox(); }
-function removeContact(i) { currentHistory = currentHistory.filter((_, idx) => idx !== i); renderHistoryBox(); }
-function renderHistoryBox() {
-  const box = document.getElementById("historyBox");
-  if (!box) return;
-  if (!currentHistory.length) { box.innerHTML = '<div class="empty" style="padding:20px;font-size:13px">هنوز تماسی ثبت نشده</div>'; return; }
-  box.innerHTML = currentHistory.map((h, i) => `<div class="contact-item"><div class="date">${escapeHtml(toPersianDate(h.date))}</div><div>${escapeHtml(h.text)}</div><div style="text-align:left;margin-top:6px"><button class="danger" style="padding:4px 10px;font-size:11px" onclick="removeContact(${i})">حذف</button></div></div>`).join("");
-}
-async function saveCustomer(key) {
-  try {
-    const notes = document.getElementById("notesBox").value;
-    const r = await api("/api/customers/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify({ rating: currentRating, tags: currentTags, notes, contactHistory: currentHistory }) });
-    toast("ذخیره شد ✅");
-    const idx = customersCache.findIndex(x => x._key === key);
-    if (idx >= 0) customersCache[idx] = { ...customersCache[idx], ...r.customer };
-    closeModal();
-    renderTab();
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-}
-function closeModal() { document.getElementById("modal-root").innerHTML = ""; currentRating = 0; currentTags = []; currentHistory = []; }
-async function deleteCustomer(key) {
-  if (!confirm("این مشتری حذف شود؟")) return;
-  try { await api("/api/customers/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); closeModal(); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function renderRequests(c) {
-  const { requests } = await api("/api/requests");
-  if (!requests.length) { c.innerHTML = '<div class="empty">هیچ درخواستی ثبت نشده</div>'; return; }
-  c.innerHTML = requests.map(item => `
-    <div class="item">
-      <div class="item-header"><div><span class="item-title">${escapeHtml(item.propertyType || "درخواست ملک")}</span><span class="item-badge ${item.type === "rent" ? "rent" : "sell"}">${item.type === "rent" ? "اجاره" : "فروش"}</span></div></div>
-      ${item.location ? `<div class="item-row">📍 ${escapeHtml(item.location)}</div>` : ""}
-      ${item.budget ? `<div class="item-row">💰 بودجه: <b>${escapeHtml(item.budget)}</b></div>` : ""}
-      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-      ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
-      ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions"><button class="suggest-btn" onclick="suggestForRequest('${escapeHtml(item._key)}', this)">🎯 پیشنهاد ملک</button><button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
-    </div>
-  `).join("");
-}
-async function suggestForRequest(key, btn) {
-  if (!confirm("ملک‌های مناسب برای این مشتری پیدا و ارسال شود؟")) return;
-  btn.disabled = true; const original = btn.textContent; btn.textContent = "⏳ در حال جستجو...";
-  try {
-    const r = await api("/api/suggest-for-request", { method: "POST", body: JSON.stringify({ requestKey: key }) });
-    if (r.ok) toast(`✅ ${r.sent} ملک ارسال شد`);
-    else toast(r.error || "خطا", "error");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-  finally { btn.disabled = false; btn.textContent = original; }
-}
-async function deleteRequest(key) {
-  if (!confirm("این درخواست حذف شود؟")) return;
-  try { await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function renderFileRequests(c) {
-  const { fileRequests } = await api("/api/file-requests");
-  if (!fileRequests.length) { c.innerHTML = '<div class="empty">هیچ درخواست فایل‌یابی ثبت نشده</div>'; return; }
-  c.innerHTML = fileRequests.map(item => `
-    <div class="item">
-      <div class="item-header"><div><span class="item-title">🔍 درخواست فایل‌یابی</span></div></div>
-      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-      ${item.text ? `<div class="item-row">📝 ${escapeHtml(item.text)}</div>` : ""}
-      ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions"><button class="danger" onclick="deleteFileRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
-    </div>
-  `).join("");
-}
-async function deleteFileRequest(key) {
-  if (!confirm("این درخواست حذف شود؟")) return;
-  try { await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-function renderAddForm(c) {
-  c.innerHTML = `
-    <div class="form-card">
-      <div class="section-title">➕ افزودن ملک جدید</div>
-      <div class="form-grid">
-        <div><label>نوع</label><select id="f_type"><option value="sell">فروش</option><option value="rent">اجاره</option></select></div>
-        <div><label>نمایش</label><select id="f_isPublic"><option value="true">عمومی</option><option value="false">خصوصی</option></select></div>
-        <div><label>نوع ملک</label><input id="f_propertyType" placeholder="آپارتمان، ویلا..."></div>
-        <div><label>متراژ</label><input id="f_size" placeholder="۱۲۰ متر"></div>
-        <div><label>سند</label><input id="f_document" placeholder="تک‌برگ..."></div>
-        <div><label>موقعیت</label><input id="f_location" placeholder="شهر، محله"></div>
-        <div><label>قیمت</label><input id="f_price" placeholder="۵ میلیارد"></div>
-        <div><label>شماره تماس</label><input id="f_phone" placeholder="۰۹..."></div>
-        <div><label>نوع رسانه</label><select id="f_mediaType"><option value="">بدون</option><option value="photo">عکس</option><option value="video">ویدیو</option></select></div>
-        <div><label>File ID رسانه</label><input id="f_mediaFileId" placeholder="اختیاری"></div>
-        <div class="full"><label>توضیحات</label><textarea id="f_extraNotes" rows="3"></textarea></div>
-        <div class="full"><button onclick="submitListing()" id="submitBtn" style="width:100%">💾 ذخیره ملک</button></div>
-      </div>
-    </div>
-  `;
-}
-async function submitListing() {
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true; btn.textContent = "در حال ذخیره...";
-  try {
-    await api("/api/listings", { method: "POST", body: JSON.stringify({
-      type: document.getElementById("f_type").value,
-      isPublic: document.getElementById("f_isPublic").value === "true",
-      propertyType: document.getElementById("f_propertyType").value,
-      size: document.getElementById("f_size").value,
-      document: document.getElementById("f_document").value,
-      location: document.getElementById("f_location").value,
-      price: document.getElementById("f_price").value,
-      phone: document.getElementById("f_phone").value,
-      mediaType: document.getElementById("f_mediaType").value || null,
-      mediaFileId: document.getElementById("f_mediaFileId").value || null,
-      extraNotes: document.getElementById("f_extraNotes").value,
-      name: "املاک نعمتی"
-    }) });
-    toast("ملک ذخیره شد ✅");
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelector('.tab[data-tab="listings"]').classList.add("active");
-    currentTab = "listings";
-    renderTab();
-  } catch (e) { toast("خطا: " + e.message, "error"); btn.disabled = false; btn.textContent = "💾 ذخیره ملک"; }
-}
-
-function renderBroadcast(c) {
-  c.innerHTML = `
-    <div class="form-card">
-      <div class="section-title">📢 ارسال پیام گروهی</div>
-      <label>متن پیام</label>
-      <textarea id="b_text" rows="6" placeholder="متن پیام..."></textarea>
-      <button onclick="sendBroadcast()" id="bcastBtn" style="width:100%">🚀 ارسال به همه مشتری‌ها</button>
-      <div id="bcastResult" style="margin-top:14px;color:var(--muted);font-size:14px"></div>
-    </div>
-  `;
-}
-async function sendBroadcast() {
-  const text = document.getElementById("b_text").value.trim();
-  if (!text) return toast("متن پیام خالی است", "error");
-  if (!confirm("پیام به همه مشتری‌ها ارسال شود؟")) return;
-  const btn = document.getElementById("bcastBtn");
-  btn.disabled = true; btn.textContent = "در حال ارسال...";
-  try {
-    const r = await api("/api/broadcast", { method: "POST", body: JSON.stringify({ text, target: "customers" }) });
-    document.getElementById("bcastResult").innerHTML = `✅ ارسال شد: <b>${r.sent}</b> | ❌ ناموفق: <b>${r.failed}</b> | 📊 کل: <b>${r.total}</b>`;
-    toast("ارسال انجام شد");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-  finally { btn.disabled = false; btn.textContent = "🚀 ارسال به همه مشتری‌ها"; }
-}
-
-document.getElementById("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
-
-(async function init() {
-  if (PASSWORD) {
-    try {
-      const r = await fetch(API_BASE + "/api/stats", { headers: { "Authorization": "Bearer " + PASSWORD } });
-      if (r.ok) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        loadAll();
-        return;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", API_BASE + "/api/public/listing/" + encodeURIComponent(id), true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (!data.ok || !data.listing) {
+            document.getElementById("singleContent").innerHTML = '<div class="empty"><div class="icon">🏚️</div><h2>ملک پیدا نشد</h2></div>';
+            return;
+          }
+          renderSingle(data.listing);
+        } catch (e) {
+          document.getElementById("singleContent").innerHTML = '<div class="empty"><div class="icon">🏚️</div><h2>خطا</h2><p>' + escapeHtml(e.message) + '</p></div>';
+        }
+      } else {
+        document.getElementById("singleContent").innerHTML = '<div class="empty"><div class="icon">🏚️</div><h2>ملک پیدا نشد</h2></div>';
       }
-    } catch (e) {}
-    logout();
+    }
+  };
+  xhr.send();
+}
+
+function renderSingle(l) {
+  var typeLabel = l.type === "rent" ? "🏠 اجاره" : "💰 فروش";
+  var typeClass = l.type === "rent" ? "rent" : "sell";
+  var isN = isNew(l.date);
+
+  var mediaHtml = "";
+  if (l.mediaFileId && l.mediaType === "photo") {
+    var url = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    mediaHtml = '<div class="single-media"><img src="' + url + '" alt="ملک"></div>';
+  } else if (l.mediaFileId && l.mediaType === "video") {
+    var vurl = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
+    mediaHtml = '<div class="single-media"><video src="' + vurl + '" controls preload="metadata" playsinline></video></div>';
+  } else {
+    var icons = { "آپارتمان": "🏢", "ویلا": "🏡", "ویلایی": "🏡", "زمین": "🌳", "تجاری": "🏪", "اداری": "🏛️", "مغازه": "🏬", "واحد": "🏠" };
+    var icon = icons[l.propertyType] || "🏘️";
+    mediaHtml = '<div class="single-media"><div class="placeholder">' + icon + '</div></div>';
   }
-})();
+
+  var infoHtml = "";
+  if (l.location) infoHtml += '<div class="single-info-item"><span class="lbl">📍 موقعیت</span><span class="vlu">' + escapeHtml(l.location) + '</span></div>';
+  if (l.size) infoHtml += '<div class="single-info-item"><span class="lbl">📐 متراژ</span><span class="vlu">' + escapeHtml(l.size) + '</span></div>';
+  if (l.document) infoHtml += '<div class="single-info-item"><span class="lbl">📄 سند</span><span class="vlu">' + escapeHtml(l.document) + '</span></div>';
+
+  var notesHtml = "";
+  if (l.extra_notes) {
+    notesHtml = '<div class="single-notes"><div class="single-notes-title">📝 توضیحات ملک</div>' + escapeHtml(l.extra_notes) + '</div>';
+  }
+
+  var html = mediaHtml +
+    '<div class="single-card">' +
+      '<div class="single-badges">' +
+        '<span class="single-badge ' + typeClass + '">' + typeLabel + '</span>' +
+        (isN ? '<span class="single-badge new">✨ جدید</span>' : '') +
+      '</div>' +
+      '<div class="single-title">' + escapeHtml(l.propertyType || "ملک") + '</div>' +
+      (l.price ? '<div class="single-price">💰 ' + escapeHtml(l.price) + '</div>' : '') +
+      infoHtml +
+    '</div>' +
+    notesHtml +
+    '<button class="single-share" onclick="shareSingle()" type="button">📤 اشتراک‌گذاری این ملک</button>';
+
+  document.getElementById("singleContent").innerHTML = html;
+
+  var singleFooterHtml = '<div class="footer-brand">🏠 املاک نعمتی</div>' +
+    '<div class="footer-info">📍 قم، خیابان کلهری</div>' +
+    '<div class="footer-info">📞 0912 452 7903</div>' +
+    '<div class="footer-btns">' +
+      '<a class="footer-btn footer-wa" href="https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent("سلام، از سایت املاک نعمتی تماس می‌گیرم.") + '" target="_blank">💬 واتساپ</a>' +
+      '<a class="footer-btn footer-tg" href="https://t.me/emlak_nemati" target="_blank">📢 کانال تلگرام</a>' +
+    '</div>' +
+    '<div style="margin-top:16px">© تمام حقوق محفوظ است</div>';
+  document.getElementById("mainFooter").innerHTML = singleFooterHtml;
+
+  document.getElementById("singleFixed").style.display = "block";
+
+  if (l.phone) {
+    var cleanPhone = String(l.phone).replace(/[^\d+]/g, "");
+    document.getElementById("singleCallBtn").href = "tel:" + cleanPhone;
+  } else {
+    document.getElementById("singleCallBtn").style.display = "none";
+  }
+
+  var waMsg = "سلام، درباره این ملک سوال داشتم:\n" +
+              "🏘️ " + (l.propertyType || "") + "\n" +
+              "📍 " + (l.location || "") + "\n" +
+              (l.price ? "💰 " + l.price + "\n" : "") +
+              "\n🔗 " + window.location.href;
+  document.getElementById("singleWaBtn").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
+}
+
+function shareSingle() {
+  var url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: "املاک نعمتی", text: "این ملک رو ببین:", url: url }).catch(function() {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() { alert("✅ لینک کپی شد"); }).catch(function() { prompt("لینک:", url); });
+  } else {
+    prompt("لینک:", url);
+  }
+}
+
+init();
 </script>
 </body>
- </html>
+</html>
