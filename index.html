@@ -94,6 +94,63 @@
   .loading { text-align: center; padding: 30px; color: var(--muted); }
   .section-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
+  /* ⭐ SEARCH BOX */
+  .search-box {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 14px 48px 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+    margin-bottom: 0;
+    outline: none;
+  }
+  .search-box input:focus { border-color: var(--primary); }
+  .search-box .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-box .clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--card2);
+    border: none;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-box.has-text .clear-btn { display: flex; }
+  .search-box .clear-btn:hover { background: var(--danger); color: #fff; }
+
+  .search-results-info {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .search-results-info b { color: var(--text); }
+
   .stars { display: inline-flex; gap: 3px; font-size: 20px; cursor: pointer; user-select: none; }
   .stars .star { color: #4a5568; transition: .15s; }
   .stars .star.on { color: #fbbf24; }
@@ -232,6 +289,10 @@ let customersCache = [];
 let listingsCache = { public: [], private: [] };
 let appointmentsCache = [];
 
+// ⭐ جستجو
+let customerSearchText = "";
+let listingSearchText = "";
+
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -289,6 +350,25 @@ function fromISOToLocalInput(iso) {
   const d = new Date(iso);
   const pad = n => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// ⭐ جستجو - نرمال‌سازی متن (تبدیل اعداد فارسی به انگلیسی)
+function normalizeSearch(s) {
+  if (!s) return "";
+  const persian = "۰۱۲۳۴۵۶۷۸۹";
+  const arabic = "٠١٢٣٤٥٦٧٨٩";
+  const english = "0123456789";
+  let result = String(s).toLowerCase();
+  for (let i = 0; i < 10; i++) {
+    result = result.replace(new RegExp(persian[i], "g"), english[i]);
+    result = result.replace(new RegExp(arabic[i], "g"), english[i]);
+  }
+  return result;
+}
+
+function matchSearch(text, query) {
+  if (!query) return true;
+  return normalizeSearch(text).indexOf(normalizeSearch(query)) !== -1;
 }
 
 async function doLogin() {
@@ -699,14 +779,95 @@ async function downloadBackup() {
   }
 }
 
+// ⭐ LISTINGS با جستجو
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
   listingsCache = { public: pubList, private: privList };
-  if (pubList.length === 0 && privList.length === 0) { c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>'; return; }
-  let html = "";
-  if (pubList.length) { html += `<div class="section-title">🏘️ املاک عمومی (${pubList.length})</div>`; html += pubList.map(item => listingCard(item, true)).join(""); }
-  if (privList.length) { html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${privList.length})</div>`; html += privList.map(item => listingCard(item, false)).join(""); }
+
+  // سرچ‌باکس
+  let html = `
+    <div class="search-box ${listingSearchText ? 'has-text' : ''}" id="listSearchBox">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="listingSearchInput" placeholder="جستجو در موقعیت، نوع ملک، قیمت، شماره..." value="${escapeHtml(listingSearchText)}">
+      <button type="button" class="clear-btn" onclick="clearListingSearch()">×</button>
+    </div>
+    <div class="search-results-info" id="listResultsInfo"></div>
+  `;
+
+  // فیلتر
+  let filteredPub = pubList;
+  let filteredPriv = privList;
+
+  if (listingSearchText) {
+    filteredPub = pubList.filter(item => {
+      const searchable = [
+        item.propertyType, item.type === "rent" ? "اجاره" : "فروش",
+        item.location, item.price, item.size, item.document,
+        item.phone, item.extra_notes, item.name
+      ].join(" ");
+      return matchSearch(searchable, listingSearchText);
+    });
+    filteredPriv = privList.filter(item => {
+      const searchable = [
+        item.propertyType, item.type === "rent" ? "اجاره" : "فروش",
+        item.location, item.price, item.size, item.document,
+        item.phone, item.extra_notes, item.name
+      ].join(" ");
+      return matchSearch(searchable, listingSearchText);
+    });
+  }
+
+  const totalFiltered = filteredPub.length + filteredPriv.length;
+  const totalAll = pubList.length + privList.length;
+
+  if (totalAll === 0) {
+    c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>';
+    return;
+  }
+
+  if (listingSearchText) {
+    html += `<div class="search-results-info">نمایش <b>${totalFiltered}</b> از <b>${totalAll}</b> ملک برای «<b>${escapeHtml(listingSearchText)}</b>»</div>`;
+  }
+
+  if (totalFiltered === 0) {
+    html += '<div class="empty">🔍 ملکی با این جستجو پیدا نشد</div>';
+    c.innerHTML = html;
+    bindListingSearch();
+    return;
+  }
+
+  if (filteredPub.length) {
+    html += `<div class="section-title">🏘️ املاک عمومی (${filteredPub.length})</div>`;
+    html += filteredPub.map(item => listingCard(item, true)).join("");
+  }
+  if (filteredPriv.length) {
+    html += `<div class="section-title" style="margin-top:20px">🔒 املاک خصوصی (${filteredPriv.length})</div>`;
+    html += filteredPriv.map(item => listingCard(item, false)).join("");
+  }
+
   c.innerHTML = html;
+  bindListingSearch();
+}
+
+function bindListingSearch() {
+  const input = document.getElementById("listingSearchInput");
+  if (!input) return;
+  // حفظ focus و cursor
+  if (listingSearchText) {
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }
+  input.addEventListener("input", e => {
+    listingSearchText = e.target.value;
+    const c = document.getElementById("content");
+    renderListings(c);
+  });
+}
+
+function clearListingSearch() {
+  listingSearchText = "";
+  const c = document.getElementById("content");
+  renderListings(c);
 }
 
 function listingCard(item, isPublic) {
@@ -916,11 +1077,53 @@ async function deleteListing(key) {
   catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
+// ⭐ CUSTOMERS با جستجو
 async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
   customersCache = customers;
-  if (!customers.length) { c.innerHTML = '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>'; return; }
-  c.innerHTML = customers.map(item => {
+
+  // سرچ‌باکس
+  let html = `
+    <div class="search-box ${customerSearchText ? 'has-text' : ''}" id="custSearchBox">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="customerSearchInput" placeholder="جستجو در نام، شماره، یوزرنیم، برچسب..." value="${escapeHtml(customerSearchText)}">
+      <button type="button" class="clear-btn" onclick="clearCustomerSearch()">×</button>
+    </div>
+  `;
+
+  if (!customers.length) {
+    html += '<div class="empty">هیچ مشتری‌ای ثبت نشده</div>';
+    c.innerHTML = html;
+    bindCustomerSearch();
+    return;
+  }
+
+  // فیلتر
+  let filtered = customers;
+  if (customerSearchText) {
+    filtered = customers.filter(cust => {
+      const searchable = [
+        cust.name, cust.phone, cust.username, cust.chatId,
+        cust.language, cust.notes,
+        (cust.tags || []).join(" "),
+        String(cust.rating || "")
+      ].join(" ");
+      return matchSearch(searchable, customerSearchText);
+    });
+  }
+
+  if (customerSearchText) {
+    html += `<div class="search-results-info">نمایش <b>${filtered.length}</b> از <b>${customers.length}</b> مشتری برای «<b>${escapeHtml(customerSearchText)}</b>»</div>`;
+  }
+
+  if (filtered.length === 0) {
+    html += '<div class="empty">🔍 مشتری‌ای با این جستجو پیدا نشد</div>';
+    c.innerHTML = html;
+    bindCustomerSearch();
+    return;
+  }
+
+  html += filtered.map(item => {
     const rating = parseInt(item.rating) || 0;
     const tags = item.tags || [];
     const noteCount = item.notes ? 1 : 0;
@@ -935,6 +1138,29 @@ async function renderCustomers(c) {
       </div>
     `;
   }).join("");
+
+  c.innerHTML = html;
+  bindCustomerSearch();
+}
+
+function bindCustomerSearch() {
+  const input = document.getElementById("customerSearchInput");
+  if (!input) return;
+  if (customerSearchText) {
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }
+  input.addEventListener("input", e => {
+    customerSearchText = e.target.value;
+    const c = document.getElementById("content");
+    renderCustomers(c);
+  });
+}
+
+function clearCustomerSearch() {
+  customerSearchText = "";
+  const c = document.getElementById("content");
+  renderCustomers(c);
 }
 
 function openCustomer(key) {
