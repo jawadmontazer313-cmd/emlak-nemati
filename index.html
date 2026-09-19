@@ -40,6 +40,8 @@
   button.upload-btn:hover { background: #15803d; }
   button.backup-btn { background: #7c3aed; padding: 14px; font-size: 15px; }
   button.backup-btn:hover { background: #6d28d9; }
+  button.excel-btn { background: #3b82f6; padding: 14px; font-size: 15px; }
+  button.excel-btn:hover { background: #2563eb; }
   button.test-report-btn { background: #16a34a; padding: 14px; font-size: 15px; }
   button.test-report-btn:hover { background: #15803d; }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
@@ -137,45 +139,37 @@
   .channel-checkbox input { width: auto; margin: 0; cursor: pointer; width: 20px; height: 20px; }
   .channel-checkbox label { margin: 0; color: var(--success); font-weight: bold; cursor: pointer; font-size: 14px; }
 
+  .action-section {
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .action-section .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .action-section .desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
   .backup-section {
     background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05));
     border: 1px solid rgba(124,58,237,0.4);
-    border-radius: 14px;
-    padding: 20px;
-    margin-top: 16px;
   }
-  .backup-section .title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #a78bfa;
-  }
-  .backup-section .desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    line-height: 1.8;
-  }
-
+  .backup-section .title { color: #a78bfa; }
   .test-report-section {
     background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
     border: 1px solid rgba(34,197,94,0.4);
-    border-radius: 14px;
-    padding: 20px;
-    margin-top: 16px;
   }
-  .test-report-section .title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #22c55e;
+  .test-report-section .title { color: #22c55e; }
+  .excel-section {
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+    border: 1px solid rgba(59,130,246,0.4);
   }
-  .test-report-section .desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    line-height: 1.8;
-  }
+  .excel-section .title { color: #3b82f6; }
 
   @media (max-width: 500px) {
     .container { padding: 12px; }
@@ -575,7 +569,7 @@ async function renderSettings(c) {
       <button onclick="saveSettings()" style="width:100%">💾 ذخیره</button>
     </div>
 
-    <div class="test-report-section">
+    <div class="action-section test-report-section">
       <div class="title">🧪 تست گزارش هفتگی</div>
       <div class="desc">
         با زدن این دکمه، <b>گزارش هفتگی</b> همین الان به تلگرامت فرستاده میشه.<br>
@@ -587,7 +581,20 @@ async function renderSettings(c) {
       <div id="testReportResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
     </div>
 
-    <div class="backup-section">
+    <div class="action-section excel-section">
+      <div class="title">📊 خروجی Excel</div>
+      <div class="desc">
+        با زدن این دکمه، یه فایل <b>Excel</b> با ۴ شیت جدا دانلود میشه:<br>
+        🏘️ املاک &nbsp;·&nbsp; 👥 مشتری‌ها &nbsp;·&nbsp; 📅 قرارها &nbsp;·&nbsp; 📝 درخواست‌ها<br>
+        📌 فایل رو توی Excel یا Google Sheets باز کن.
+      </div>
+      <button class="excel-btn" id="excelBtn" onclick="downloadExcel()" style="width:100%">
+        📊 دانلود فایل Excel
+      </button>
+      <div id="excelResult" style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center"></div>
+    </div>
+
+    <div class="action-section backup-section">
       <div class="title">📥 پشتیبان‌گیری از داده‌ها</div>
       <div class="desc">
         با زدن دکمه زیر، <b>همه داده‌ها</b> (املاک، مشتری‌ها، قرارها، درخواست‌ها و تنظیمات) توی یه فایل <b>JSON</b> دانلود میشه.<br>
@@ -625,6 +632,38 @@ async function testWeeklyReport() {
   } finally {
     btn.disabled = false;
     btn.textContent = "🧪 ارسال گزارش تستی";
+  }
+}
+
+async function downloadExcel() {
+  const btn = document.getElementById("excelBtn");
+  const result = document.getElementById("excelResult");
+  btn.disabled = true;
+  btn.textContent = "⏳ در حال آماده‌سازی...";
+  result.textContent = "";
+  try {
+    const r = await fetch(API_BASE + "/api/export-excel", {
+      headers: { "Authorization": "Bearer " + PASSWORD }
+    });
+    if (!r.ok) throw new Error("خطا در دریافت فایل");
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `emlak-nemati-${dateStr}.xls`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    result.innerHTML = `✅ فایل Excel دانلود شد`;
+    toast("Excel دانلود شد ✅");
+  } catch (e) {
+    result.innerHTML = `❌ خطا: ${escapeHtml(e.message)}`;
+    toast("خطا: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📊 دانلود فایل Excel";
   }
 }
 
@@ -988,139 +1027,4 @@ async function renderRequests(c) {
     <div class="item">
       <div class="item-header"><div><span class="item-title">${escapeHtml(item.propertyType || "درخواست ملک")}</span><span class="item-badge ${item.type === "rent" ? "rent" : "sell"}">${item.type === "rent" ? "اجاره" : "فروش"}</span></div></div>
       ${item.location ? `<div class="item-row">📍 ${escapeHtml(item.location)}</div>` : ""}
-      ${item.budget ? `<div class="item-row">💰 بودجه: <b>${escapeHtml(item.budget)}</b></div>` : ""}
-      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-      ${item.extra_notes ? `<div class="item-row">📝 ${escapeHtml(item.extra_notes)}</div>` : ""}
-      ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions"><button class="suggest-btn" onclick="suggestForRequest('${escapeHtml(item._key)}', this)">🎯 پیشنهاد ملک</button><button class="danger" onclick="deleteRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
-    </div>
-  `).join("");
-}
-async function suggestForRequest(key, btn) {
-  if (!confirm("ملک‌های مناسب برای این مشتری پیدا و ارسال شود؟")) return;
-  btn.disabled = true; const original = btn.textContent; btn.textContent = "⏳ در حال جستجو...";
-  try {
-    const r = await api("/api/suggest-for-request", { method: "POST", body: JSON.stringify({ requestKey: key }) });
-    if (r.ok) toast(`✅ ${r.sent} ملک ارسال شد`);
-    else toast(r.error || "خطا", "error");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-  finally { btn.disabled = false; btn.textContent = original; }
-}
-async function deleteRequest(key) {
-  if (!confirm("این درخواست حذف شود؟")) return;
-  try { await api("/api/requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-async function renderFileRequests(c) {
-  const { fileRequests } = await api("/api/file-requests");
-  if (!fileRequests.length) { c.innerHTML = '<div class="empty">هیچ درخواست فایل‌یابی ثبت نشده</div>'; return; }
-  c.innerHTML = fileRequests.map(item => `
-    <div class="item">
-      <div class="item-header"><div><span class="item-title">🔍 درخواست فایل‌یابی</span></div></div>
-      ${item.phone ? `<div class="item-row">📞 ${escapeHtml(item.phone)}</div>` : ""}
-      ${item.username ? `<div class="item-row">👤 @${escapeHtml(item.username)}</div>` : ""}
-      ${item.text ? `<div class="item-row">📝 ${escapeHtml(item.text)}</div>` : ""}
-      ${item.date ? `<div class="item-row">📅 ${escapeHtml(toPersianDate(item.date))}</div>` : ""}
-      <div class="item-actions"><button class="danger" onclick="deleteFileRequest('${escapeHtml(item._key)}')">🗑️ حذف</button></div>
-    </div>
-  `).join("");
-}
-async function deleteFileRequest(key) {
-  if (!confirm("این درخواست حذف شود؟")) return;
-  try { await api("/api/file-requests/" + encodeURIComponent(key), { method: "DELETE" }); toast("حذف شد"); loadAll(); }
-  catch (e) { toast("خطا: " + e.message, "error"); }
-}
-
-function renderAddForm(c) {
-  c.innerHTML = `
-    <div class="form-card">
-      <div class="section-title">➕ افزودن ملک جدید</div>
-      <div class="form-grid">
-        <div><label>نوع</label><select id="f_type"><option value="sell">فروش</option><option value="rent">اجاره</option></select></div>
-        <div><label>نمایش</label><select id="f_isPublic"><option value="true">عمومی</option><option value="false">خصوصی</option></select></div>
-        <div><label>نوع ملک</label><input id="f_propertyType" placeholder="آپارتمان، ویلا..."></div>
-        <div><label>متراژ</label><input id="f_size" placeholder="۱۲۰ متر"></div>
-        <div><label>سند</label><input id="f_document" placeholder="تک‌برگ..."></div>
-        <div><label>موقعیت</label><input id="f_location" placeholder="شهر، محله"></div>
-        <div><label>قیمت</label><input id="f_price" placeholder="۵ میلیارد"></div>
-        <div><label>شماره تماس</label><input id="f_phone" placeholder="۰۹..."></div>
-        <div><label>نوع رسانه</label><select id="f_mediaType"><option value="">بدون</option><option value="photo">عکس</option><option value="video">ویدیو</option></select></div>
-        <div><label>File ID رسانه</label><input id="f_mediaFileId" placeholder="اختیاری"></div>
-        <div class="full"><label>توضیحات</label><textarea id="f_extraNotes" rows="3"></textarea></div>
-        <div class="full"><button onclick="submitListing()" id="submitBtn" style="width:100%">💾 ذخیره ملک</button></div>
-      </div>
-    </div>
-  `;
-}
-async function submitListing() {
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true; btn.textContent = "در حال ذخیره...";
-  try {
-    await api("/api/listings", { method: "POST", body: JSON.stringify({
-      type: document.getElementById("f_type").value,
-      isPublic: document.getElementById("f_isPublic").value === "true",
-      propertyType: document.getElementById("f_propertyType").value,
-      size: document.getElementById("f_size").value,
-      document: document.getElementById("f_document").value,
-      location: document.getElementById("f_location").value,
-      price: document.getElementById("f_price").value,
-      phone: document.getElementById("f_phone").value,
-      mediaType: document.getElementById("f_mediaType").value || null,
-      mediaFileId: document.getElementById("f_mediaFileId").value || null,
-      extraNotes: document.getElementById("f_extraNotes").value,
-      name: "املاک نعمتی"
-    }) });
-    toast("ملک ذخیره شد ✅");
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelector('.tab[data-tab="listings"]').classList.add("active");
-    currentTab = "listings";
-    renderTab();
-  } catch (e) { toast("خطا: " + e.message, "error"); btn.disabled = false; btn.textContent = "💾 ذخیره ملک"; }
-}
-
-function renderBroadcast(c) {
-  c.innerHTML = `
-    <div class="form-card">
-      <div class="section-title">📢 ارسال پیام گروهی</div>
-      <label>متن پیام</label>
-      <textarea id="b_text" rows="6" placeholder="متن پیام..."></textarea>
-      <button onclick="sendBroadcast()" id="bcastBtn" style="width:100%">🚀 ارسال به همه مشتری‌ها</button>
-      <div id="bcastResult" style="margin-top:14px;color:var(--muted);font-size:14px"></div>
-    </div>
-  `;
-}
-async function sendBroadcast() {
-  const text = document.getElementById("b_text").value.trim();
-  if (!text) return toast("متن پیام خالی است", "error");
-  if (!confirm("پیام به همه مشتری‌ها ارسال شود؟")) return;
-  const btn = document.getElementById("bcastBtn");
-  btn.disabled = true; btn.textContent = "در حال ارسال...";
-  try {
-    const r = await api("/api/broadcast", { method: "POST", body: JSON.stringify({ text, target: "customers" }) });
-    document.getElementById("bcastResult").innerHTML = `✅ ارسال شد: <b>${r.sent}</b> | ❌ ناموفق: <b>${r.failed}</b> | 📊 کل: <b>${r.total}</b>`;
-    toast("ارسال انجام شد");
-  } catch (e) { toast("خطا: " + e.message, "error"); }
-  finally { btn.disabled = false; btn.textContent = "🚀 ارسال به همه مشتری‌ها"; }
-}
-
-document.getElementById("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
-
-(async function init() {
-  if (PASSWORD) {
-    try {
-      const r = await fetch(API_BASE + "/api/stats", { headers: { "Authorization": "Bearer " + PASSWORD } });
-      if (r.ok) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        loadAll();
-        return;
-      }
-    } catch (e) {}
-    logout();
-  }
-})();
-</script>
-</body>
-</html>
+      ${item.budget ? `<div class="item-row">💰 بودجه: <b>${escapeHtml(item.budget)}</b></div>` :
