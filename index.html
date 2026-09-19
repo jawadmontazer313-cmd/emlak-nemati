@@ -93,76 +93,33 @@
   #toast.error { border-color: var(--danger); }
   .loading { text-align: center; padding: 30px; color: var(--muted); }
   .section-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-
-  /* ⭐ SEARCH BOX */
-  .search-box {
-    position: relative;
-    margin-bottom: 16px;
-  }
-  .search-box input {
-    width: 100%;
-    padding: 14px 48px 14px 16px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    font-size: 15px;
-    font-family: inherit;
-    margin-bottom: 0;
-    outline: none;
-  }
+  .search-box { position: relative; margin-bottom: 16px; }
+  .search-box input { width: 100%; padding: 14px 48px 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 0; outline: none; }
   .search-box input:focus { border-color: var(--primary); }
-  .search-box .search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: var(--muted);
-    pointer-events: none;
-  }
-  .search-box .clear-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--card2);
-    border: none;
-    color: var(--muted);
-    font-size: 16px;
-    line-height: 1;
-    padding: 0;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
+  .search-box .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--muted); pointer-events: none; }
+  .search-box .clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: var(--card2); border: none; color: var(--muted); font-size: 16px; line-height: 1; padding: 0; cursor: pointer; display: none; align-items: center; justify-content: center; }
   .search-box.has-text .clear-btn { display: flex; }
   .search-box .clear-btn:hover { background: var(--danger); color: #fff; }
-
-  .search-results-info {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 10px;
-    padding: 0 4px;
-  }
+  .search-results-info { font-size: 13px; color: var(--muted); margin-bottom: 10px; padding: 0 4px; }
   .search-results-info b { color: var(--text); }
-
+  .today-banner { background: linear-gradient(135deg, #1e3a5f, #1a2433); border: 1px solid #2d3e5a; border-radius: 16px; padding: 22px; margin-bottom: 20px; text-align: center; }
+  .today-greeting { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
+  .today-summary { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+  .pill { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+  .pill.red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .pill.warn { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .pill.blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+  .pill.green { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
   .stars { display: inline-flex; gap: 3px; font-size: 20px; cursor: pointer; user-select: none; }
   .stars .star { color: #4a5568; transition: .15s; }
   .stars .star.on { color: #fbbf24; }
   .stars .star:hover { transform: scale(1.15); }
   .stars.readonly { cursor: default; font-size: 16px; }
   .stars.readonly .star:hover { transform: none; }
-
   .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .tag { background: #2a1f47; color: #a78bfa; padding: 3px 10px; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
   .tag .rm { cursor: pointer; opacity: 0.6; font-weight: bold; }
   .tag .rm:hover { opacity: 1; }
-
   .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
   .modal { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 700px; padding: 20px; margin: auto; }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
@@ -179,7 +136,6 @@
   .quick-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .quick-tags .qt { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 12px; font-size: 12px; cursor: pointer; }
   .quick-tags .qt:hover { background: var(--border); color: var(--text); }
-
   .appt-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; margin-inline-start: 6px; }
   .appt-type-visit { background: #1e3a5f; color: #60a5fa; }
   .appt-type-call { background: #3a2a0e; color: #fbbf24; }
@@ -189,55 +145,25 @@
   .appt-past { border-right: 3px solid var(--muted); }
   .appt-done { border-right: 3px solid var(--success); }
   .appt-cancelled { border-right: 3px solid var(--danger); }
-
-  .channel-checkbox {
-    display: flex; align-items: center; gap: 10px;
-    background: #1a2c1f; border: 1px solid #2d5a3d; border-radius: 10px;
-    padding: 12px 14px; margin-bottom: 12px; cursor: pointer;
-  }
+  .channel-checkbox { display: flex; align-items: center; gap: 10px; background: #1a2c1f; border: 1px solid #2d5a3d; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; cursor: pointer; }
   .channel-checkbox input { width: auto; margin: 0; cursor: pointer; width: 20px; height: 20px; }
   .channel-checkbox label { margin: 0; color: var(--success); font-weight: bold; cursor: pointer; font-size: 14px; }
-
-  .action-section {
-    border-radius: 14px;
-    padding: 20px;
-    margin-top: 16px;
-  }
-  .action-section .title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  .action-section .desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    line-height: 1.8;
-  }
-  .backup-section {
-    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05));
-    border: 1px solid rgba(124,58,237,0.4);
-  }
+  .action-section { border-radius: 14px; padding: 20px; margin-top: 16px; }
+  .action-section .title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+  .action-section .desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.8; }
+  .backup-section { background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05)); border: 1px solid rgba(124,58,237,0.4); }
   .backup-section .title { color: #a78bfa; }
-  .test-report-section {
-    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05));
-    border: 1px solid rgba(34,197,94,0.4);
-  }
+  .test-report-section { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.4); }
   .test-report-section .title { color: #22c55e; }
-  .excel-section {
-    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
-    border: 1px solid rgba(59,130,246,0.4);
-  }
+  .excel-section { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.4); }
   .excel-section .title { color: #3b82f6; }
-
   @media (max-width: 500px) {
     .container { padding: 12px; }
     header h1 { font-size: 16px; }
     .stat-card .value { font-size: 22px; }
   }
 </style>
-</head>
-<body>
+</head><body>
 
 <div id="loginScreen">
   <div class="login-box">
@@ -259,7 +185,8 @@
     </header>
 
     <div class="tabs" id="tabs">
-      <div class="tab active" data-tab="overview">📊 آمار</div>
+      <div class="tab active" data-tab="today">🎯 امروز من</div>
+      <div class="tab" data-tab="overview">📊 آمار</div>
       <div class="tab" data-tab="analytics">📈 تحلیل‌ها</div>
       <div class="tab" data-tab="appointments">📅 قرارها</div>
       <div class="tab" data-tab="listings">🏘️ املاک</div>
@@ -284,12 +211,10 @@ const PUBLIC_BASE = "https://emlak-nemati.pages.dev";
 const QUICK_TAGS = ["خریدار جدی", "اجاره‌ای", "سرمایه‌گذار", "فوری", "در انتظار", "پیگیری مجدد"];
 
 let PASSWORD = localStorage.getItem("admin_pass") || "";
-let currentTab = "overview";
+let currentTab = "today";
 let customersCache = [];
 let listingsCache = { public: [], private: [] };
 let appointmentsCache = [];
-
-// ⭐ جستجو
 let customerSearchText = "";
 let listingSearchText = "";
 
@@ -352,7 +277,6 @@ function fromISOToLocalInput(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// ⭐ جستجو - نرمال‌سازی متن (تبدیل اعداد فارسی به انگلیسی)
 function normalizeSearch(s) {
   if (!s) return "";
   const persian = "۰۱۲۳۴۵۶۷۸۹";
@@ -413,7 +337,8 @@ document.getElementById("tabs").addEventListener("click", e => {
 
 function renderTab() {
   const c = document.getElementById("content");
-  if (currentTab === "overview") renderOverview(c);
+  if (currentTab === "today") renderToday(c);
+  else if (currentTab === "overview") renderOverview(c);
   else if (currentTab === "analytics") renderAnalytics(c);
   else if (currentTab === "appointments") renderAppointments(c);
   else if (currentTab === "listings") renderListings(c);
@@ -430,6 +355,102 @@ async function loadAll() {
   c.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
   try { await renderTab(); }
   catch (e) { c.innerHTML = '<div class="empty">خطا: ' + escapeHtml(e.message) + '</div>'; }
+}
+
+async function renderToday(c) {
+  const { today: t } = await api("/api/today");
+  const now = new Date();
+  const hour = now.getHours();
+  let greeting = "سلام رفیق";
+  if (hour < 12) greeting = "☀️ صبح بخیر";
+  else if (hour < 17) greeting = "🌤️ ظهر بخیر";
+  else if (hour < 21) greeting = "🌆 عصر بخیر";
+  else greeting = "🌙 شب بخیر";
+
+  const persianDate = now.toLocaleDateString("fa-IR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+  let html = '<div class="today-banner">' +
+    '<div class="today-greeting">' + greeting + '</div>' +
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:14px">' + persianDate + '</div>' +
+    '<div class="today-summary">';
+
+  if (t.counts.todayAppts > 0) html += '<span class="pill red">📅 ' + t.counts.todayAppts + ' قرار امروز</span>';
+  if (t.counts.needFollowUp > 0) html += '<span class="pill warn">📞 ' + t.counts.needFollowUp + ' نیاز پیگیری</span>';
+  if (t.counts.newRequests > 0) html += '<span class="pill blue">📝 ' + t.counts.newRequests + ' درخواست جدید</span>';
+  if (t.counts.newFileReqs > 0) html += '<span class="pill blue">🔍 ' + t.counts.newFileReqs + ' فایل‌یابی</span>';
+  if (t.counts.vip > 0) html += '<span class="pill green">⭐ ' + t.counts.vip + ' مشتری مهم</span>';
+
+  if (t.counts.todayAppts === 0 && t.counts.needFollowUp === 0 && t.counts.newRequests === 0 && t.counts.newFileReqs === 0) {
+    html += '<span class="pill green">✨ امروز روز آرومی داری!</span>';
+  }
+
+  html += '</div></div>';
+
+  if (t.todayAppts.length > 0) {
+    html += '<div class="section-title">🔥 قرارهای امروز (' + t.todayAppts.length + ')</div>';
+    html += t.todayAppts.map(a => apptCard(a, "today")).join("");
+  }
+
+  if (t.needFollowUp.length > 0) {
+    html += '<div class="section-title" style="margin-top:20px">📞 پیگیری مشتری‌ها (' + t.needFollowUp.length + ')</div>';
+    html += t.needFollowUp.map(cust => {
+      const rating = parseInt(cust.rating) || 0;
+      const stars = rating ? "★".repeat(rating) : "";
+      return '<div class="item clickable" onclick="openCustomer(\'' + escapeHtml(cust._key) + '\')">' +
+        '<div class="item-header"><div><span class="item-title">' + escapeHtml(cust.name || cust.phone || "کاربر") + '</span>' +
+        (stars ? '<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">' + stars + '</span>' : '') +
+        '<span class="item-badge" style="background:#3f1a1a;color:#f87171">' + cust.daysSince + ' روز پیش</span></div>' +
+        '<div style="font-size:20px;color:var(--muted)">›</div></div>' +
+        (cust.phone ? '<div class="item-row">📞 ' + escapeHtml(cust.phone) + '</div>' : '') +
+        (cust.notes ? '<div class="item-row">📝 ' + escapeHtml(cust.notes.substring(0, 80)) + '</div>' : '') +
+        '</div>';
+    }).join("");
+  }
+
+  if (t.newRequests.length > 0) {
+    html += '<div class="section-title" style="margin-top:20px">📝 درخواست‌های جدید (' + t.newRequests.length + ')</div>';
+    html += t.newRequests.map(r => {
+      return '<div class="item">' +
+        '<div class="item-header"><div><span class="item-title">' + escapeHtml(r.propertyType || "درخواست") + '</span>' +
+        '<span class="item-badge ' + (r.type === "rent" ? "rent" : "sell") + '">' + (r.type === "rent" ? "اجاره" : "فروش") + '</span></div></div>' +
+        (r.location ? '<div class="item-row">📍 ' + escapeHtml(r.location) + '</div>' : '') +
+        (r.budget ? '<div class="item-row">💰 بودجه: <b>' + escapeHtml(r.budget) + '</b></div>' : '') +
+        (r.phone ? '<div class="item-row">📞 ' + escapeHtml(r.phone) + '</div>' : '') +
+        '<div class="item-actions"><button class="suggest-btn" onclick="suggestForRequest(\'' + escapeHtml(r._key) + '\', this)">🎯 پیشنهاد ملک</button></div>' +
+        '</div>';
+    }).join("");
+  }
+
+  if (t.newFileReqs.length > 0) {
+    html += '<div class="section-title" style="margin-top:20px">🔍 فایل‌یابی‌های جدید (' + t.newFileReqs.length + ')</div>';
+    html += t.newFileReqs.map(f => {
+      return '<div class="item">' +
+        '<div class="item-header"><div><span class="item-title">🔍 درخواست فایل‌یابی</span></div></div>' +
+        (f.phone ? '<div class="item-row">📞 ' + escapeHtml(f.phone) + '</div>' : '') +
+        (f.text ? '<div class="item-row">📝 ' + escapeHtml(f.text) + '</div>' : '') +
+        '</div>';
+    }).join("");
+  }
+
+  if (t.vipList.length > 0) {
+    html += '<div class="section-title" style="margin-top:20px">⭐ مشتری‌های مهم (' + t.vipList.length + ')</div>';
+    html += t.vipList.map(cust => {
+      const rating = parseInt(cust.rating) || 0;
+      return '<div class="item clickable" onclick="openCustomer(\'' + escapeHtml(cust._key) + '\')">' +
+        '<div class="item-header"><div><span class="item-title">' + escapeHtml(cust.name || cust.phone || "کاربر") + '</span>' +
+        '<span class="item-badge" style="background:#3a2a0e;color:#fbbf24">' + "★".repeat(rating) + '</span></div>' +
+        '<div style="font-size:20px;color:var(--muted)">›</div></div>' +
+        (cust.phone ? '<div class="item-row">📞 ' + escapeHtml(cust.phone) + '</div>' : '') +
+        '</div>';
+    }).join("");
+  }
+
+  if (t.upcomingAppts.length > 0) {
+    html += '<div class="section-title" style="margin-top:20px">📅 قرارهای پیش‌رو</div>';
+    html += t.upcomingAppts.map(a => apptCard(a, "upcoming")).join("");
+  }
+
+  c.innerHTML = html;
 }
 
 async function renderOverview(c) {
@@ -531,7 +552,8 @@ function apptCard(a, state) {
       ${a.customerPhone ? `<div class="item-row">📞 ${escapeHtml(a.customerPhone)}</div>` : ""}
       ${a.propertyDesc ? `<div class="item-row">🏘️ ${escapeHtml(a.propertyDesc)}</div>` : ""}
       ${a.note ? `<div class="item-row">📝 ${escapeHtml(a.note)}</div>` : ""}
-      ${a.reminderSent ? `<div class="item-row" style="color:var(--success)">✅ یادآور ارسال شد</div>` : ""}
+      ${a.reminderSent ? `<div class="item-row" style="color:var(--success)">✅ یادآور ۲۴ ساعته ارسال شد</div>` : ""}
+      ${a.reminder1hSent ? `<div class="item-row" style="color:var(--warn)">🔔 یادآور ۱ ساعته ارسال شد</div>` : ""}
       <div class="item-actions">
         ${a.status === 'pending' ? `<button class="success small" onclick="markApptDone('${escapeHtml(a._key)}')">✅ انجام شد</button><button class="secondary small" onclick="markApptCancelled('${escapeHtml(a._key)}')">❌ لغو</button>` : ""}
         <button class="secondary small" onclick="openApptEdit('${escapeHtml(a._key)}')">✏️ ویرایش</button>
@@ -629,7 +651,7 @@ async function saveAppt(editKey) {
     if (editKey) { await api("/api/appointments/" + encodeURIComponent(editKey), { method: "PUT", body: JSON.stringify(data) }); toast("ویرایش شد ✅"); }
     else { await api("/api/appointments", { method: "POST", body: JSON.stringify(data) }); toast("قرار ثبت شد ✅"); }
     closeModal();
-    if (currentTab === "appointments") loadAll();
+    if (currentTab === "appointments" || currentTab === "today") loadAll();
     else { document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); document.querySelector('.tab[data-tab="appointments"]').classList.add("active"); currentTab = "appointments"; renderTab(); }
   } catch (e) { toast("خطا: " + e.message, "error"); }
 }
@@ -705,7 +727,7 @@ async function testWeeklyReport() {
   btn.textContent = "⏳ در حال ارسال...";
   result.textContent = "";
   try {
-    const r = await api("/api/test-weekly-report", { method: "POST" });
+    await api("/api/test-weekly-report", { method: "POST" });
     result.innerHTML = `✅ گزارش به تلگرام ارسال شد`;
     toast("گزارش ارسال شد ✅");
   } catch (e) {
@@ -779,40 +801,28 @@ async function downloadBackup() {
   }
 }
 
-// ⭐ LISTINGS با جستجو
 async function renderListings(c) {
   const { public: pubList, private: privList } = await api("/api/listings?scope=all");
   listingsCache = { public: pubList, private: privList };
 
-  // سرچ‌باکس
   let html = `
     <div class="search-box ${listingSearchText ? 'has-text' : ''}" id="listSearchBox">
       <span class="search-icon">🔍</span>
       <input type="text" id="listingSearchInput" placeholder="جستجو در موقعیت، نوع ملک، قیمت، شماره..." value="${escapeHtml(listingSearchText)}">
       <button type="button" class="clear-btn" onclick="clearListingSearch()">×</button>
     </div>
-    <div class="search-results-info" id="listResultsInfo"></div>
   `;
 
-  // فیلتر
   let filteredPub = pubList;
   let filteredPriv = privList;
 
   if (listingSearchText) {
     filteredPub = pubList.filter(item => {
-      const searchable = [
-        item.propertyType, item.type === "rent" ? "اجاره" : "فروش",
-        item.location, item.price, item.size, item.document,
-        item.phone, item.extra_notes, item.name
-      ].join(" ");
+      const searchable = [item.propertyType, item.type === "rent" ? "اجاره" : "فروش", item.location, item.price, item.size, item.document, item.phone, item.extra_notes, item.name].join(" ");
       return matchSearch(searchable, listingSearchText);
     });
     filteredPriv = privList.filter(item => {
-      const searchable = [
-        item.propertyType, item.type === "rent" ? "اجاره" : "فروش",
-        item.location, item.price, item.size, item.document,
-        item.phone, item.extra_notes, item.name
-      ].join(" ");
+      const searchable = [item.propertyType, item.type === "rent" ? "اجاره" : "فروش", item.location, item.price, item.size, item.document, item.phone, item.extra_notes, item.name].join(" ");
       return matchSearch(searchable, listingSearchText);
     });
   }
@@ -821,7 +831,8 @@ async function renderListings(c) {
   const totalAll = pubList.length + privList.length;
 
   if (totalAll === 0) {
-    c.innerHTML = '<div class="empty">هیچ ملکی ثبت نشده</div>';
+    c.innerHTML = html + '<div class="empty">هیچ ملکی ثبت نشده</div>';
+    bindListingSearch();
     return;
   }
 
@@ -852,7 +863,6 @@ async function renderListings(c) {
 function bindListingSearch() {
   const input = document.getElementById("listingSearchInput");
   if (!input) return;
-  // حفظ focus و cursor
   if (listingSearchText) {
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
@@ -955,7 +965,7 @@ function editListing(key) {
         <input id="e_size" placeholder="۱۲۰ متر" value="${escapeHtml(item.size || "")}">
         <label>سند</label>
         <input id="e_document" placeholder="تک‌برگ..." value="${escapeHtml(item.document || "")}">
-        <label>آدرس کامل (شهر + خیابان + کوچه + پلاک)</label>
+        <label>آدرس کامل</label>
         <textarea id="e_location" rows="2" placeholder="مثال: قم، خیابان کلهری، کوچه ۶، پلاک ۱۰۰">${escapeHtml(item.location || "")}</textarea>
         <label>قیمت</label>
         <input id="e_price" placeholder="۵ میلیارد" value="${escapeHtml(item.price || "")}">
@@ -1031,13 +1041,9 @@ async function saveListingEdit(key) {
   };
   try {
     const r = await api("/api/listings/" + encodeURIComponent(key), { method: "PUT", body: JSON.stringify(data) });
-    if (r.channelSent && r.channelSent.ok) {
-      toast("✅ ویرایش شد و به کانال فرستاده شد");
-    } else if (r.channelSent && !r.channelSent.ok) {
-      toast("✅ ویرایش شد، ولی ارسال به کانال خطا داد: " + r.channelSent.error, "error");
-    } else {
-      toast("✅ ویرایش شد");
-    }
+    if (r.channelSent && r.channelSent.ok) toast("✅ ویرایش شد و به کانال فرستاده شد");
+    else if (r.channelSent && !r.channelSent.ok) toast("✅ ویرایش شد، ولی کانال خطا داد: " + r.channelSent.error, "error");
+    else toast("✅ ویرایش شد");
     closeModal();
     loadAll();
   } catch (e) { toast("خطا: " + e.message, "error"); }
@@ -1049,8 +1055,8 @@ function buildListingUrl(key) {
 
 async function copyListingLink(key) {
   const url = buildListingUrl(key);
-  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast("لینک کپی شد ✅"); } else { prompt("لینک رو کپی کن:", url); } }
-  catch (e) { prompt("لینک رو کپی کن:", url); }
+  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); toast("لینک کپی شد ✅"); } else { prompt("لینک:", url); } }
+  catch (e) { prompt("لینک:", url); }
 }
 function openListingLink(key) { window.open(buildListingUrl(key), "_blank"); }
 async function sendToChannel(key, btn) {
@@ -1077,12 +1083,10 @@ async function deleteListing(key) {
   catch (e) { toast("خطا: " + e.message, "error"); }
 }
 
-// ⭐ CUSTOMERS با جستجو
 async function renderCustomers(c) {
   const { customers } = await api("/api/customers");
   customersCache = customers;
 
-  // سرچ‌باکس
   let html = `
     <div class="search-box ${customerSearchText ? 'has-text' : ''}" id="custSearchBox">
       <span class="search-icon">🔍</span>
@@ -1098,16 +1102,10 @@ async function renderCustomers(c) {
     return;
   }
 
-  // فیلتر
   let filtered = customers;
   if (customerSearchText) {
     filtered = customers.filter(cust => {
-      const searchable = [
-        cust.name, cust.phone, cust.username, cust.chatId,
-        cust.language, cust.notes,
-        (cust.tags || []).join(" "),
-        String(cust.rating || "")
-      ].join(" ");
+      const searchable = [cust.name, cust.phone, cust.username, cust.chatId, cust.language, cust.notes, (cust.tags || []).join(" "), String(cust.rating || "")].join(" ");
       return matchSearch(searchable, customerSearchText);
     });
   }
@@ -1390,4 +1388,4 @@ document.getElementById("loginPassword").addEventListener("keydown", e => { if (
 })();
 </script>
 </body>
-</html>
+ </html>
