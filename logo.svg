@@ -1,0 +1,25 @@
+<svg viewBox="0 0 420 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon on right side (RTL) -->
+  <g transform="translate(310, 5)">
+    <rect width="90" height="90" rx="20" fill="url(#bg)"/>
+    <path d="M45 20 L72 43 L65 43 L65 72 L25 72 L25 43 L18 43 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="39" y="52" width="11" height="20" fill="#3b82f6" rx="1.5"/>
+    <rect x="30" y="47" width="6" height="6" fill="#3b82f6" rx="1"/>
+    <rect x="53" y="47" width="6" height="6" fill="#3b82f6" rx="1"/>
+  </g>
+
+  <!-- Text (Persian) -->
+  <text x="290" y="48" font-family="Tahoma, Arial, sans-serif" font-size="28" font-weight="bold" fill="#e6edf5" text-anchor="end" direction="rtl">
+    املاک نعمتی
+  </text>
+  <text x="290" y="72" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8fa3bf" text-anchor="end" direction="rtl">
+    خرید، فروش و اجاره ملک
+  </text>
+</svg>
