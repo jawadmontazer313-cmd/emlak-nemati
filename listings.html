@@ -459,6 +459,77 @@ var filterType = "all";
 var filterProperty = "all";
 var searchText = "";
 
+// ═══════════════════════════════════════════════════════════
+// 🛡️ MASTER SHIELD - Backup Client-side
+// ═══════════════════════════════════════════════════════════
+
+function wordsToNumbers(text) {
+  if (!text) return text;
+  let r = text;
+  var emojiMap = {
+    "0️⃣":"0","1️⃣":"1","2️⃣":"2","3️⃣":"3","4️⃣":"4",
+    "5️⃣":"5","6️⃣":"6","7️⃣":"7","8️⃣":"8","9️⃣":"9",
+    "0⃣":"0","1⃣":"1","2⃣":"2","3⃣":"3","4⃣":"4",
+    "5⃣":"5","6⃣":"6","7⃣":"7","8⃣":"8","9⃣":"9"
+  };
+  for (var k in emojiMap) r = r.split(k).join(emojiMap[k]);
+  r = r.replace(/[۰-۹]/g, function(d) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)); });
+  r = r.replace(/[٠-٩]/g, function(d) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(d)); });
+  var numMap = {
+    "صفر":"0","یک":"1","دو":"2","سه":"3","چهار":"4",
+    "پنج":"5","شش":"6","شیش":"6","هفت":"7","هشت":"8","نه":"9","نُه":"9",
+    "zero":"0","one":"1","two":"2","three":"3","four":"4",
+    "five":"5","six":"6","seven":"7","eight":"8","nine":"9",
+    "sefr":"0","sifr":"0","yek":"1","do":"2","se":"3","seh":"3",
+    "chahar":"4","char":"4","panj":"5","pang":"5",
+    "shesh":"6","shish":"6","haft":"7","hasht":"8","noh":"9"
+  };
+  var sortedWords = Object.keys(numMap).sort(function(a, b) { return b.length - a.length; });
+  for (var i = 0; i < sortedWords.length; i++) {
+    var w = sortedWords[i];
+    var re = new RegExp("(^|[^a-zA-Z\\u0600-\\u06FF])" + w + "(?![a-zA-Z\\u0600-\\u06FF])", "gi");
+    r = r.replace(re, function(m, pre) { return pre + numMap[w]; });
+  }
+  return r;
+}
+
+function masterSanitize(text) {
+  if (!text) return text;
+  var r = wordsToNumbers(text);
+  r = r.replace(/(?:0|98|\+98)?[\s\-\.]*9[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d[\s\-\.]*\d/g, "");
+  r = r.replace(/\d{4}[\s\-\.]+\d{3,4}[\s\-\.]+\d{3,4}/g, "");
+  r = r.replace(/\d{8,}/g, "");
+  r = r.replace(/@[a-zA-Z0-9_]{3,}/g, "");
+  r = r.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "");
+  r = r.replace(/(?:https?:\/\/)?(?:t\.me|wa\.me|telegram|whatsapp)[^\s]*/gi, "");
+  var addrKeywords = "(?:خیابان|خ\.|کوچه|ک\.|پلاک|پ\.|بن\\s*بست|نبش|جنب|روبروی|مقابل|انتهای|ابتدای|فرعی|آسفالت|راهرو|واقع\\s*در|داخل)";
+  var addrRe = new RegExp(addrKeywords + "[^\\n,،.؛;\\n]{0,50}", "gi");
+  r = r.replace(addrRe, "");
+  r = r.replace(/[\u0600-\u06FF]\s*\d{1,5}/g, "");
+  r = r.replace(/(?:تماس|شماره|موبایل|همراه|contact|phone|call)[^.!؟\n]{0,30}(?:بگیر|بزن|بفرست|کن|کنید)?/gi, "");
+  r = r.replace(/[📍🏠🏢🏡🏪🏬🚪📮🔑🗺️]/g, "");
+  r = r.replace(/[،,]{2,}/g, "،");
+  r = r.replace(/\s{2,}/g, " ");
+  r = r.replace(/^\s*[،,.\-\s]+|[،,.\-\s]+$/g, "");
+  return r.trim();
+}
+
+function sanitizeLocation(location) {
+  if (!location) return location;
+  var r = wordsToNumbers(location);
+  var parts = r.split(/[،,]+/).map(function(p) { return p.trim(); }).filter(function(p) { return p; });
+  if (parts.length > 0) {
+    var addrKeywords = /(?:خیابان|کوچه|پلاک|بن\s*بست|نبش|جنب|روبروی|مقابل|انتهای|ابتدای|فرعی|پ\.|ک\.|خ\.)/i;
+    var clean = parts.filter(function(p) { return !addrKeywords.test(p) && !/\d{3,}/.test(p); });
+    r = clean.length > 0 ? clean[0] : parts[0];
+  }
+  r = r.replace(/(?:خیابان|کوچه|پلاک|نبش|جنب|روبروی|مقابل|بن\s*بست|انتهای|ابتدای|فرعی)[^\s,،.]{0,30}/gi, "");
+  r = r.replace(/\d+/g, "");
+  r = r.replace(/\s{2,}/g, " ");
+  r = r.replace(/^\s*[،,.\s]+|[،,\s]+$/g, "");
+  return r.trim();
+}
+
 function escapeHtml(s) {
   if (s === null || s === undefined) return "";
   return String(s).replace(/[&<>"']/g, function(m) {
@@ -638,6 +709,10 @@ function cardHtml(l) {
   var typeClass = l.type === "rent" ? "rent" : "sell";
   var isN = isNew(l.date);
 
+  // 🛡️ Backup Shield: پاک‌سازی سمت مرورگر
+  var cleanLoc = sanitizeLocation(l.location || "");
+  var cleanNotes = masterSanitize(l.extra_notes || "");
+
   var mediaHtml = "";
   if (l.mediaFileId && l.mediaType === "photo") {
     var url = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
@@ -652,19 +727,19 @@ function cardHtml(l) {
   }
 
   var infoHtml = "";
-  if (l.location) infoHtml += '<div class="card-info"><span class="lbl">📍 موقعیت:</span> ' + escapeHtml(l.location) + '</div>';
+  if (cleanLoc) infoHtml += '<div class="card-info"><span class="lbl">📍 موقعیت:</span> ' + escapeHtml(cleanLoc) + '</div>';
   if (l.size) infoHtml += '<div class="card-info"><span class="lbl">📐 متراژ:</span> ' + escapeHtml(l.size) + '</div>';
   if (l.document) infoHtml += '<div class="card-info"><span class="lbl">📄 سند:</span> ' + escapeHtml(l.document) + '</div>';
 
   var notesHtml = "";
-  if (l.extra_notes) {
-    notesHtml = '<div class="card-notes"><div class="card-notes-title">📝 توضیحات</div>' + escapeHtml(l.extra_notes) + '</div>';
+  if (cleanNotes) {
+    notesHtml = '<div class="card-notes"><div class="card-notes-title">📝 توضیحات</div>' + escapeHtml(cleanNotes) + '</div>';
   }
 
   var listingUrl = "listings.html?id=" + encodeURIComponent(l.key);
   var waMsg = "سلام، درباره این ملک سوال داشتم:\n" +
               "🏘️ " + (l.propertyType || "") + "\n" +
-              "📍 " + (l.location || "") + "\n" +
+              "📍 " + (cleanLoc || "") + "\n" +
               (l.price ? "💰 " + l.price + "\n" : "") +
               "\n🔗 " + "https://emlak-nemati.pages.dev/" + listingUrl;
   var waUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
@@ -726,6 +801,10 @@ function renderSingle(l) {
   var typeClass = l.type === "rent" ? "rent" : "sell";
   var isN = isNew(l.date);
 
+  // 🛡️ Backup Shield
+  var cleanLoc = sanitizeLocation(l.location || "");
+  var cleanNotes = masterSanitize(l.extra_notes || "");
+
   var mediaHtml = "";
   if (l.mediaFileId && l.mediaType === "photo") {
     var url = API_BASE + "/api/public/media?fileId=" + encodeURIComponent(l.mediaFileId);
@@ -740,13 +819,13 @@ function renderSingle(l) {
   }
 
   var infoHtml = "";
-  if (l.location) infoHtml += '<div class="single-info-item"><span class="lbl">📍 موقعیت</span><span class="vlu">' + escapeHtml(l.location) + '</span></div>';
+  if (cleanLoc) infoHtml += '<div class="single-info-item"><span class="lbl">📍 موقعیت</span><span class="vlu">' + escapeHtml(cleanLoc) + '</span></div>';
   if (l.size) infoHtml += '<div class="single-info-item"><span class="lbl">📐 متراژ</span><span class="vlu">' + escapeHtml(l.size) + '</span></div>';
   if (l.document) infoHtml += '<div class="single-info-item"><span class="lbl">📄 سند</span><span class="vlu">' + escapeHtml(l.document) + '</span></div>';
 
   var notesHtml = "";
-  if (l.extra_notes) {
-    notesHtml = '<div class="single-notes"><div class="single-notes-title">📝 توضیحات ملک</div>' + escapeHtml(l.extra_notes) + '</div>';
+  if (cleanNotes) {
+    notesHtml = '<div class="single-notes"><div class="single-notes-title">📝 توضیحات ملک</div>' + escapeHtml(cleanNotes) + '</div>';
   }
 
   var html = mediaHtml +
@@ -785,7 +864,7 @@ function renderSingle(l) {
 
   var waMsg = "سلام، درباره این ملک سوال داشتم:\n" +
               "🏘️ " + (l.propertyType || "") + "\n" +
-              "📍 " + (l.location || "") + "\n" +
+              "📍 " + (cleanLoc || "") + "\n" +
               (l.price ? "💰 " + l.price + "\n" : "") +
               "\n🔗 " + window.location.href;
   document.getElementById("singleWaBtn").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
