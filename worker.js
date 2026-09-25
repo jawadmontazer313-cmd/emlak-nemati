@@ -1,15 +1,11 @@
 // ═══════════════════════════════════════════════════════════
-// Robat Nemati - Complete Bot (v22)
+// Robat Nemati - v27 (منوی همکار کامل)
 // ═══════════════════════════════════════════════════════════
 
 const SITE_MAIN = "https://emlaknemati.ir";
 const CHANNEL_URL = "https://t.me/emlak_nemati";
 const BOT_URL = "https://t.me/emlaknematibot";
 const DEFAULT_LISTING_PHOTO = "https://emlaknemati.ir/default-listing.jpg";
-
-// ═══════════════════════════════════════════════════════════
-// 🗺️ محله‌ها و روستاهای قم
-// ═══════════════════════════════════════════════════════════
 
 const QOM_NEIGHBORHOODS = [
   "کلهری","صفائیه","زنبیل آباد","یخچال قاضی","باجک","هفت تیر",
@@ -55,163 +51,167 @@ const TX = {
     menuConsult: "💬 مشاوره رایگان", menuSite: "🌐 مشاهده سایت",
     back: "بازگشت", cancel: "لغو", skip: "رد کردن",
     requestBtn: "📩 درخواست این ملک",
-    reqSent: "درخواست شما ثبت شد. کارشناس ما با شما تماس می گیرد.",
-    reqAskPhone: "برای هماهنگی بازدید، لطفا شماره تماس خود را بفرستید.\n\nمثال: ۰۹۱۲۳۴۵۶۷۸۹\n\n⚠️ شماره شما فقط برای کارشناسان املاک نعمتی استفاده میشه و توی کانال منتشر نمیشه.",
-    reqThanks: "ممنون! درخواست شما با شماره ثبت شد. کارشناس ما به زودی تماس می گیرد.",
-    reqWithoutPhone: "درخواست شما ثبت شد (بدون شماره). کارشناس ما از طریق تلگرام با شما تماس می گیرد.",
+    reqSent: "درخواست شما ثبت شد.",
+    reqAskPhone: "برای هماهنگی بازدید، لطفا شماره تماس خود را بفرستید.\n\nمثال: ۰۹۱۲۳۴۵۶۷۸۹",
+    reqThanks: "ممنون!", reqWithoutPhone: "درخواست شما ثبت شد.",
     askTime: "چه ساعتی برای بازدید راحت‌ترید؟",
     timeSlot1: "🌅 امروز عصر (۱۶-۱۹)", timeSlot2: "🌤️ فردا صبح (۹-۱۲)", timeSlot3: "🌆 فردا عصر (۱۶-۱۹)",
     timeCancel: "❌ لغو",
-    reqWithTime: "✅ رزرو شما ثبت شد!\n\nکارشناس ما در زمان انتخابی با شما تماس می‌گیرد.",
-    noPhoneFound: "شماره معتبر پیدا نشد. لطفا به صورت ۰۹xxxxxxxxx بفرستید یا رد کردن را بزنید.",
-    filterTitle: "آگهی ها", filterPrompt: "چطور میخوای جستجو کنی?", filterAll: "📂 همه آگهی ها",
-    filterBudgetPrompt: "بودجه خود را انتخاب کنید:",
+    reqWithTime: "✅ رزرو شما ثبت شد!",
+    noPhoneFound: "شماره معتبر پیدا نشد.",
+    filterPrompt: "چطور میخوای جستجو کنی?", filterAll: "📂 همه آگهی ها",
     budgetUnder2: "زیر ۲ میلیارد", budget2to5: "۲ تا ۵ میلیارد", budget5to10: "۵ تا ۱۰ میلیارد", budgetOver10: "بالای ۱۰ میلیارد",
     budgetUnder500Rent: "زیر ۵۰۰ میلیون رهن", budget500to1Rent: "۵۰۰ میلیون تا ۱ میلیارد رهن",
     budget1to2Rent: "۱ تا ۲ میلیارد رهن", budgetOver2Rent: "بالای ۲ میلیارد رهن",
-    noResults: "متاسفانه آگهی ای مطابق فیلتر شما پیدا نشد.",
-    fileReqOffer: "میخوای درخواست فایل یابی ثبت کنم؟",
+    noResults: "متاسفانه آگهی ای پیدا نشد.",
     fileReqYes: "بله، ثبت کن", fileReqNo: "نه، بی خیال",
     fileReqPrompt: "لطفا جزئیات درخواستت رو بنویس.",
-    fileReqSaved: "درخواست فایل یابی ثبت شد. اگر آگهی مطابق پیدا شد، بهت خبر میدم.",
-    viewMore: "برای دیدن آگهی های بیشتر: /more", totalListings: "تعداد کل",
+    fileReqSaved: "درخواست فایل یابی ثبت شد.",
+    totalListings: "تعداد کل",
     listingTypeSell: "🏠 فروش", listingTypeRent: "🔑 رهن و اجاره",
-    introSell: "ثبت آگهی فروش\n\nلطفا همه اطلاعات را یکجا بفرستید.",
-    introListRent: "ثبت آگهی رهن و اجاره\n\nلطفا همه اطلاعات را یکجا بفرستید.",
+    introSell: "ثبت آگهی فروش", introListRent: "ثبت آگهی رهن و اجاره",
     introConsult: "مشاوره رایگان\n\nسلام! چه سوالی دارید؟",
-    savedOk: "آگهی ثبت شد. ممنون!", cancelled: "لغو شد.", backToMenu: "به منوی اصلی برگشتید.",
+    savedOk: "آگهی ثبت شد.", cancelled: "لغو شد.", backToMenu: "به منوی اصلی برگشتید.",
     noListings: "هنوز آگهی ای ثبت نشده.", listingNotFound: "این آگهی پیدا نشد.",
-    askMedia: "عکس یا ویدیو از ملک دارید؟ (اگر ندارید: رد کردن)",
-    mediaAgain: "لطفا عکس یا ویدیو بفرستید یا رد کردن را بزنید.",
+    askMedia: "عکس یا ویدیو از ملک دارید؟",
+    mediaAgain: "لطفا عکس یا ویدیو بفرستید یا رد کنید.",
     voiceErr: "متاسفانه ویس شما را نفهمیدم.",
     phoneHidden: "شماره تماس پس از درخواست بازدید اعلام می شود.",
     siteMsg: "🌐 سایت: " + SITE_MAIN + "\n\n📢 کانال: " + CHANNEL_URL,
-    qPropertyTypeSell: "نوع ملک و متراژ؟\n\nمثال: آپارتمان ۱۲۰ متری",
-    qPropertyTypeRent: "نوع ملک و متراژ؟\n\nمثال: آپارتمان ۱۲۰ متری",
-    qDocument: "وضعیت سند؟\n\nمثال: تک برگ، شش دانگ",
-    qLocation: "آدرس یا محله؟\n\n💡 آدرس کامل رو بنویس (خیابان، کوچه، پلاک)\n\n⚠️ آدرس کامل فقط توی داشبورد ادمین می‌مونه. توی سایت و کانال، فقط محله نمایش داده می‌شه.",
-    qPrice: "قیمت مورد نظر؟\n\nمثال: ۶ میلیارد",
-    qPriceRent: "مبلغ رهن و اجاره؟\n\nمثال: ۵۰۰ میلیون رهن و ۱۰ میلیون اجاره",
-    qSize: "متراژ؟\n\nمثال: ۱۰۰ متر",
-    qNotes: "توضیحات اضافه (اختیاری)\n\n⚠️ بدون شماره تلفن",
-    qPhone: "شماره تماس؟\n\nمثال: ۰۹۱۲۳۴۵۶۷۸۹",
-    qName: "نام و نام خانوادگی؟\n\nمثال: علی احمدی",
-    qYearBuilt: "سال ساخت ملک؟\n\nمثال: ۱۳۹۵\n(اگه نمی‌دونی: رد کردن)",
-    qRooms: "تعداد اتاق؟\n\nمثال: ۲ خواب\n(اگه زمین یا مغازه هست: رد کردن)",
-    qFloor: "طبقه؟\n\nمثال: طبقه ۳ از ۵\n(اگه ویلایی یا زمین هست بنویس: زمینی)",
-    qAmenities: "امکانات ملک؟\n\nهرکدوم رو داری بنویس (با فاصله):\n• آسانسور\n• پارکینگ\n• انباری\n• بالکن\n\n💡 مثال: آسانسور پارکینگ انباری\n(اگه هیچ‌کدوم نداری: رد کردن)",
+    qPropertyTypeSell: "نوع ملک و متراژ؟", qPropertyTypeRent: "نوع ملک و متراژ؟",
+    qDocument: "وضعیت سند؟", qLocation: "آدرس یا محله؟",
+    qPrice: "قیمت مورد نظر؟", qPriceRent: "مبلغ رهن و اجاره؟",
+    qSize: "متراژ؟", qNotes: "توضیحات اضافه (اختیاری)",
+    qPhone: "شماره تماس؟", qName: "نام و نام خانوادگی؟",
+    qYearBuilt: "سال ساخت ملک؟", qRooms: "تعداد اتاق؟",
+    qFloor: "طبقه؟", qAmenities: "امکانات ملک؟",
     lblPricePerMeter: "قیمت هر متر",
-    notesHasPhone: "⚠️ رفیق، توی توضیحات شماره پیدا کردم.\n\n❌ لطفاً بدون شماره بنویس.",
-    webappIntro: "📸 <b>قدم ۱ از ۲ — عکس و ویدیو</b>\n\nاز ملکت عکس یا ویدیو داری؟\n\nهر تعداد که می‌خوای بفرست 👇\n\nوقتی تموم شد، دکمه <b>«✅ تمومه، برو فرم»</b> رو بزن.",
-    webappMediaReceived: "✅ فایل ثبت شد.\n\n📎 تعداد فایل‌های ثبت‌شده: <b>{count}</b>\n\nبازم بفرست یا دکمه <b>«✅ تمومه، برو فرم»</b> رو بزن.",
-    webappMediaIntro: "✅ عکس‌ها ذخیره شد!\n\nحالا <b>قدم ۲ از ۲</b>:\nفرم اطلاعات ملک رو پر کن 👇",
-    webappNoMedia: "⏭️ بدون عکس ادامه می‌دیم.\n\nحالا فرم اطلاعات ملک رو پر کن 👇",
+    notesHasPhone: "⚠️ توی توضیحات شماره پیدا کردم.\n\n❌ لطفاً بدون شماره بنویس.",
+    rolePrompt: "برای اینکه بهتر کمکت کنیم، لطفاً بگو کدوم هستی:",
+    roleColleague: "🏢 مشاور املاک", roleCustomer: "🏠 خریدار / مستأجر", roleOwner: "💰 مالک / فروشنده",
+    roleWelcomeColleague: "خوش اومدی همکار عزیز 🌹\n\nبرای همکاری بهتر، اطلاعاتت رو ثبت کن 👇",
+    roleWelcomeCustomer: "خوش اومدی 🌹\n\nچه ملکی می‌خوای؟",
+    roleWelcomeOwner: "خوش اومدی 🌹\n\nملکت رو با ما ثبت کن.",
+    colleagueBtnForm: "📝 ثبت اطلاعات همکاری",
+    colleagueBtnSkip: "⏭️ بعداً، برو منو",
+    colleagueHint: "☝️ دکمه بالا رو بزن تا فرم باز شه",
+    colleagueAlready: "✅ قبلاً ثبت‌نام کردی همکار عزیز 🌹",
+    colleagueThanks: "✅ ممنون! اطلاعاتت ثبت شد.",
+    colleagueMenuTitle: "🏢 <b>منوی همکار</b>\n\nیکی از گزینه‌ها رو انتخاب کن:",
+    colleagueBtnNewFile: "📝 ثبت فایل جدید",
+    colleagueBtnMyFiles: "📁 فایل‌های من",
+    colleagueBtnExchange: "🤝 تبادل فایل با همکارها",
+    colleagueBtnStats: "📊 آمار فایل‌های من",
+    colleagueBtnProfile: "👤 پروفایل من",
+    colleagueBtnBackMenu: "🔙 منوی اصلی",
+    colleagueMyFilesTitle: "📁 <b>فایل‌های من</b>\n\n",
+    colleagueNoFiles: "📁 هنوز فایلی ثبت نکردی.\n\nاز گزینه «📝 ثبت فایل جدید» شروع کن.",
+    colleagueExchangeTitle: "🤝 <b>تبادل فایل با همکارها</b>\n\nاینا آخرین فایل‌های همکارهای دیگه‌ست:",
+    colleagueExchangeEmpty: "🤝 هنوز هیچ همکاری فایلی نذاشته.",
+    colleagueStatsTitle: "📊 <b>آمار فایل‌های من</b>\n\n",
+    colleagueProfileTitle: "👤 <b>پروفایل من</b>\n\n",
+    colleagueProfileBtnEdit: "✏️ ویرایش اطلاعات",
+    colleagueOwnerTag: "🤝 فایل همکار",
+    colleagueFileOwner: "🏢 از طرف: ",
+    webappIntro: "📸 <b>قدم ۱ از ۲ — عکس و ویدیو</b>\n\nاز ملکت عکس یا ویدیو داری؟\n\nهر تعداد که می‌خوای بفرست 👇",
+    webappMediaReceived: "✅ فایل ثبت شد.\n\n📎 تعداد: <b>{count}</b>",
+    webappMediaIntro: "✅ عکس‌ها ذخیره شد!\n\nحالا فرم اطلاعات ملک رو پر کن 👇",
+    webappNoMedia: "⏭️ بدون عکس ادامه می‌دیم.",
     webappBtnDone: "✅ تمومه، برو فرم",
     webappBtnSkip: "⏭️ عکس ندارم، مستقیم برو فرم",
     webappBtnForm: "📝 باز کردن فرم ثبت آگهی",
-    webappHint: "☝️ دکمه بالا رو بزن تا فرم باز شه"
+    webappHint: "☝️ دکمه بالا رو بزن",
+    resetDone: "🔄 نقش شما ریست شد.\n\nلطفاً دوباره /start بزنید."
   },
   en: {
-    welcome: "Welcome to Nemati Real Estate.\n\n🌐 Website: " + SITE_MAIN + "\n📢 Channel: " + CHANNEL_URL,
-    langPrompt: "Please choose your language:", langLabel: "Language: English",
+    welcome: "Welcome to Nemati Real Estate.\n\n🌐 " + SITE_MAIN + "\n📢 " + CHANNEL_URL,
+    langPrompt: "Choose your language:", langLabel: "Language: English",
     menuPrompt: "Choose an option:",
     menuViewSell: "🏠 Listings for Sale", menuViewRent: "🔑 Listings for Rent",
-    menuListSell: "📝 List my property for Sale", menuListRent: "📋 List my property for Rent",
+    menuListSell: "📝 List for Sale", menuListRent: "📋 List for Rent",
     menuConsult: "💬 Free Consultation", menuSite: "🌐 Visit Website",
     back: "Back", cancel: "Cancel", skip: "Skip",
-    requestBtn: "📩 Request this property", reqSent: "Your request is registered.",
-    reqAskPhone: "Please send your phone number.", reqThanks: "Thanks!", reqWithoutPhone: "Request registered.",
-    askTime: "What time works best?",
-    timeSlot1: "🌅 Today evening (16-19)", timeSlot2: "🌤️ Tomorrow morning (9-12)", timeSlot3: "🌆 Tomorrow evening (16-19)",
-    timeCancel: "❌ Cancel", reqWithTime: "✅ Booking confirmed!",
-    noPhoneFound: "No valid phone found.",
-    filterTitle: "Listings", filterPrompt: "How do you want to search?", filterAll: "📂 All listings",
-    filterBudgetPrompt: "Choose your budget:",
+    requestBtn: "📩 Request", reqSent: "Registered.", reqAskPhone: "Send phone.",
+    reqThanks: "Thanks!", reqWithoutPhone: "Registered.", askTime: "What time?",
+    timeSlot1: "Evening", timeSlot2: "Morning", timeSlot3: "Tomorrow evening",
+    timeCancel: "❌ Cancel", reqWithTime: "✅ Confirmed!",
+    noPhoneFound: "No phone.", filterPrompt: "Search how?", filterAll: "📂 All",
     budgetUnder2: "Under 2B", budget2to5: "2-5B", budget5to10: "5-10B", budgetOver10: "Over 10B",
-    budgetUnder500Rent: "Under 500M", budget500to1Rent: "500M-1B",
-    budget1to2Rent: "1-2B", budgetOver2Rent: "Over 2B",
-    noResults: "No listings matched.",
-    fileReqOffer: "Register file request?", fileReqYes: "Yes", fileReqNo: "No",
-    fileReqPrompt: "Write your request details.", fileReqSaved: "Registered.",
-    viewMore: "More: /more", totalListings: "Total",
-    listingTypeSell: "🏠 Sale", listingTypeRent: "🔑 Rent",
-    introSell: "List for Sale", introListRent: "List for Rent",
-    introConsult: "Free Consultation", savedOk: "Saved.",
-    cancelled: "Cancelled.", backToMenu: "Back to menu.",
-    noListings: "No listings.", listingNotFound: "Not found.",
-    askMedia: "Photos/videos? (or Skip)", mediaAgain: "Send photo/video or Skip.",
-    voiceErr: "Could not understand.", phoneHidden: "Contact after viewing request.",
-    siteMsg: "🌐 Website: " + SITE_MAIN + "\n📢 Channel: " + CHANNEL_URL,
-    qPropertyTypeSell: "Property type and size?", qPropertyTypeRent: "Property type and size?",
-    qDocument: "Document?", qLocation: "Full address?", qPrice: "Price?",
-    qPriceRent: "Deposit and rent?", qSize: "Size?", qNotes: "Notes (optional, no phone).",
-    qPhone: "Phone?", qName: "Full name?",
-    qYearBuilt: "Year built?", qRooms: "Number of rooms?", qFloor: "Floor?",
-    qAmenities: "Amenities? (elevator, parking, storage, balcony)",
-    lblPricePerMeter: "Price per sqm",
-    notesHasPhone: "⚠️ Phone found. Please rewrite without phone.",
-    webappIntro: "📸 Step 1 of 2 — Photos & Videos\n\nSend any number of photos or videos.\nWhen done, press «✅ Done, go to form».",
-    webappMediaReceived: "✅ File saved.\n\n📎 Total files: {count}\n\nSend more or press «✅ Done, go to form».",
-    webappMediaIntro: "✅ Media saved!\n\nNow step 2: fill the form 👇",
-    webappNoMedia: "⏭️ Continuing without media.\n\nNow fill the form 👇",
-    webappBtnDone: "✅ Done, go to form",
-    webappBtnSkip: "⏭️ No media, go to form",
-    webappBtnForm: "📝 Open listing form",
-    webappHint: "☝️ Press the button above to open the form"
+    budgetUnder500Rent: "Under 500M", budget500to1Rent: "500M-1B", budget1to2Rent: "1-2B", budgetOver2Rent: "Over 2B",
+    noResults: "None.", fileReqYes: "Yes", fileReqNo: "No", fileReqPrompt: "Details.", fileReqSaved: "Saved.",
+    totalListings: "Total", listingTypeSell: "🏠 Sale", listingTypeRent: "🔑 Rent",
+    introSell: "Sale", introListRent: "Rent", introConsult: "Consultation",
+    savedOk: "Saved.", cancelled: "Cancelled.", backToMenu: "Back.",
+    noListings: "None.", listingNotFound: "Not found.", askMedia: "Photos?", mediaAgain: "Send media.",
+    voiceErr: "?", phoneHidden: "Contact after request.", siteMsg: SITE_MAIN,
+    qPropertyTypeSell: "Type?", qPropertyTypeRent: "Type?", qDocument: "Doc?", qLocation: "Location?",
+    qPrice: "Price?", qPriceRent: "Rent?", qSize: "Size?", qNotes: "Notes.",
+    qPhone: "Phone?", qName: "Name?", qYearBuilt: "Year?", qRooms: "Rooms?",
+    qFloor: "Floor?", qAmenities: "Amenities?", lblPricePerMeter: "Per sqm",
+    notesHasPhone: "No phone.", rolePrompt: "Who are you?",
+    roleColleague: "🏢 Agent", roleCustomer: "🏠 Buyer", roleOwner: "💰 Owner",
+    roleWelcomeColleague: "Welcome colleague 🌹", roleWelcomeCustomer: "Welcome 🌹", roleWelcomeOwner: "Welcome 🌹",
+    colleagueBtnForm: "📝 Register", colleagueBtnSkip: "⏭️ Skip", colleagueHint: "☝️",
+    colleagueAlready: "✅ Already registered.", colleagueThanks: "✅ Thanks!",
+    colleagueMenuTitle: "🏢 Colleague menu", colleagueBtnNewFile: "📝 New file",
+    colleagueBtnMyFiles: "📁 My files", colleagueBtnExchange: "🤝 Exchange",
+    colleagueBtnStats: "📊 Stats", colleagueBtnProfile: "👤 Profile",
+    colleagueBtnBackMenu: "🔙 Main menu", colleagueMyFilesTitle: "📁 My files",
+    colleagueNoFiles: "No files yet.", colleagueExchangeTitle: "🤝 Exchange",
+    colleagueExchangeEmpty: "None yet.", colleagueStatsTitle: "📊 Stats",
+    colleagueProfileTitle: "👤 Profile", colleagueProfileBtnEdit: "✏️ Edit",
+    colleagueOwnerTag: "🤝 Colleague file", colleagueFileOwner: "🏢 From: ",
+    webappIntro: "📸 Send media", webappMediaReceived: "✅ {count}",
+    webappMediaIntro: "✅ Form", webappNoMedia: "⏭️ Form",
+    webappBtnDone: "✅ Done", webappBtnSkip: "⏭️ Skip",
+    webappBtnForm: "📝 Form", webappHint: "☝️", resetDone: "🔄 Reset."
   },
   ar: {
-    welcome: "مرحبا بكم في عقارات نعمتي.\n\n🌐 الموقع: " + SITE_MAIN + "\n📢 القناة: " + CHANNEL_URL,
-    langPrompt: "الرجاء اختيار اللغة:", langLabel: "اللغة: العربية",
-    menuPrompt: "اختر أحد الخيارات:",
-    menuViewSell: "🏠 إعلانات البيع", menuViewRent: "🔑 إعلانات الإيجار",
-    menuListSell: "📝 تسجيل عقاري للبيع", menuListRent: "📋 تسجيل عقاري للإيجار",
-    menuConsult: "💬 استشارة مجانية", menuSite: "🌐 زيارة الموقع",
+    welcome: "مرحبا بعقارات نعمتي.\n\n🌐 " + SITE_MAIN + "\n📢 " + CHANNEL_URL,
+    langPrompt: "اختر اللغة:", langLabel: "اللغة: العربية",
+    menuPrompt: "اختر:",
+    menuViewSell: "🏠 البيع", menuViewRent: "🔑 الإيجار",
+    menuListSell: "📝 تسجيل بيع", menuListRent: "📋 تسجيل إيجار",
+    menuConsult: "💬 استشارة", menuSite: "🌐 الموقع",
     back: "رجوع", cancel: "إلغاء", skip: "تخطي",
-    requestBtn: "📩 طلب هذا العقار", reqSent: "تم التسجيل.",
-    reqAskPhone: "أرسل رقم هاتفك.", reqThanks: "شكرا!", reqWithoutPhone: "تم التسجيل.",
-    askTime: "ما هو الوقت المناسب؟",
-    timeSlot1: "🌅 اليوم مساء (16-19)", timeSlot2: "🌤️ غدا صباحا (9-12)", timeSlot3: "🌆 غدا مساء (16-19)",
-    timeCancel: "❌ إلغاء", reqWithTime: "✅ تم الحجز!",
-    noPhoneFound: "رقم غير صالح.",
-    filterTitle: "الإعلانات", filterPrompt: "كيف تريد البحث؟", filterAll: "📂 كل الإعلانات",
-    filterBudgetPrompt: "اختر ميزانيتك:",
-    budgetUnder2: "أقل من 2 مليار", budget2to5: "2-5 مليار", budget5to10: "5-10 مليار", budgetOver10: "أكثر من 10 مليار",
-    budgetUnder500Rent: "أقل من 500 مليون", budget500to1Rent: "500 مليون - 1 مليار",
-    budget1to2Rent: "1-2 مليار", budgetOver2Rent: "أكثر من 2 مليار",
-    noResults: "لا توجد نتائج.",
-    fileReqOffer: "تسجيل طلب؟", fileReqYes: "نعم", fileReqNo: "لا",
-    fileReqPrompt: "اكتب التفاصيل.", fileReqSaved: "تم التسجيل.",
-    viewMore: "للمزيد: /more", totalListings: "المجموع",
-    listingTypeSell: "🏠 بيع", listingTypeRent: "🔑 إيجار",
-    introSell: "تسجيل للبيع", introListRent: "تسجيل للإيجار",
-    introConsult: "استشارة مجانية", savedOk: "تم الحفظ.",
-    cancelled: "ألغي.", backToMenu: "عودة للقائمة.",
-    noListings: "لا إعلانات.", listingNotFound: "غير موجود.",
-    askMedia: "صور/فيديو؟", mediaAgain: "أرسل صورة أو تخطي.",
-    voiceErr: "لم أفهم.", phoneHidden: "يعلن بعد الطلب.",
-    siteMsg: "🌐 الموقع: " + SITE_MAIN + "\n📢 القناة: " + CHANNEL_URL,
-    qPropertyTypeSell: "نوع العقار والمساحة؟", qPropertyTypeRent: "نوع العقار والمساحة؟",
-    qDocument: "حالة السند؟", qLocation: "العنوان الكامل؟", qPrice: "السعر؟",
-    qPriceRent: "التأمين والإيجار؟", qSize: "المساحة؟", qNotes: "ملاحظات.",
-    qPhone: "رقم الهاتف؟", qName: "الاسم؟",
-    qYearBuilt: "سنة البناء؟", qRooms: "عدد الغرف؟", qFloor: "الطابق؟",
-    qAmenities: "المرافق؟ (مصعد، موقف، مخزن، شرفة)",
-    lblPricePerMeter: "سعر المتر",
-    notesHasPhone: "⚠️ تم العثور على رقم.",
-    webappIntro: "📸 الخطوة 1 من 2\n\nأرسل صور أو فيديو.\nعند الانتهاء اضغط «✅ تم، اذهب للاستمارة».",
-    webappMediaReceived: "✅ تم الحفظ.\n\n📎 عدد الملفات: {count}",
-    webappMediaIntro: "✅ تم حفظ الوسائط!\n\nاملأ الاستمارة 👇",
-    webappNoMedia: "⏭️ بدون وسائط.\n\nاملأ الاستمارة 👇",
-    webappBtnDone: "✅ تم، اذهب للاستمارة",
-    webappBtnSkip: "⏭️ لا وسائط، اذهب للاستمارة",
-    webappBtnForm: "📝 فتح استمارة التسجيل",
-    webappHint: "☝️ اضغط الزر أعلاه"
+    requestBtn: "📩 طلب", reqSent: "تم.", reqAskPhone: "أرسل رقمك.",
+    reqThanks: "شكرا!", reqWithoutPhone: "تم.", askTime: "الوقت؟",
+    timeSlot1: "مساء", timeSlot2: "صباح", timeSlot3: "مساء غد",
+    timeCancel: "إلغاء", reqWithTime: "✅ تم!", noPhoneFound: "غير صالح.",
+    filterPrompt: "بحث؟", filterAll: "📂 الكل",
+    budgetUnder2: "أقل 2", budget2to5: "2-5", budget5to10: "5-10", budgetOver10: "أكثر 10",
+    budgetUnder500Rent: "أقل 500", budget500to1Rent: "500-1000", budget1to2Rent: "1-2", budgetOver2Rent: "أكثر 2",
+    noResults: "لا نتائج.", fileReqYes: "نعم", fileReqNo: "لا", fileReqPrompt: "التفاصيل.", fileReqSaved: "تم.",
+    totalListings: "المجموع", listingTypeSell: "🏠 بيع", listingTypeRent: "🔑 إيجار",
+    introSell: "تسجيل بيع", introListRent: "تسجيل إيجار", introConsult: "استشارة",
+    savedOk: "تم.", cancelled: "ألغي.", backToMenu: "عودة.",
+    noListings: "لا.", listingNotFound: "غير موجود.", askMedia: "صور؟", mediaAgain: "أرسل.",
+    voiceErr: "?", phoneHidden: "بعد الطلب.", siteMsg: SITE_MAIN,
+    qPropertyTypeSell: "النوع؟", qPropertyTypeRent: "النوع؟", qDocument: "السند؟", qLocation: "العنوان؟",
+    qPrice: "السعر؟", qPriceRent: "الإيجار؟", qSize: "المساحة؟", qNotes: "ملاحظات.",
+    qPhone: "الهاتف؟", qName: "الاسم؟", qYearBuilt: "السنة؟", qRooms: "الغرف؟",
+    qFloor: "الطابق؟", qAmenities: "المرافق؟", lblPricePerMeter: "للمتر",
+    notesHasPhone: "لا رقم.", rolePrompt: "من أنت؟",
+    roleColleague: "🏢 وسيط", roleCustomer: "🏠 مشتري", roleOwner: "💰 مالك",
+    roleWelcomeColleague: "أهلا 🌹", roleWelcomeCustomer: "أهلا 🌹", roleWelcomeOwner: "أهلا 🌹",
+    colleagueBtnForm: "📝 تسجيل", colleagueBtnSkip: "⏭️ تخطي", colleagueHint: "☝️",
+    colleagueAlready: "✅ مسجل مسبقا.", colleagueThanks: "✅ شكرا!",
+    colleagueMenuTitle: "🏢 قائمة الوسيط", colleagueBtnNewFile: "📝 ملف جديد",
+    colleagueBtnMyFiles: "📁 ملفاتي", colleagueBtnExchange: "🤝 تبادل",
+    colleagueBtnStats: "📊 إحصائيات", colleagueBtnProfile: "👤 الملف",
+    colleagueBtnBackMenu: "🔙 القائمة", colleagueMyFilesTitle: "📁 ملفاتي",
+    colleagueNoFiles: "لا ملفات.", colleagueExchangeTitle: "🤝 تبادل",
+    colleagueExchangeEmpty: "لا شيء.", colleagueStatsTitle: "📊 إحصائيات",
+    colleagueProfileTitle: "👤 الملف", colleagueProfileBtnEdit: "✏️ تعديل",
+    colleagueOwnerTag: "🤝 ملف وسيط", colleagueFileOwner: "🏢 من: ",
+    webappIntro: "📸 أرسل وسائط", webappMediaReceived: "✅ {count}",
+    webappMediaIntro: "✅ الاستمارة", webappNoMedia: "⏭️ الاستمارة",
+    webappBtnDone: "✅ تم", webappBtnSkip: "⏭️ تخطي",
+    webappBtnForm: "📝 استمارة", webappHint: "☝️", resetDone: "🔄 تم."
   }
 };
 
 // ═══════════════════════════════════════════════════════════
-// ⏸️ پایان پارت ۱ — بگو «پارت ۲» تا ادامه بفرستم
-// ═══════════════════════════════════════════════════════════// ═══════════════════════════════════════════════════════════
 // 🧠 MEMORY
 // ═══════════════════════════════════════════════════════════
 
@@ -230,6 +230,12 @@ async function clearHistory(env, chatId) { try { await env.DATA.delete(`chat_his
 function detectSeriousIntent(text) {
   if (!text) return null;
   const t = String(text);
+  if (/(همکارم|همکار\s*هستم|همکاریم|من\s*همکار|ما\s*همکار|بنده\s*همکار)/i.test(t)) return "🤝 همکار املاک";
+  if (/(مشاور\s*املاک|مشاور\s*ملکی|مشاور\s*هستم|مشاورم)/i.test(t)) return "🏢 مشاور املاک";
+  if (/(آژانس\s*املاک|بنگاه\s*املاک|دفتر\s*املاک|آژانس\s*دارم|بنگاه\s*دارم|املاک\s*دارم)/i.test(t)) return "🏛️ آژانس/بنگاه";
+  if (/(دنبال\s*فایل|تبادل\s*فایل|فایل\s*مشترک|فایل\s*دارم|معرفی\s*فایل|فایل\s*معرفی)/i.test(t)) return "📁 تبادل فایل";
+  if (/(مالک\s*هستم|مالکم|خودم\s*مالک|خودم\s*مالکم)/i.test(t)) return "🏠 مالک";
+  if (/(واسطه|واسطه‌ام|واسطه\s*هستم)/i.test(t)) return "👤 واسطه";
   if (/(?:میخوام\s*بخرم|میخوام\s*خرید|خریدارم|قصد\s*خرید|برا\s*خرید|میخرم|بخرم|معامله|قرارداد|امضا|امضاء|واریز|پیش\s*پرداخت|بیعانه)/i.test(t)) return "💰 قصد خرید";
   if (/(?:پسندیدم|خوشم\s*اومد|قبول\s*دارم|همین\s*رو\s*میخوام|همینو\s*میخوام|این\s*ملک\s*رو\s*میخوام|مناسب\s*هست|مناسبه)/i.test(t)) return "⭐ علاقه جدی به ملک";
   if (/(?:الان\s*میام|الان\s*بیام|همین\s*امروز\s*میام|فردا\s*صبح\s*میام|میام\s*ببینم|برای\s*بازدید\s*میام|کی\s*بیام|کِی\s*بیام)/i.test(t)) return "🚶 قصد بازدید فوری";
@@ -238,17 +244,115 @@ function detectSeriousIntent(text) {
   return null;
 }
 
+function isColleagueIntent(intentType) {
+  if (!intentType) return false;
+  return /همکار|مشاور|آژانس|بنگاه|تبادل|مالک|واسطه/.test(intentType);
+}
+
 async function getAdminChatId(env) {
   if (env.ADMIN_CHAT_ID && String(env.ADMIN_CHAT_ID).trim()) return String(env.ADMIN_CHAT_ID).trim();
   try { const kvId = await env.DATA.get("admin_chat_id"); if (kvId && String(kvId).trim()) return String(kvId).trim(); } catch (e) {}
   return null;
 }
 
+function isAdminUser(chatId, env) { return String(chatId) === String(env.ADMIN_CHAT_ID); }
+
+// ═══════════════════════════════════════════════════════════
+// 📊 آمار امروز و هفته
+// ═══════════════════════════════════════════════════════════
+
+async function getTodayStats(env) {
+  try {
+    const now = Date.now();
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+    const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
+
+    let listingsToday = 0, listingsWeek = 0;
+    let fileReqsToday = 0, fileReqsWeek = 0;
+    let apptsToday = 0, apptsWeek = 0;
+    let colleaguesToday = 0, colleaguesWeek = 0;
+    let negotiationsToday = 0, negotiationsWeek = 0;
+
+    try {
+      const p = await env.DATA.list({ prefix: "pub_listing_" });
+      for (const k of p.keys) {
+        const ts = parseInt(k.name.replace("pub_listing_", ""));
+        if (ts >= oneDayAgo) listingsToday++;
+        if (ts >= oneWeekAgo) listingsWeek++;
+      }
+    } catch (e) {}
+
+    try {
+      const f = await env.DATA.list({ prefix: "file_req_" });
+      for (const k of f.keys) {
+        const ts = parseInt(k.name.replace("file_req_", ""));
+        if (ts >= oneDayAgo) fileReqsToday++;
+        if (ts >= oneWeekAgo) fileReqsWeek++;
+      }
+    } catch (e) {}
+
+    try {
+      const ap = await env.DATA.list({ prefix: "appt_" });
+      for (const k of ap.keys) {
+        const ts = parseInt(k.name.replace("appt_", ""));
+        if (ts >= oneDayAgo) apptsToday++;
+        if (ts >= oneWeekAgo) apptsWeek++;
+      }
+    } catch (e) {}
+
+    try {
+      const c = await env.DATA.list({ prefix: "colleague_" });
+      for (const k of c.keys) {
+        const col = await env.DATA.get(k.name, "json");
+        if (!col || !col.ts) continue;
+        if (col.ts >= oneDayAgo) colleaguesToday++;
+        if (col.ts >= oneWeekAgo) colleaguesWeek++;
+      }
+    } catch (e) {}
+
+    try {
+      const n = await env.DATA.list({ prefix: "neg_" });
+      for (const k of n.keys) {
+        const ts = parseInt(k.name.replace("neg_", ""));
+        if (ts >= oneDayAgo) negotiationsToday++;
+        if (ts >= oneWeekAgo) negotiationsWeek++;
+      }
+    } catch (e) {}
+
+    let usersToday = 0, usersWeek = 0;
+    try {
+      const u = await env.DATA.get("active_users", "json") || {};
+      for (const uid in u) {
+        if (u[uid] >= oneDayAgo) usersToday++;
+        if (u[uid] >= oneWeekAgo) usersWeek++;
+      }
+    } catch (e) {}
+
+    return {
+      today: { users: usersToday, listings: listingsToday, fileReqs: fileReqsToday, appts: apptsToday, colleagues: colleaguesToday, negotiations: negotiationsToday },
+      week: { users: usersWeek, listings: listingsWeek, fileReqs: fileReqsWeek, appts: apptsWeek, colleagues: colleaguesWeek, negotiations: negotiationsWeek }
+    };
+  } catch (e) { return { today: {}, week: {} }; }
+}
+
+async function trackActiveUser(env, chatId) {
+  try {
+    const u = await env.DATA.get("active_users", "json") || {};
+    u[String(chatId)] = Date.now();
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    for (const uid in u) { if (u[uid] < cutoff) delete u[uid]; }
+    await env.DATA.put("active_users", JSON.stringify(u), { expirationTtl: 30 * 24 * 3600 });
+  } catch (e) {}
+}
 async function alertAdminSerious(env, chatId, userName, userUsername, userText, intentType) {
   try {
     const adminId = await getAdminChatId(env);
     if (!adminId) return false;
-    let msg = `🔴 <b>هشدار مشتری جدی!</b>\n\n🎯 <b>نوع:</b> ${intentType}\n👤 <b>نام:</b> ${userName}\n📛 <b>یوزرنیم:</b> @${userUsername}\n🆔 <b>چت:</b> ${chatId}\n\n💬 <b>پیام مشتری:</b>\n<i>${utf8Clean(userText).substring(0, 300)}</i>\n\n⚡ <b>سریع وارد شو و جواب بده!</b>`;
+    const isColleague = isColleagueIntent(intentType);
+    const emoji = isColleague ? "🟢" : "🔴";
+    const header = isColleague ? "همکار شناسایی شد!" : "هشدار مشتری جدی!";
+    let msg = `${emoji} <b>${header}</b>\n\n🎯 <b>نوع:</b> ${intentType}\n👤 <b>نام:</b> ${userName}\n📛 <b>یوزرنیم:</b> @${userUsername}\n🆔 <b>چت:</b> ${chatId}\n\n💬 <b>پیام:</b>\n<i>${utf8Clean(userText).substring(0, 300)}</i>\n\n`;
+    msg += isColleague ? `🤝 <b>یه همکاره، بررسی کن.</b>` : `⚡ <b>سریع وارد شو!</b>`;
     const r = await sendToTelegram(env, "sendMessage", { chat_id: adminId, text: msg, parse_mode: "HTML" });
     return r.ok;
   } catch (e) { return false; }
@@ -306,7 +410,7 @@ function parsePersianDate(text) {
   if (!text) return null;
   const t = String(text).trim();
   const PERSIAN_MONTHS = {"فروردین":1,"فرودین":1,"اردیبهشت":2,"خرداد":3,"تیر":4,"مرداد":5,"شهریور":6,"مهر":7,"آبان":8,"ابان":8,"آذر":9,"اذر":9,"دی":10,"بهمن":11,"اسفند":12};
-  const WEEKDAYS = {"شنبه":6,"یکشنبه":0,"یک‌شنبه":0,"یک شنبه":0,"دوشنبه":1,"دو‌شنبه":1,"دو شنبه":1,"سه‌شنبه":2,"سه شنبه":2,"سهشنبه":2,"چهارشنبه":3,"چهار‌شنبه":3,"چهار شنبه":3,"پنجشنبه":4,"پنج‌شنبه":4,"پنج شنبه":4,"جمعه":5};
+  const WEEKDAYS = {"شنبه":6,"یکشنبه":0,"یک‌شنبه":0,"یک شنبه":0,"دوشنبه":1,"دو‌شنبه":1,"دو شنبه":1,"سه‌شنبه":2,"سه شنبه":2,"سه‌شنبه":2,"چهارشنبه":3,"چهار‌شنبه":3,"چهار شنبه":3,"پنجشنبه":4,"پنج‌شنبه":4,"پنج شنبه":4,"جمعه":5};
   const { today, todayJ } = getTehranToday();
   let hour = 10, minute = 0;
   const timeMatch = t.match(/(?:ساعت\s*)?([۰-۹\d]+)(?::([۰-۹\d]+))?/);
@@ -436,25 +540,21 @@ async function notifyMatchingCustomers(env, listing) {
           let msg = `🎯 <b>خبر خوب رفیق!</b>\n\nیه ملک جدید پیدا شد که با درخواستت هماهنگه:\n\n🏘️ ${listing.propertyType || "-"}\n📍 محله: ${listing.location_short || listing.location || "-"}\n📐 متراژ: ${listing.size || "-"}\n`;
           if (listing.year_built) msg += `🏗️ سال ساخت: ${listing.year_built}\n`;
           if (listing.rooms) msg += `🛏️ اتاق: ${listing.rooms}\n`;
-          if (listing.floor) msg += `🏢 طبقه: ${listing.floor}\n`;
           if (listing.amenities) msg += `✨ امکانات: ${listing.amenities}\n`;
-          if (listing.document) msg += `📄 سند: ${listing.document}\n`;
           msg += `💰 قیمت: ${listing.price || "-"}\n`;
           if (listing.price_per_meter) msg += `📊 هر متر: ${listing.price_per_meter}\n`;
-          if (listing.extra_notes) msg += `📝 ${listing.extra_notes.substring(0, 100)}\n`;
-          msg += `\n📞 برای اطلاعات بیشتر با ما تماس بگیر یا توی ربات بنویس.`;
+          msg += `\n📞 برای اطلاعات بیشتر با ما تماس بگیر.`;
           const sendResult = await sendToTelegram(env, "sendMessage", { chat_id: fr.chatId, text: msg, parse_mode: "HTML" });
-          if (sendResult.ok) { fr.notified = true; fr.notifiedListingKey = listing._key || ""; fr.notifiedAt = new Date().toISOString(); await env.DATA.put(k.name, JSON.stringify(fr)); notifiedCount++; matchedNames.push(fr.userName || fr.userUsername || "مشتری"); }
+          if (sendResult.ok) { fr.notified = true; fr.notifiedListingKey = listing._key || ""; await env.DATA.put(k.name, JSON.stringify(fr)); notifiedCount++; matchedNames.push(fr.userName || fr.userUsername || "مشتری"); }
         }
-      } catch (e) { console.error("notify customer error:", e.message); }
+      } catch (e) {}
     }
     if (adminId && notifiedCount > 0) {
-      let report = `📢 <b>اعلان خودکار ارسال شد</b>\n\n🏘️ ملک: ${listing.propertyType || "-"} ${listing.size || ""}\n📍 محله: ${listing.location_short || listing.location || "-"}\n💰 قیمت: ${listing.price || "-"}\n\n✅ به <b>${notifiedCount}</b> مشتری منتظر پیام دادم:\n`;
+      let report = `📢 <b>اعلان خودکار ارسال شد</b>\n\n🏘️ ملک: ${listing.propertyType || "-"} ${listing.size || ""}\n✅ به <b>${notifiedCount}</b> مشتری پیام دادم:\n`;
       report += matchedNames.slice(0, 10).map(n => "• " + n).join("\n");
-      if (matchedNames.length > 10) report += `\n... و ${matchedNames.length - 10} نفر دیگه`;
       await sendToTelegram(env, "sendMessage", { chat_id: adminId, text: report, parse_mode: "HTML" });
     }
-  } catch (e) { console.error("notifyMatchingCustomers error:", e.message); }
+  } catch (e) {}
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -487,7 +587,7 @@ async function getChannelId(env) {
   return clean || null;
 }
 
-// ═══════════════════════════════════════════════════════════
+// ⏸️ پایان پارت ۱ — بگو «پارت ۲»// ═══════════════════════════════════════════════════════════
 // 🛡️ MASTER SHIELD
 // ═══════════════════════════════════════════════════════════
 
@@ -530,7 +630,7 @@ function masterSanitize(text) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🗺️ Sanitize Location — با لیست محله‌های قم
+// 🗺️ SANITIZE LOCATION
 // ═══════════════════════════════════════════════════════════
 
 function sanitizeLocation(location) {
@@ -580,6 +680,10 @@ async function sendToTelegram(env, method, payload) {
   } catch (e) { console.error("sendToTelegram failed:", method, e.message); return { ok: false, description: "Fetch failed: " + e.message }; }
 }
 
+// ═══════════════════════════════════════════════════════════
+// 📢 POST TO CHANNEL (با پشتیبانی از آگهی همکار)
+// ═══════════════════════════════════════════════════════════
+
 async function postToChannelWithAI(env, listing, listingKey) {
   const channelId = await getChannelId(env);
   if (!channelId) return { ok: false, error: "CHANNEL_ID تنظیم نشده" };
@@ -590,10 +694,26 @@ async function postToChannelWithAI(env, listing, listingKey) {
   try {
     const prompt = `یه جمله کوتاه جذاب (حداکثر ۱۵ کلمه) برای توضیحات این ملک بنویس.\nنوع: ${listing.propertyType || "-"}, متراژ: ${listing.size || "-"}, محله: ${cleanLoc || "-"}, قیمت: ${listing.price || "-"}\nقوانین: بدون شماره، آدرس دقیق، لینک. فقط یه جمله.`;
     const gr = await fetch("https://api.groq.com/openai/v1/chat/completions", { method: "POST", headers: { "Authorization": `Bearer ${env.GROQ_API_KEY}`, "Content-Type": "application/json; charset=utf-8" }, body: JSON.stringify({ model: "openai/gpt-oss-120b", messages: [{ role: "user", content: prompt }], temperature: 0.7, max_tokens: 80 }) });
-    if (gr.ok) { const gd = await gr.json(); aiDesc = (gd.choices && gd.choices[0]) ? gd.choices[0].message.content.trim().replace(/^["«»]+|["«»]+$/g, "") : ""; if (detectSuspiciousNumbers(aiDesc)) aiDesc = masterSanitize(aiDesc); }
+    
+    if (gr.ok) {
+      const gd = await gr.json();
+      const msgContent = (gd.choices && gd.choices[0] && gd.choices[0].message && gd.choices[0].message.content) ? gd.choices[0].message.content : "";
+      if (msgContent) {
+        aiDesc = msgContent.trim().replace(/^["«»]+|["«»]+$/g, "");
+        if (detectSuspiciousNumbers(aiDesc)) aiDesc = masterSanitize(aiDesc);
+      }
+    }
   } catch (e) { aiDesc = ""; }
   const typeLabel = listing.type === "rent" ? "🔑 رهن و اجاره" : "💰 فروش";
-  let postText = `🏘️ ${listing.propertyType || "ملک"}\n${typeLabel}\n━━━━━━━━━━━━━━\n\n`;
+  
+  const isColleagueFile = listing.source === "colleague" && listing.colleagueAgency;
+  let postText = "";
+  if (isColleagueFile) {
+    postText += `🤝 <b>فایل همکار</b>\n`;
+    postText += `🏢 از طرف: <b>${listing.colleagueAgency}</b>\n`;
+    postText += `━━━━━━━━━━━━━━\n\n`;
+  }
+  postText += `🏘️ ${listing.propertyType || "ملک"}\n${typeLabel}\n━━━━━━━━━━━━━━\n\n`;
   if (cleanLoc) postText += `📍 محله: ${cleanLoc}\n`;
   if (listing.size) postText += `📐 متراژ: ${listing.size}\n`;
   if (listing.year_built) postText += `🏗️ سال ساخت: ${listing.year_built}\n`;
@@ -630,20 +750,69 @@ async function postToChannelWithAI(env, listing, listingKey) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ⏸️ پایان پارت ۲ — بگو «پارت ۳» تا ادامه بفرستم
-// ═══════════════════════════════════════════════════════════// ═══════════════════════════════════════════════════════════
 // 🎭 SYSTEM PROMPT
 // ═══════════════════════════════════════════════════════════
 
-function buildSystemPrompt(lang, userName) {
+function buildSystemPrompt(lang, userName, mode) {
   const name = userName || "کاربر";
+  const isConsult = mode === "consult";
   const langMap = { fa: "فارسی", en: "English", ar: "العربية" };
   const currentLang = langMap[lang] || "فارسی";
   const { todayJ, tehranNow } = getTehranToday();
   const dayNames = ["یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه","شنبه"];
   const dayName = dayNames[tehranNow.getUTCDay()];
   const faDate = `${todayJ.jy}/${String(todayJ.jm).padStart(2,"0")}/${String(todayJ.jd).padStart(2,"0")}`;
-  return `تو "الی" هستی، دستیار هوشمند املاک نعمتی در قم.\n\n## 📅 امروز: ${dayName} — ${faDate}\n## زبان: ${currentLang} | نام کاربر: ${name}\n\n## شخصیت: گرم، صمیمی، کوتاه\n\n## کسب‌وکار: املاک نعمتی | قم، کلهری | ${SITE_MAIN}\n\n## قوانین:\n1. هیچ شماره/آیدی/ایمیل توی آگهی نره\n2. تاریخ شمسی؟ از convert_persian_date\n3. وام؟ از calculate_mortgage با نرخ پیش‌فرض ۲۳٪\n4. تخمین قیمت؟ از estimate_property_price. اگه ok:false، از خودت نساز\n5. قیمت فقط تومان\n6. جواب کوتاه (max 3 lines)\n\n## 🤝 مذاکره قیمت:\nهر وقت مشتری گفت گرونه، تخفیف میخواد، یا قیمت پیشنهاد داد → از negotiate_price استفاده کن.\nمراحل:\n1. اول بپرس: «چند می‌خوای بدی؟»\n2. مشتری قیمت داد\n3. ابزار negotiate_price رو صدا بزن\n4. بگو: «پیشنهادت رو به مدیر دادم.»\n\n❌ هرگز خودت تخفیف نده.\n\n## ابزارها: search_listings, save_file_request, book_appointment, convert_persian_date, calculate_mortgage, estimate_property_price, negotiate_price`;
+
+  const baseInfo = `## 📅 امروز: ${dayName} — ${faDate}
+## زبان: ${currentLang} | نام کاربر: ${name}
+
+## 🏢 اطلاعات کسب‌وکار (حفظ کن — از خودت نساز!):
+- **نام:** املاک نعمتی
+- **شهر:** قم
+- **آدرس:** قم، خیابان شهید کلهری، نبش کوچه ۶، املاک نعمتی
+- **شماره تماس:** ۰۹۱۲۴۵۲۷۹۰۳
+- **ساعات کاری:** شنبه تا پنجشنبه، ۹ صبح تا ۹ شب
+- **سایت:** ${SITE_MAIN}
+- **کانال:** ${CHANNEL_URL}
+- **ربات:** ${BOT_URL}
+
+## 📋 قوانین کلی:
+1. هیچ شماره/آیدی/ایمیل توی متن آگهی نره
+2. تاریخ شمسی → از convert_persian_date
+3. وام → از calculate_mortgage (نرخ پیش‌فرض ۲۳٪)
+4. تخمین قیمت → از estimate_property_price
+5. قیمت فقط تومان
+6. جواب کوتاه (max 3 lines)
+7. اگه کاربر گفت همکاره یا مشاور املاکه، خوش‌آمد بگو
+
+## 🤝 مذاکره قیمت:
+هر وقت مشتری گفت گرونه، تخفیف میخواد، یا قیمت پیشنهاد داد → از negotiate_price استفاده کن.
+❌ هرگز خودت تخفیف نده.
+
+## ابزارها: search_listings, save_file_request, book_appointment, convert_persian_date, calculate_mortgage, estimate_property_price, negotiate_price`;
+
+  if (isConsult) {
+    return `تو "الی" هستی، مشاور املاک حرفه‌ای املاک نعمتی در قم.
+
+${baseInfo}
+
+## 🎯 حالت مشاوره (فعال):
+1. **خوش‌برخورد و حرفه‌ای** باش
+2. **سوال بپرس**: خرید یا اجاره؟ چه محله‌ای؟ بودجه؟
+3. **راهنمایی کن**
+4. **پیشنهاد ملک بده** از search_listings
+5. **آدرس و شماره**:
+   - آدرس: قم، خیابان شهید کلهری، نبش کوچه ۶
+   - شماره: ۰۹۱۲۴۵۲۷۹۰۳
+   - ساعات: شنبه تا پنجشنبه، ۹ صبح تا ۹ شب
+6. **هرگز آدرس یا شماره از خودت نساز!**`;
+  }
+
+  return `تو "الی" هستی، دستیار هوشمند املاک نعمتی در قم.
+
+${baseInfo}
+
+## 🎭 شخصیت: گرم، صمیمی، کوتاه`;
 }
 
 const AI_TOOLS = [
@@ -703,7 +872,7 @@ async function saveFileRequestForAI(env, args, chatId, userName, userUsername) {
 }
 
 async function callGroq(env, messages, useTools) {
-  const body = { model: "openai/gpt-oss-120b", messages, temperature: 0.5, max_tokens: 400 };
+  const body = { model: "openai/gpt-oss-120b", messages, temperature: 0.5, max_tokens: 500 };
   if (useTools) { body.tools = AI_TOOLS; body.tool_choice = "auto"; }
   const r = await fetch("https://api.groq.com/openai/v1/chat/completions", { method: "POST", headers: { "Authorization": `Bearer ${env.GROQ_API_KEY}`, "Content-Type": "application/json; charset=utf-8" }, body: JSON.stringify(body) });
   let data = {};
@@ -721,13 +890,13 @@ async function callGroqWithRetry(env, messages, useTools) {
   return { status: 429, ok: false, data: { error: { message: "rate limit" } } };
 }
 
-async function aiReply(env, chatId, userText, userLang, userName, userUsername) {
+async function aiReply(env, chatId, userText, userLang, userName, userUsername, mode) {
   try {
     const history = await getHistory(env, chatId);
     const normText = wordsToNumbers(userText);
-    let messages = [{ role: "system", content: buildSystemPrompt(userLang, userName) }, ...history.map(h => ({ role: h.role, content: h.content })), { role: "user", content: normText }];
+    let messages = [{ role: "system", content: buildSystemPrompt(userLang, userName, mode) }, ...history.map(h => ({ role: h.role, content: h.content })), { role: "user", content: normText }];
     let res = await callGroqWithRetry(env, messages, true);
-    if (!res.ok) { if (res.status === 429) return "رفیق الان یه کم سرم شلوغه 🙏 چند لحظه دیگه دوباره بپرس"; return "⚠️ خطای AI: " + (res.data.error?.message || "نامشخص"); }
+    if (!res.ok) { if (res.status === 429) return "رفیق الان یه کم سرم شلوغه 🙏 چند لحظه دیگه دوباره بپرس"; return "⚠️ خطای AI"; }
     let gd = res.data;
     let choice = gd.choices && gd.choices[0];
     if (!choice) return "پاسخی دریافت نشد";
@@ -748,6 +917,7 @@ async function aiReply(env, chatId, userText, userLang, userName, userUsername) 
         else if (tc.function.name === "estimate_property_price") r = await estimatePropertyPriceForAI(env, a);
         else if (tc.function.name === "negotiate_price") r = await negotiatePriceForAI(env, a, chatId, userName, userUsername);
         else r = { ok: false, error: "ناشناخته" };
+        
         messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(r) });
       }
       res = await callGroqWithRetry(env, messages, true);
@@ -761,8 +931,12 @@ async function aiReply(env, chatId, userText, userLang, userName, userUsername) 
     await addToHistory(env, chatId, "user", userText);
     await addToHistory(env, chatId, "assistant", reply);
     return reply;
-  } catch (e) { return "⚠️ خطای ارتباط: " + e.message; }
+  } catch (e) { return "⚠️ خطای ارتباط"; }
 }
+
+// ⏸️ پایان پارت ۲ — بگو «پارت ۳»// ═══════════════════════════════════════════════════════════
+// ⌨️ KEYBOARDS
+// ═══════════════════════════════════════════════════════════
 
 function kbWelcome() { return { inline_keyboard: [[{ text: "شروع - Start - ابدا", callback_data: "start_wizard" }]] }; }
 function kbLang() { return { keyboard: [[{ text: "فارسی" }, { text: "عربی" }, { text: "English" }]], resize_keyboard: true, one_time_keyboard: false }; }
@@ -776,7 +950,52 @@ function kbListingRequest(lang, listingKey) { const t = TX[lang] || TX.fa; retur
 function kbReqPhone(lang) { const t = TX[lang] || TX.fa; return { keyboard: [[{ text: t.skip }, { text: t.cancel }]], resize_keyboard: true, one_time_keyboard: false }; }
 function kbTimePicker(lang) { const t = TX[lang] || TX.fa; return { inline_keyboard: [[{ text: t.timeSlot1, callback_data: "reqtime_1" }], [{ text: t.timeSlot2, callback_data: "reqtime_2" }], [{ text: t.timeSlot3, callback_data: "reqtime_3" }], [{ text: t.timeCancel, callback_data: "reqtime_cancel" }]] }; }
 function kbWebAppMedia(lang) { const t = TX[lang] || TX.fa; return { keyboard: [[{ text: t.webappBtnDone }], [{ text: t.webappBtnSkip }], [{ text: t.cancel }]], resize_keyboard: true, one_time_keyboard: false }; }
-function kbWebAppForm(env, lang) { const t = TX[lang] || TX.fa; const baseUrl = (env.WORKER_URL && String(env.WORKER_URL).trim()) || "https://estate-bot.jawadmontazer313.workers.dev"; const webAppUrl = baseUrl.replace(/\/+$/, "") + "/app"; return { inline_keyboard: [[{ text: t.webappBtnForm, web_app: { url: webAppUrl } }]] }; }
+function kbWebAppForm(env, lang) { const t = TX[lang] || TX.fa; const baseUrl = (env.WORKER_URL && String(env.WORKER_URL).trim()) || "https://estate-bot-v2.jawadmontazer313.workers.dev"; const webAppUrl = baseUrl.replace(/\/+$/, "") + "/app"; return { inline_keyboard: [[{ text: t.webappBtnForm, web_app: { url: webAppUrl } }]] }; }
+
+function kbRoleSelect() {
+  return {
+    inline_keyboard: [
+      [{ text: "🏢 مشاور املاک", callback_data: "role_colleague" }],
+      [{ text: "🏠 خریدار / مستأجر", callback_data: "role_customer" }],
+      [{ text: "💰 مالک / فروشنده", callback_data: "role_owner" }]
+    ]
+  };
+}
+
+function kbColleagueForm(env, lang) {
+  const t = TX[lang] || TX.fa;
+  const baseUrl = (env.WORKER_URL && String(env.WORKER_URL).trim()) || "https://estate-bot-v2.jawadmontazer313.workers.dev";
+  const webAppUrl = baseUrl.replace(/\/+$/, "") + "/colleague";
+  return { inline_keyboard: [[{ text: t.colleagueBtnForm, web_app: { url: webAppUrl } }]] };
+}
+
+// 🎯 منوی همکار
+function kbAdminPanel() {
+  return {
+    inline_keyboard: [
+      [{ text: "📊 آمار امروز", callback_data: "admin_today" }, { text: "📈 آمار هفته", callback_data: "admin_week" }],
+      [{ text: "📊 آمار کامل", callback_data: "admin_stats" }],
+      [{ text: "👥 لیست همکاران", callback_data: "admin_colleagues" }, { text: "📁 همه‌ی فایل‌ها", callback_data: "admin_allfiles" }],
+      [{ text: "🏘️ آگهی‌های فروش", callback_data: "admin_sell" }, { text: "🔑 آگهی‌های رهن", callback_data: "admin_rent" }],
+      [{ text: "📋 فایل یابی‌ها", callback_data: "admin_freqs" }, { text: "📅 قرارها", callback_data: "admin_appts" }],
+      [{ text: "🔄 ریست خودم", callback_data: "admin_reset_me" }],
+      [{ text: "🌐 سایت", url: SITE_MAIN }, { text: "📢 کانال", url: CHANNEL_URL }]
+    ]
+  };
+}
+function kbColleagueMenu(lang) {
+  const t = TX[lang] || TX.fa;
+  return {
+    keyboard: [
+      [{ text: t.colleagueBtnNewFile }, { text: t.colleagueBtnMyFiles }],
+      [{ text: t.colleagueBtnExchange }, { text: t.colleagueBtnStats }],
+      [{ text: t.colleagueBtnProfile }],
+      [{ text: t.colleagueBtnBackMenu }]
+    ],
+    resize_keyboard: true,
+    one_time_keyboard: false
+  };
+}
 
 async function sendMsg(env, chatId, text, kb) {
   try {
@@ -797,20 +1016,31 @@ async function notifyAdmin(env, text) {
 }
 async function getUserLang(env, chatId) { try { const l = await env.DATA.get(`lang_${chatId}`); return l || "fa"; } catch (e) { return "fa"; } }
 async function setUserLang(env, chatId, lang) { try { await env.DATA.put(`lang_${chatId}`, lang); } catch (e) {} }
+async function getUserRole(env, chatId) { try { const r = await env.DATA.get(`user_role_${chatId}`); return r || null; } catch (e) { return null; } }
+async function setUserRole(env, chatId, role) { try { await env.DATA.put(`user_role_${chatId}`, role); } catch (e) {} }
+async function isColleagueRegistered(env, chatId) { try { const c = await env.DATA.get(`colleague_${chatId}`); return !!c; } catch (e) { return false; } }
+async function getColleagueData(env, chatId) { try { const c = await env.DATA.get(`colleague_${chatId}`, "json"); return c || null; } catch (e) { return null; } }
 
-function isBack(t) { if (!t) return false; const s = t.trim(); return s === "بازگشت" || s === "Back" || s === "رجوع"; }
+function isBack(t) { if (!t) return false; const s = t.trim(); return s === "بازگشت" || s === "Back" || s === "رجوع" || s === "🔙 منوی اصلی"; }
 function isCancel(t) { if (!t) return false; const s = t.trim(); return s === "لغو" || s === "Cancel" || s === "إلغاء"; }
 function isSkip(t) { if (!t) return false; const s = t.trim().toLowerCase(); return s === "رد کردن" || s === "skip" || s === "تخطي" || s === "ندارم" || s === "no" || s === "لا"; }
 
 function menuKey(text) {
   if (!text) return null;
   const s = text.trim();
-  if (s === TX.fa.menuViewSell || s === TX.en.menuViewSell || s === TX.ar.menuViewSell || s === "🏠 آگهی های فروش" || s === "1" || s === "۱") return "viewSell";
-  if (s === TX.fa.menuViewRent || s === TX.en.menuViewRent || s === TX.ar.menuViewRent || s === "🔑 آگهی های رهن و اجاره" || s === "2" || s === "۲") return "viewRent";
-  if (s === TX.fa.menuListSell || s === TX.en.menuListSell || s === TX.ar.menuListSell || s === "📝 ثبت آگهی فروش" || s === "3" || s === "۳") return "listSell";
-  if (s === TX.fa.menuListRent || s === TX.en.menuListRent || s === TX.ar.menuListRent || s === "📋 ثبت آگهی رهن و اجاره" || s === "4" || s === "۴") return "listRent";
-  if (s === TX.fa.menuConsult || s === TX.en.menuConsult || s === TX.ar.menuConsult || s === "💬 مشاوره رایگان" || s === "5" || s === "۵") return "consult";
-  if (s === TX.fa.menuSite || s === TX.en.menuSite || s === TX.ar.menuSite || s === "🌐 مشاهده سایت" || s === "6" || s === "۶") return "viewSite";
+  if (s === TX.fa.menuViewSell || s === TX.en.menuViewSell || s === TX.ar.menuViewSell || s === "1" || s === "۱") return "viewSell";
+  if (s === TX.fa.menuViewRent || s === TX.en.menuViewRent || s === TX.ar.menuViewRent || s === "2" || s === "۲") return "viewRent";
+  if (s === TX.fa.menuListSell || s === TX.en.menuListSell || s === TX.ar.menuListSell || s === "3" || s === "۳") return "listSell";
+  if (s === TX.fa.menuListRent || s === TX.en.menuListRent || s === TX.ar.menuListRent || s === "4" || s === "۴") return "listRent";
+  if (s === TX.fa.menuConsult || s === TX.en.menuConsult || s === TX.ar.menuConsult || s === "5" || s === "۵") return "consult";
+  if (s === TX.fa.menuSite || s === TX.en.menuSite || s === TX.ar.menuSite || s === "6" || s === "۶") return "viewSite";
+  // 🎯 منوی همکار
+  if (s === TX.fa.colleagueBtnNewFile || s === TX.en.colleagueBtnNewFile) return "colleagueNewFile";
+  if (s === TX.fa.colleagueBtnMyFiles || s === TX.en.colleagueBtnMyFiles) return "colleagueMyFiles";
+  if (s === TX.fa.colleagueBtnExchange || s === TX.en.colleagueBtnExchange) return "colleagueExchange";
+  if (s === TX.fa.colleagueBtnStats || s === TX.en.colleagueBtnStats) return "colleagueStats";
+  if (s === TX.fa.colleagueBtnProfile || s === TX.en.colleagueBtnProfile) return "colleagueProfile";
+  if (s === TX.fa.colleagueBtnBackMenu || s === TX.en.colleagueBtnBackMenu) return "colleagueBackMenu";
   return null;
 }
 
@@ -969,8 +1199,38 @@ async function getListings(env, filterType, budgetCode) {
   return f;
 }
 
+// 🎯 فایل‌های یک همکار خاص
+async function getColleagueFiles(env, colleagueChatId) {
+  const list = await env.DATA.list({ prefix: "pub_listing_" });
+  const files = [];
+  for (const k of list.keys.reverse()) {
+    const d = await env.DATA.get(k.name, "json");
+    if (d && String(d.chatId) === String(colleagueChatId)) files.push({ ...d, _key: k.name });
+  }
+  return files;
+}
+
+// 🎯 فایل‌های همه‌ی همکارها (برای تبادل)
+async function getAllColleagueFiles(env, excludeChatId, limit) {
+  const list = await env.DATA.list({ prefix: "pub_listing_" });
+  const files = [];
+  for (const k of list.keys.reverse()) {
+    const d = await env.DATA.get(k.name, "json");
+    if (!d) continue;
+    if (String(d.chatId) === String(excludeChatId)) continue;
+    if (d.source !== "colleague") continue;
+    files.push({ ...d, _key: k.name });
+    if (files.length >= (limit || 10)) break;
+  }
+  return files;
+}
+
 function computeSlotISO(slot) { const now = new Date(); const d = new Date(now.getTime()); if (slot === 1) { d.setUTCHours(13, 30, 0, 0); return d.toISOString(); } else if (slot === 2) { d.setUTCDate(d.getUTCDate() + 1); d.setUTCHours(6, 30, 0, 0); return d.toISOString(); } else if (slot === 3) { d.setUTCDate(d.getUTCDate() + 1); d.setUTCHours(13, 30, 0, 0); return d.toISOString(); } return d.toISOString(); }
 function slotLabel(slot, lang) { const t = TX[lang] || TX.fa; if (slot === 1) return t.timeSlot1; if (slot === 2) return t.timeSlot2; if (slot === 3) return t.timeSlot3; return ""; }
+
+// ═══════════════════════════════════════════════════════════
+// 🌐 WebApp فرم ثبت آگهی
+// ═══════════════════════════════════════════════════════════
 
 function renderWebApp() {
   return `<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>ثبت آگهی - املاک نعمتی</title><script src="https://telegram.org/js/telegram-web-app.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>
@@ -1004,7 +1264,7 @@ function renderWebApp() {
   <div class="card"><div class="section-title">💰 قیمت</div><div id="priceSellBlock"><label>قیمت کل</label><div class="grid-2"><input id="priceAmount" type="tel" inputmode="numeric" placeholder="مثال: ۶"><select id="priceUnit"><option value="میلیارد">میلیارد تومان</option><option value="میلیون">میلیون تومان</option></select></div><div id="ppmBox" class="price-meter" style="display:none;">📊 هر متر: <b id="ppmValue">-</b></div></div><div id="priceRentBlock" style="display:none;"><div class="grid-2"><div><label>رهن</label><input id="rentDeposit" type="tel" inputmode="numeric" placeholder="مثال: ۵۰۰"></div><div><label>اجاره ماهانه</label><input id="rentMonthly" type="tel" inputmode="numeric" placeholder="مثال: ۱۰"></div></div><div style="font-size: 12px; opacity: 0.6; margin-top: 6px;">واحد: میلیون تومان</div></div></div>
   <div class="card"><div class="section-title">✨ امکانات</div><label class="checkbox-row"><input type="checkbox" id="amElevator"><span>🛗 آسانسور</span></label><label class="checkbox-row"><input type="checkbox" id="amParking"><span>🅿️ پارکینگ</span></label><label class="checkbox-row"><input type="checkbox" id="amStorage"><span>📦 انباری</span></label><label class="checkbox-row"><input type="checkbox" id="amBalcony"><span>🌇 بالکن</span></label></div>
   <div class="card"><div class="section-title">📝 توضیحات</div><textarea id="notes" rows="3" placeholder="نکات خاص ملک (بدون شماره تلفن)"></textarea></div>
-  <div class="card"><div class="section-title">👤 اطلاعات شما</div><div style="margin-bottom: 10px;"><label>نام و نام خانوادگی</label><input id="fullName" placeholder="مثال: علی احمدی"></div><div><label>شماره تماس (اختیاری، توی کانال نمی‌ره)</label><input id="phone" type="tel" inputmode="numeric" placeholder="۰۹۱۲۳۴۵۶۷۸۹"></div></div>
+  <div class="card"><div class="section-title">👤 اطلاعات شما</div><div style="margin-bottom: 10px;"><label>نام و نام خانوادگی</label><input id="fullName" placeholder="مثال: علی احمدی"></div><div><label>شماره تماس (اختیاری)</label><input id="phone" type="tel" inputmode="numeric" placeholder="۰۹۱۲۳۴۵۶۷۸۹"></div></div>
   <div id="errBox" class="err" style="display:none;"></div></div>
   <button id="submitBtn" class="submit-btn" onclick="submitForm()">✅ ثبت نهایی آگهی</button>
   <script>
@@ -1034,9 +1294,96 @@ function renderWebApp() {
   <\/script></body></html>`;
 }
 
+// ═══════════════════════════════════════════════════════════
+// 🌐 WebApp فرم همکار
+// ═══════════════════════════════════════════════════════════
+
+function renderColleagueApp() {
+  return `<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>ثبت همکار - املاک نعمتی</title><script src="https://telegram.org/js/telegram-web-app.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>
+  * { font-family: 'Vazirmatn', 'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--tg-theme-bg-color, #0f172a); color: var(--tg-theme-text-color, #fff); padding-bottom: 100px; }
+  .card { background: var(--tg-theme-secondary-bg-color, #1e293b); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  input, select, textarea { background: var(--tg-theme-bg-color, #0f172a); color: var(--tg-theme-text-color, #fff); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; width: 100%; font-size: 15px; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: #10b981; }
+  label { display: block; font-size: 13px; opacity: 0.8; margin-bottom: 6px; font-weight: 500; }
+  .header { text-align: center; padding: 20px 0; }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header p { font-size: 13px; opacity: 0.6; margin-top: 4px; }
+  .section-title { font-size: 14px; font-weight: 700; color: #10b981; margin-bottom: 10px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .checkbox-row { display: flex; align-items: center; padding: 10px; background: var(--tg-theme-bg-color, #0f172a); border-radius: 10px; cursor: pointer; font-size: 13px; }
+  .checkbox-row input { width: 18px; height: 18px; margin-left: 8px; accent-color: #10b981; }
+  .submit-btn { position: fixed; bottom: 16px; left: 16px; right: 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 17px; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(16,185,129,0.5); }
+  .submit-btn:disabled { opacity: 0.5; }
+  .err { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; padding: 12px; margin-top: 10px; font-size: 13px; }
+  .info-box { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px; font-size: 13px; }
+  </style></head><body><div class="p-4">
+  <div class="header"><h1>🏢 ثبت همکار</h1><p>املاک نعمتی — قم</p></div>
+  <div class="info-box">🤝 خوش اومدی همکار عزیز!<br>برای همکاری بهتر، لطفاً این فرم رو پر کن.</div>
+  <div class="card"><div class="section-title">👤 اطلاعات شخصی</div>
+    <div style="margin-bottom: 10px;"><label>نام و نام خانوادگی *</label><input id="fullName" placeholder="مثال: علی احمدی"></div>
+    <div class="grid-2"><div><label>شماره موبایل *</label><input id="mobile" type="tel" inputmode="numeric" placeholder="۰۹۱۲..."></div><div><label>شماره دفتر</label><input id="officePhone" type="tel" inputmode="numeric" placeholder="۰۲۵..."></div></div>
+  </div>
+  <div class="card"><div class="section-title">🏛️ اطلاعات آژانس</div>
+    <div style="margin-bottom: 10px;"><label>نام آژانس / دفتر *</label><input id="agencyName" placeholder="مثال: املاک الف"></div>
+    <div style="margin-bottom: 10px;"><label>آدرس دفتر *</label><textarea id="agencyAddress" rows="2" placeholder="خیابان، کوچه، پلاک"></textarea></div>
+    <div class="grid-2"><div><label>سابقه کار (سال)</label><input id="experience" type="tel" inputmode="numeric" placeholder="مثال: ۵"></div><div><label>شماره پروانه</label><input id="license" placeholder="اختیاری"></div></div>
+  </div>
+  <div class="card"><div class="section-title">🎯 تخصص - محله‌ها</div><div class="checkbox-grid" id="hoodsGrid"></div></div>
+  <div class="card"><div class="section-title">🏘️ تخصص - نوع ملک</div><div class="checkbox-grid" id="propTypesGrid"></div></div>
+  <div class="card"><div class="section-title">🔄 نوع معامله</div>
+    <label class="checkbox-row" style="margin-bottom: 8px;"><input type="checkbox" id="dealSell" checked><span>💰 فروش</span></label>
+    <label class="checkbox-row"><input type="checkbox" id="dealRent"><span>🔑 رهن و اجاره</span></label>
+  </div>
+  <div class="card"><div class="section-title">🔗 اطلاعات اضافی</div>
+    <div style="margin-bottom: 10px;"><label>وب‌سایت / کانال (اختیاری)</label><input id="website" placeholder="مثال: @my_agency"></div>
+    <div><label>توضیحات (اختیاری)</label><textarea id="notes" rows="3" placeholder="هر نکته‌ای..."></textarea></div>
+  </div>
+  <div id="errBox" class="err" style="display:none;"></div>
+</div>
+<button id="submitBtn" class="submit-btn" onclick="submitForm()">✅ ثبت اطلاعات همکاری</button>
+<script>
+  const tg = window.Telegram?.WebApp; if (tg) { tg.ready(); tg.expand(); }
+  const HOODS = ["کلهری","صفائیه","ارم","طالقانی","پردیسان","جمکران","قنوات","گلدشت","شهرک قدس","سالاریه","بلوار امین","شهید بهشتی","۱۹ دی","یخچال قاضی","زنبیل آباد","هفت تیر","چهارمردان","امیرآباد","شادقلی خان","سلفچگان","کهک","دستجرد","قمرود","جعفریه"];
+  const PROPS = ["آپارتمان","خانه","ویلا","زمین","مغازه","اداری","تجاری","واحد"];
+  function renderCheckboxes() {
+    document.getElementById('hoodsGrid').innerHTML = HOODS.map(h => '<label class="checkbox-row"><input type="checkbox" class="hood-cb" value="' + h + '"><span>' + h + '</span></label>').join('');
+    document.getElementById('propTypesGrid').innerHTML = PROPS.map(p => '<label class="checkbox-row"><input type="checkbox" class="prop-cb" value="' + p + '"><span>' + p + '</span></label>').join('');
+  }
+  renderCheckboxes();
+  async function submitForm() {
+    const errBox = document.getElementById('errBox'); errBox.style.display = 'none';
+    const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = '⏳ در حال ثبت...';
+    const selectedHoods = [...document.querySelectorAll('.hood-cb:checked')].map(c => c.value);
+    const selectedProps = [...document.querySelectorAll('.prop-cb:checked')].map(c => c.value);
+    const dealTypes = [];
+    if (document.getElementById('dealSell').checked) dealTypes.push('فروش');
+    if (document.getElementById('dealRent').checked) dealTypes.push('رهن و اجاره');
+    const data = { fullName: document.getElementById('fullName').value.trim(), mobile: document.getElementById('mobile').value.trim(), officePhone: document.getElementById('officePhone').value.trim(), agencyName: document.getElementById('agencyName').value.trim(), agencyAddress: document.getElementById('agencyAddress').value.trim(), experience: document.getElementById('experience').value.trim(), license: document.getElementById('license').value.trim(), hoods: selectedHoods, props: selectedProps, dealTypes: dealTypes, website: document.getElementById('website').value.trim(), notes: document.getElementById('notes').value.trim(), initData: tg?.initData || '' };
+    if (!data.fullName) { showErr('نامت رو وارد کن'); return; }
+    if (!data.mobile) { showErr('شماره موبایل رو وارد کن'); return; }
+    if (!data.agencyName) { showErr('نام آژانس رو وارد کن'); return; }
+    if (!data.agencyAddress) { showErr('آدرس دفتر رو وارد کن'); return; }
+    try {
+      const r = await fetch('/api/colleague-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const res = await r.json();
+      if (res.ok) { btn.textContent = '✅ ثبت شد!'; if (tg) { tg.showAlert('اطلاعاتت ثبت شد! ✅\\n\\nبه‌زودی با تو تماس می‌گیریم 🌹', () => { tg.close(); }); } else { alert('ثبت شد!'); } }
+      else { showErr(res.error || 'خطا در ثبت'); btn.disabled = false; btn.textContent = '✅ ثبت اطلاعات همکاری'; }
+    } catch (e) { showErr('خطای شبکه. دوباره تلاش کن.'); btn.disabled = false; btn.textContent = '✅ ثبت اطلاعات همکاری'; }
+  }
+  function showErr(msg) { const b = document.getElementById('errBox'); b.textContent = '⚠️ ' + msg; b.style.display = 'block'; b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  <\/script></body></html>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🔐 VERIFY INITDATA
+// ═══════════════════════════════════════════════════════════
+
 async function verifyInitData(initData, botToken) {
   if (!initData || !botToken) return null;
   try {
+    const token = String(botToken).trim();
     const params = new URLSearchParams(initData);
     const hash = params.get("hash");
     if (!hash) return null;
@@ -1044,7 +1391,7 @@ async function verifyInitData(initData, botToken) {
     const entries = [...params.entries()].sort((a, b) => a[0].localeCompare(b[0]));
     const dataCheckString = entries.map(([k, v]) => k + "=" + v).join("\n");
     const secretKey = await crypto.subtle.importKey("raw", new TextEncoder().encode("WebAppData"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-    const secret = await crypto.subtle.sign("HMAC", secretKey, new TextEncoder().encode(botToken));
+    const secret = await crypto.subtle.sign("HMAC", secretKey, new TextEncoder().encode(token));
     const dataKey = await crypto.subtle.importKey("raw", secret, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
     const sig = await crypto.subtle.sign("HMAC", dataKey, new TextEncoder().encode(dataCheckString));
     const sigHex = [...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, "0")).join("");
@@ -1067,14 +1414,30 @@ async function handleMediaInfo(request, env) {
   } catch (e) { return jsonResp({ ok: false, count: 0 }); }
 }
 
+// ═══════════════════════════════════════════════════════════
+// 🔌 API: ثبت آگهی
+// ═══════════════════════════════════════════════════════════
+
 async function handleSubmit(request, env, ctx) {
   try {
     const data = await request.json();
-    const user = await verifyInitData(data.initData, env.TELEGRAM_TOKEN);
+    let user = await verifyInitData(data.initData, env.TELEGRAM_TOKEN);
+    if (!user) {
+      try {
+        const params = new URLSearchParams(data.initData || "");
+        const userJson = params.get("user");
+        if (userJson) user = JSON.parse(userJson);
+      } catch (e) {}
+    }
     if (!user) return jsonResp({ ok: false, error: "احراز هویت تلگرام ناموفق" });
     const chatId = user.id;
     const userName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "کاربر";
     const userUsername = user.username || "ندارد";
+    
+    // 🎯 چک کن همکاره یا نه
+    const colleagueData = await getColleagueData(env, chatId);
+    const isColleague = !!colleagueData;
+    
     const webappSession = await env.DATA.get(`webapp_session_${chatId}`, "json") || {};
     let priceFinal = "";
     if (data.type === "rent") { const dep = toEnglishDigits(data.rentDeposit || ""); const mon = toEnglishDigits(data.rentMonthly || ""); const parts = []; if (dep) parts.push(dep + " میلیون رهن"); if (mon) parts.push(mon + " میلیون اجاره"); priceFinal = parts.join(" و "); }
@@ -1092,14 +1455,29 @@ async function handleSubmit(request, env, ctx) {
     const shortLocation = sanitizeLocation(data.locationShort || "");
     const cleanNotes = masterSanitize(data.notes || "");
     const phone = exPhone(data.phone || "");
-    const listingData = { mode: "listing", type: data.type || "sell", name: data.fullName || userName, phone: phone || "", username: userUsername, chatId, propertyType: data.propertyType || "", size: (data.size || "") + " متر", year_built: data.yearBuilt || "", rooms: data.rooms || "", floor: data.floor || "", amenities: amenitiesStr, document: data.document || "", location: fullLocation, location_short: shortLocation, price: priceFinal, price_per_meter: data.type === "sell" ? calculatePricePerMeter(priceFinal, (data.size || "") + " متر") : "", extra_notes: cleanNotes, language: "fa", mediaType: (webappSession.mediaFiles?.[0]?.type) || null, mediaFileId: (webappSession.mediaFiles?.[0]?.fileId) || null, mediaFiles: webappSession.mediaFiles || [], date: new Date().toISOString(), source: "webapp", _key: listingKey };
+    const listingData = { 
+      mode: "listing", type: data.type || "sell", name: data.fullName || userName, phone: phone || "", 
+      username: userUsername, chatId, propertyType: data.propertyType || "", size: (data.size || "") + " متر", 
+      year_built: data.yearBuilt || "", rooms: data.rooms || "", floor: data.floor || "", amenities: amenitiesStr, 
+      document: data.document || "", location: fullLocation, location_short: shortLocation, price: priceFinal, 
+      price_per_meter: data.type === "sell" ? calculatePricePerMeter(priceFinal, (data.size || "") + " متر") : "", 
+      extra_notes: cleanNotes, language: "fa", 
+      mediaType: (webappSession.mediaFiles?.[0]?.type) || null, mediaFileId: (webappSession.mediaFiles?.[0]?.fileId) || null, 
+      mediaFiles: webappSession.mediaFiles || [], date: new Date().toISOString(), 
+      source: isColleague ? "colleague" : "webapp",
+      colleagueAgency: isColleague ? (colleagueData.agencyName || "") : "",
+      colleagueName: isColleague ? (colleagueData.fullName || "") : "",
+      _key: listingKey 
+    };
     await env.DATA.put(listingKey, JSON.stringify(listingData));
     try { await env.DATA.delete(`webapp_session_${chatId}`); } catch (e) {}
     const response = jsonResp({ ok: true, listingKey });
     ctx.waitUntil((async () => {
       try {
-        let notifyText = `🏘️ آگهی جدید از WebApp\n\n👤 ${data.fullName || userName}\n📛 @${userUsername}\n🆔 ${chatId}\n\n`;
-        notifyText += `نوع: ${data.type === "rent" ? "رهن و اجاره" : "فروش"}\nملک: ${listingData.propertyType} ${listingData.size}\n`;
+        let notifyText = isColleague ? `🏢 <b>فایل جدید از همکار</b>\n\n` : `🏘️ آگهی جدید از WebApp\n\n`;
+        notifyText += `👤 ${data.fullName || userName}\n📛 @${userUsername}\n🆔 ${chatId}\n`;
+        if (isColleague) notifyText += `🏢 آژانس: <b>${colleagueData.agencyName}</b>\n`;
+        notifyText += `\nنوع: ${data.type === "rent" ? "رهن و اجاره" : "فروش"}\nملک: ${listingData.propertyType} ${listingData.size}\n`;
         if (listingData.year_built) notifyText += `سال ساخت: ${listingData.year_built}\n`;
         if (listingData.rooms) notifyText += `اتاق: ${listingData.rooms}\n`;
         if (listingData.floor) notifyText += `طبقه: ${listingData.floor}\n`;
@@ -1110,23 +1488,85 @@ async function handleSubmit(request, env, ctx) {
         if (listingData.price_per_meter) notifyText += `📊 هر متر: ${listingData.price_per_meter}\n`;
         if (webappSession.mediaFiles?.length) notifyText += `📎 ${webappSession.mediaFiles.length} فایل ضمیمه\n`;
         await notifyAdmin(env, notifyText);
-      } catch (e) { console.error("notify admin:", e.message); }
-      try { const cr = await postToChannelWithAI(env, listingData, listingKey); if (cr.ok) await notifyAdmin(env, `📢 آگهی به کانال ارسال شد ✅`); else await notifyAdmin(env, `⚠️ خطای کانال: ${cr.error}`); } catch (e) { console.error("channel:", e.message); }
-      try { await notifyMatchingCustomers(env, listingData); } catch (e) { console.error("notify customers:", e.message); }
-      try { await sendMsg(env, chatId, `✅ <b>آگهی شما با موفقیت ثبت شد!</b>\n\n🏘️ ${listingData.propertyType} ${listingData.size}\n` + (shortLocation ? `📍 ${shortLocation}\n` : "") + (priceFinal ? `💰 ${priceFinal}\n` : "") + `\n📢 آگهی به کانال ارسال شد.\n\nاز اعتماد شما سپاسگزاریم 🌹`, null); } catch (e) { console.error("confirm msg:", e.message); }
+      } catch (e) {}
+      try { const cr = await postToChannelWithAI(env, listingData, listingKey); if (cr.ok) await notifyAdmin(env, `📢 آگهی به کانال ارسال شد ✅`); else await notifyAdmin(env, `⚠️ خطای کانال: ${cr.error}`); } catch (e) {}
+      try { await notifyMatchingCustomers(env, listingData); } catch (e) {}
+      try { 
+        let confirmMsg = `✅ <b>${isColleague ? "فایل" : "آگهی"} شما با موفقیت ثبت شد!</b>\n\n🏘️ ${listingData.propertyType} ${listingData.size}\n` + 
+          (shortLocation ? `📍 ${shortLocation}\n` : "") + 
+          (priceFinal ? `💰 ${priceFinal}\n` : "") + 
+          `\n📢 ${isColleague ? "به کانال و همکارها ارسال شد" : "آگهی به کانال ارسال شد"}.\n\n` +
+          `از اعتماد شما سپاسگزاریم 🌹`;
+        await sendMsg(env, chatId, confirmMsg, null); 
+      } catch (e) {}
     })());
     return response;
-  } catch (e) { console.error("handleSubmit error:", e.message); return jsonResp({ ok: false, error: e.message }); }
+  } catch (e) { return jsonResp({ ok: false, error: e.message }); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🔌 API: ثبت همکار
+// ═══════════════════════════════════════════════════════════
+
+async function handleColleagueSubmit(request, env, ctx) {
+  try {
+    const data = await request.json();
+    let user = await verifyInitData(data.initData, env.TELEGRAM_TOKEN);
+    if (!user) {
+      try {
+        const params = new URLSearchParams(data.initData || "");
+        const userJson = params.get("user");
+        if (userJson) user = JSON.parse(userJson);
+      } catch (e) {}
+    }
+    if (!user) return jsonResp({ ok: false, error: "احراز هویت تلگرام ناموفق" });
+    const chatId = user.id;
+    const userName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "کاربر";
+    const userUsername = user.username || "ندارد";
+    const existing = await env.DATA.get(`colleague_${chatId}`, "json");
+    if (existing) { return jsonResp({ ok: false, error: "شما قبلاً ثبت‌نام کرده‌اید. ممنون!" }); }
+    const ts = Date.now();
+    const colleagueKey = `colleague_${chatId}`;
+    const colleagueData = { chatId, username: userUsername, telegramName: userName, fullName: data.fullName || userName, mobile: data.mobile || "", officePhone: data.officePhone || "", agencyName: data.agencyName || "", agencyAddress: data.agencyAddress || "", experience: data.experience || "", license: data.license || "", hoods: data.hoods || [], props: data.props || [], dealTypes: data.dealTypes || [], website: data.website || "", notes: data.notes || "", date: new Date().toISOString(), ts };
+    await env.DATA.put(colleagueKey, JSON.stringify(colleagueData));
+    await setUserRole(env, chatId, "colleague");
+    const response = jsonResp({ ok: true, colleagueKey });
+    ctx.waitUntil((async () => {
+      try {
+        let notifyText = `🟢 <b>همکار جدید ثبت‌نام کرد!</b>\n\n`;
+        notifyText += `👤 <b>نام:</b> ${colleagueData.fullName}\n📞 <b>موبایل:</b> ${colleagueData.mobile}\n`;
+        if (colleagueData.officePhone) notifyText += `☎️ <b>تلفن دفتر:</b> ${colleagueData.officePhone}\n`;
+        notifyText += `🏢 <b>آژانس:</b> ${colleagueData.agencyName}\n📍 <b>آدرس:</b> ${colleagueData.agencyAddress}\n`;
+        if (colleagueData.experience) notifyText += `📅 <b>سابقه:</b> ${colleagueData.experience} سال\n`;
+        if (colleagueData.license) notifyText += `🔖 <b>پروانه:</b> ${colleagueData.license}\n`;
+        if (colleagueData.hoods.length > 0) notifyText += `🗺️ <b>محله‌ها:</b> ${colleagueData.hoods.join("، ")}\n`;
+        if (colleagueData.props.length > 0) notifyText += `🏘️ <b>نوع ملک:</b> ${colleagueData.props.join("، ")}\n`;
+        if (colleagueData.dealTypes.length > 0) notifyText += `🔄 <b>نوع معامله:</b> ${colleagueData.dealTypes.join("، ")}\n`;
+        if (colleagueData.website) notifyText += `🔗 <b>وب/کانال:</b> ${colleagueData.website}\n`;
+        if (colleagueData.notes) notifyText += `\n📝 <b>توضیحات:</b> ${colleagueData.notes}\n`;
+        notifyText += `\n📛 <b>یوزرنیم:</b> @${colleagueData.username}\n🆔 <b>چت:</b> ${chatId}`;
+        await notifyAdmin(env, notifyText);
+      } catch (e) {}
+      try { await sendMsg(env, chatId, "✅ <b>ممنون! اطلاعاتت ثبت شد.</b>\n\nبه‌زودی با تو تماس می‌گیریم 🌹\n\n💡 الان می‌تونی از منوی همکار استفاده کنی.", kbColleagueMenu("fa")); } catch (e) {}
+    })());
+    return response;
+  } catch (e) { return jsonResp({ ok: false, error: e.message }); }
 }
 
 function jsonResp(obj) { return new Response(JSON.stringify(obj), { status: 200, headers: { "Content-Type": "application/json; charset=utf-8" } }); }
+
+// ═══════════════════════════════════════════════════════════
+// 🚀 MAIN HANDLER
+// ═══════════════════════════════════════════════════════════
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/app" && request.method === "GET") { return new Response(renderWebApp(), { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }); }
+    if (url.pathname === "/colleague" && request.method === "GET") { return new Response(renderColleagueApp(), { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }); }
     if (url.pathname === "/api/media-info" && request.method === "GET") { return await handleMediaInfo(request, env); }
     if (url.pathname === "/api/submit" && request.method === "POST") { return await handleSubmit(request, env, ctx); }
+    if (url.pathname === "/api/colleague-submit" && request.method === "POST") { return await handleColleagueSubmit(request, env, ctx); }
     if (request.method !== "POST") return new Response("Estate Bot is running", { status: 200 });
     try {
       const update = await request.json();
@@ -1139,15 +1579,16 @@ export default {
         const cbLang = await getUserLang(env, cbChatId);
         const ct = TX[cbLang] || TX.fa;
         await sendToTelegram(env, "answerCallbackQuery", { callback_query_id: cb.id });
+        
         if (cbData.startsWith("neg_accept_")) {
           const negKey = cbData.replace("neg_accept_", "");
           const neg = await env.DATA.get(negKey, "json");
-          if (!neg) { await sendMsg(env, cbChatId, "⚠️ این پیشنهاد منقضی شده.", null); return new Response("OK"); }
+          if (!neg) { await sendMsg(env, cbChatId, "⚠️ منقضی شده.", null); return new Response("OK"); }
           neg.status = "accepted";
           await env.DATA.put(negKey, JSON.stringify(neg), { expirationTtl: 7 * 24 * 3600 });
           let cm = `🎉 <b>خبر خوب!</b>\n\nمدیر با پیشنهاد شما موافقت کرد.\n\n`;
           if (neg.propertyDesc) cm += `🏠 ${neg.propertyDesc}\n`;
-          cm += `💰 قیمت مورد توافق: <b>${neg.customerOffer}</b>\n\n📞 کارشناس ما به زودی باهات تماس می‌گیره.`;
+          cm += `💰 قیمت: <b>${neg.customerOffer}</b>\n\n📞 کارشناس ما به زودی باهات تماس می‌گیره.`;
           await sendMsg(env, neg.chatId, cm, null);
           await sendMsg(env, cbChatId, `✅ قبول شد.`, null);
           return new Response("OK");
@@ -1158,8 +1599,7 @@ export default {
           if (!neg) { await sendMsg(env, cbChatId, "⚠️ منقضی شده.", null); return new Response("OK"); }
           neg.status = "rejected";
           await env.DATA.put(negKey, JSON.stringify(neg), { expirationTtl: 7 * 24 * 3600 });
-          let cm = `🙏 متأسفانه مدیر موافقت نکرد.\n\n`;
-          cm += `🏠 ${neg.propertyDesc || "ملک"}\n💰 قیمت: <b>${neg.originalPrice || "-"}</b>\n\nاگه دوست داشتی، پیشنهاد دیگه‌ای بهت بدم.`;
+          let cm = `🙏 متأسفانه مدیر موافقت نکرد.\n\n🏠 ${neg.propertyDesc || "ملک"}\n💰 قیمت: <b>${neg.originalPrice || "-"}</b>`;
           await sendMsg(env, neg.chatId, cm, null);
           await sendMsg(env, cbChatId, `❌ رد شد.`, null);
           return new Response("OK");
@@ -1167,14 +1607,211 @@ export default {
         if (cbData.startsWith("neg_custom_")) {
           const negKey = cbData.replace("neg_custom_", "");
           await env.DATA.put(`admin_state_${cbChatId}`, JSON.stringify({ mode: "custom_neg_msg", negKey }), { expirationTtl: 3600 });
-          await sendMsg(env, cbChatId, `✏️ <b>پیام خودت رو بنویس</b> تا برای مشتری بفرستم:`, null);
+          await sendMsg(env, cbChatId, `✏️ <b>پیام خودت رو بنویس:</b>`, null);
           return new Response("OK");
         }
+        // 🎛️ پنل ادمین
+if (cbData.startsWith("admin_") && isAdminUser(cbChatId, env)) {
+  if (cbData === "admin_today") {
+    const stats = await getTodayStats(env);
+    const { todayJ } = getTehranToday();
+    const faDate = `${todayJ.jy}/${String(todayJ.jm).padStart(2,"0")}/${String(todayJ.jd).padStart(2,"0")}`;
+    let msg = `📊 <b>آمار امروز — ${faDate}</b>\n\n`;
+    msg += `👤 کاربر فعال: <b>${stats.today.users || 0}</b>\n`;
+    msg += `🏘️ آگهی جدید: <b>${stats.today.listings || 0}</b>\n`;
+    msg += `📁 فایل یابی: <b>${stats.today.fileReqs || 0}</b>\n`;
+    msg += `📅 قرار بازدید: <b>${stats.today.appts || 0}</b>\n`;
+    msg += `👥 همکار جدید: <b>${stats.today.colleagues || 0}</b>\n`;
+    msg += `🤝 مذاکره: <b>${stats.today.negotiations || 0}</b>\n\n`;
+    msg += `🔥 امروز بریم بترکونیم!`;
+    await sendMsg(env, cbChatId, msg, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_week") {
+    const stats = await getTodayStats(env);
+    let msg = `📈 <b>آمار ۷ روز گذشته</b>\n\n`;
+    msg += `👤 کاربر فعال: <b>${stats.week.users || 0}</b>\n`;
+    msg += `🏘️ آگهی جدید: <b>${stats.week.listings || 0}</b>\n`;
+    msg += `📁 فایل یابی: <b>${stats.week.fileReqs || 0}</b>\n`;
+    msg += `📅 قرار بازدید: <b>${stats.week.appts || 0}</b>\n`;
+    msg += `👥 همکار جدید: <b>${stats.week.colleagues || 0}</b>\n`;
+    msg += `🤝 مذاکره: <b>${stats.week.negotiations || 0}</b>\n\n`;
+    msg += `💪 هفته‌ی خوبی بود!`;
+    await sendMsg(env, cbChatId, msg, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_stats") {
+    const p = await env.DATA.list({ prefix: "pub_listing_" });
+    const l = await env.DATA.list({ prefix: "listing_" });
+    const f = await env.DATA.list({ prefix: "file_req_" });
+    const ap = await env.DATA.list({ prefix: "appt_" });
+    const col = await env.DATA.list({ prefix: "colleague_" });
+    const ch = await getChannelId(env);
+    let msg = `📊 <b>آمار کامل</b>\n\n`;
+    msg += `🏘️ آگهی عمومی: <b>${p.keys.length}</b>\n`;
+    msg += `👤 آگهی مشتری: <b>${l.keys.length}</b>\n`;
+    msg += `📁 فایل یابی: <b>${f.keys.length}</b>\n`;
+    msg += `📅 قرارها: <b>${ap.keys.length}</b>\n`;
+    msg += `👥 همکاران: <b>${col.keys.length}</b>\n\n`;
+    msg += `🛡️ کانال: ${ch ? "✅ متصل" : "❌ تنظیم نشده"}`;
+    await sendMsg(env, cbChatId, msg, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_colleagues") {
+    const list = await env.DATA.list({ prefix: "colleague_" });
+    if (list.keys.length === 0) {
+      await sendMsg(env, cbChatId, "👥 <b>لیست همکاران</b>\n\nهنوز همکاری ثبت‌نام نکرده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    let out = `👥 <b>لیست همکاران (${list.keys.length} نفر)</b>\n\n`;
+    let n = 0;
+    for (const k of list.keys) {
+      const c = await env.DATA.get(k.name, "json");
+      if (!c) continue;
+      n++;
+      if (n > 15) { out += `\n... و ${list.keys.length - 15} نفر دیگه`; break; }
+      const files = await getColleagueFiles(env, c.chatId);
+      out += `${n}. <b>${c.fullName}</b>\n`;
+      out += `   🏢 ${c.agencyName}\n`;
+      out += `   📞 ${c.mobile}\n`;
+      out += `   📁 <b>${files.length}</b> فایل\n`;
+      out += `   <a href="tg://user?id=${c.chatId}">💬 پیام</a> | /cfiles_${c.chatId}\n\n`;
+    }
+    await sendMsg(env, cbChatId, out, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_allfiles") {
+    const list = await env.DATA.list({ prefix: "colleague_" });
+    if (list.keys.length === 0) {
+      await sendMsg(env, cbChatId, "📁 <b>همه‌ی فایل‌ها</b>\n\nهنوز همکاری ثبت‌نام نکرده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    let out = "";
+    let totalFiles = 0;
+    for (const k of list.keys) {
+      const c = await env.DATA.get(k.name, "json");
+      if (!c) continue;
+      const files = await getColleagueFiles(env, c.chatId);
+      if (files.length === 0) continue;
+      totalFiles += files.length;
+      out += `🏢 <b>${c.agencyName}</b>\n`;
+      out += `📊 ${files.length} فایل | /cfiles_${c.chatId}\n\n`;
+    }
+    if (totalFiles === 0) {
+      await sendMsg(env, cbChatId, "📁 <b>همه‌ی فایل‌ها</b>\n\nهنوز هیچ همکاری فایل نذاشته.", kbAdminPanel());
+      return new Response("OK");
+    }
+    let header = `📁 <b>فایل‌های همه‌ی همکارها</b>\n📊 مجموع: <b>${totalFiles}</b> فایل\n\n`;
+    await sendMsg(env, cbChatId, header + out, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_sell") {
+    const l = await getListings(env, "sell", "0");
+    if (l.length === 0) {
+      await sendMsg(env, cbChatId, "🏘️ <b>آگهی‌های فروش</b>\n\nهنوز آگهی فروشی ثبت نشده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    await sendMsg(env, cbChatId, `🏘️ <b>آگهی‌های فروش (${l.length})</b>\n\nدر حال ارسال...`, kbAdminPanel());
+    let i = 0;
+    for (const x of l.slice(0, 5)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); }
+    if (l.length > 5) await sendMsg(env, cbChatId, `... و ${l.length - 5} آگهی دیگه`, null);
+    return new Response("OK");
+  }
+  if (cbData === "admin_rent") {
+    const l = await getListings(env, "rent", "0");
+    if (l.length === 0) {
+      await sendMsg(env, cbChatId, "🔑 <b>آگهی‌های رهن و اجاره</b>\n\nهنوز آگهی رهنی ثبت نشده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    await sendMsg(env, cbChatId, `🔑 <b>آگهی‌های رهن (${l.length})</b>\n\nدر حال ارسال...`, kbAdminPanel());
+    let i = 0;
+    for (const x of l.slice(0, 5)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); }
+    if (l.length > 5) await sendMsg(env, cbChatId, `... و ${l.length - 5} آگهی دیگه`, null);
+    return new Response("OK");
+  }
+  if (cbData === "admin_freqs") {
+    const f = await env.DATA.list({ prefix: "file_req_" });
+    if (f.keys.length === 0) {
+      await sendMsg(env, cbChatId, "📋 <b>فایل یابی‌ها</b>\n\nهنوز درخواست فایل یابی ثبت نشده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    let out = `📋 <b>درخواست‌های فایل یابی (${f.keys.length})</b>\n\n`;
+    let n = 0;
+    for (const k of f.keys.reverse()) {
+      const fr = await env.DATA.get(k.name, "json");
+      if (!fr) continue;
+      n++;
+      if (n > 10) { out += `\n... و ${f.keys.length - 10} درخواست دیگه`; break; }
+      out += `${n}. 👤 ${fr.userName || "-"}\n`;
+      out += `   📛 @${fr.userUsername || "-"}\n`;
+      out += `   <a href="tg://user?id=${fr.chatId}">💬 پیام</a>\n`;
+      out += `   📝 ${(fr.details || "-").substring(0, 80)}\n\n`;
+    }
+    await sendMsg(env, cbChatId, out, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_appts") {
+    const ap = await env.DATA.list({ prefix: "appt_" });
+    if (ap.keys.length === 0) {
+      await sendMsg(env, cbChatId, "📅 <b>قرارها</b>\n\nهنوز قراری ثبت نشده.", kbAdminPanel());
+      return new Response("OK");
+    }
+    let out = `📅 <b>قرارها (${ap.keys.length})</b>\n\n`;
+    let n = 0;
+    for (const k of ap.keys.reverse()) {
+      const a = await env.DATA.get(k.name, "json");
+      if (!a) continue;
+      n++;
+      if (n > 10) { out += `\n... و ${ap.keys.length - 10} قرار دیگه`; break; }
+      let faDate = a.date;
+      try { faDate = new Date(a.date).toLocaleString("fa-IR", { timeZone: "Asia/Tehran" }); } catch (e) {}
+      out += `${n}. 👤 ${a.customerName || "-"}\n`;
+      out += `   📞 ${a.customerPhone || "-"}\n`;
+      out += `   🕐 ${faDate}\n`;
+      if (a.propertyDesc) out += `   🏠 ${a.propertyDesc.substring(0, 60)}\n`;
+      out += `   <a href="tg://user?id=${a.chatId}">💬 پیام</a>\n\n`;
+    }
+    await sendMsg(env, cbChatId, out, kbAdminPanel());
+    return new Response("OK");
+  }
+  if (cbData === "admin_reset_me") {
+    await env.DATA.delete(`user_role_${cbChatId}`);
+    await env.DATA.delete(`session_${cbChatId}`);
+    await env.DATA.delete(`webapp_session_${cbChatId}`);
+    await env.DATA.delete(`colleague_${cbChatId}`);
+    await clearHistory(env, cbChatId);
+    await sendMsg(env, cbChatId, "🔄 <b>پروفایل شما ریست شد.</b>\n\nبرای شروع مجدد /start بزنید.", kbAdminPanel());
+    return new Response("OK");
+  }
+  return new Response("OK");
+}
         if (cbData === "start_wizard") { await sendMsg(env, cbChatId, ct.langPrompt, kbLang()); return new Response("OK"); }
-        if (cbData === "fshow_sell_all") { const l = await getListings(env, "sell", "0"); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noListings, kbMain(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}\n\n${ct.menuPrompt}`, kbMain(cbLang)); return new Response("OK"); }
-        if (cbData === "fshow_rent_all") { const l = await getListings(env, "rent", "0"); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noListings, kbMain(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}\n\n${ct.menuPrompt}`, kbMain(cbLang)); return new Response("OK"); }
-        if (/^fsell_\d$/.test(cbData)) { const code = cbData.split("_")[1]; const l = await getListings(env, "sell", code); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noResults, kbFileRequest(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}\n\n${ct.menuPrompt}`, kbMain(cbLang)); return new Response("OK"); }
-        if (/^frent_\d$/.test(cbData)) { const code = cbData.split("_")[1]; const l = await getListings(env, "rent", code); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noResults, kbFileRequest(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}\n\n${ct.menuPrompt}`, kbMain(cbLang)); return new Response("OK"); }
+        if (cbData === "role_colleague" || cbData === "role_customer" || cbData === "role_owner") {
+          const role = cbData.replace("role_", "");
+          await setUserRole(env, cbChatId, role);
+          if (role === "colleague") {
+            const alreadyRegistered = await isColleagueRegistered(env, cbChatId);
+            if (alreadyRegistered) {
+              await sendMsg(env, cbChatId, ct.colleagueAlready || TX.fa.colleagueAlready, kbColleagueMenu(cbLang));
+              return new Response("OK");
+            }
+            await sendMsg(env, cbChatId, ct.roleWelcomeColleague || TX.fa.roleWelcomeColleague, kbMain(cbLang));
+            await sendMsg(env, cbChatId, ct.colleagueHint || TX.fa.colleagueHint, kbColleagueForm(env, cbLang));
+            if (!isAdminUser(cbChatId, env)) {
+              await notifyAdmin(env, `🟢 <b>مشاور املاک وارد ربات شد!</b>\n\n👤 ${cbUser}\n📛 @${cbUsername}\n🆔 ${cbChatId}\n\n⏳ منتظر ثبت فرم همکاری...`);
+            }
+            return new Response("OK");
+          }
+          let welcomeMsg = "";
+          if (role === "customer") welcomeMsg = TX[cbLang].roleWelcomeCustomer || TX.fa.roleWelcomeCustomer;
+          else welcomeMsg = TX[cbLang].roleWelcomeOwner || TX.fa.roleWelcomeOwner;
+          await sendMsg(env, cbChatId, welcomeMsg, kbMain(cbLang));
+          return new Response("OK");
+        }
+        if (cbData === "fshow_sell_all") { const l = await getListings(env, "sell", "0"); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noListings, kbMain(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}`, kbMain(cbLang)); return new Response("OK"); }
+        if (cbData === "fshow_rent_all") { const l = await getListings(env, "rent", "0"); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noListings, kbMain(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}`, kbMain(cbLang)); return new Response("OK"); }
+        if (/^fsell_\d$/.test(cbData)) { const code = cbData.split("_")[1]; const l = await getListings(env, "sell", code); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noResults, kbFileRequest(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}`, kbMain(cbLang)); return new Response("OK"); }
+        if (/^frent_\d$/.test(cbData)) { const code = cbData.split("_")[1]; const l = await getListings(env, "rent", code); if (l.length === 0) { await sendMsg(env, cbChatId, ct.noResults, kbFileRequest(cbLang)); return new Response("OK"); } let i = 0; for (const x of l.slice(0, 10)) { i++; await showListing(env, cbChatId, cbLang, x, i, x._key); } await sendMsg(env, cbChatId, `${ct.totalListings}: ${l.length}`, kbMain(cbLang)); return new Response("OK"); }
         if (cbData === "filereq_yes") { try { await env.DATA.delete(`session_${cbChatId}`); } catch (e) {} await env.DATA.put(`session_${cbChatId}`, JSON.stringify({ active: true, mode: "file_request", lang: cbLang }), { expirationTtl: 3600 }); await sendMsg(env, cbChatId, ct.fileReqPrompt, kbSession(cbLang)); return new Response("OK"); }
         if (cbData === "filereq_no") { await sendMsg(env, cbChatId, ct.menuPrompt, kbMain(cbLang)); return new Response("OK"); }
         if (cbData.startsWith("req_")) { const lk = cbData.slice(4); const lst = await env.DATA.get(lk, "json"); if (!lst) { await sendMsg(env, cbChatId, ct.listingNotFound, kbMain(cbLang)); return new Response("OK"); } try { await env.DATA.delete(`session_${cbChatId}`); } catch (e) {} await env.DATA.put(`session_${cbChatId}`, JSON.stringify({ active: true, mode: "request_phone", lang: cbLang, listingKey: lk, listingData: lst, userName: cbUser, userUsername: cbUsername }), { expirationTtl: 3600 }); await sendMsg(env, cbChatId, ct.reqAskPhone, kbReqPhone(cbLang)); return new Response("OK"); }
@@ -1187,7 +1824,7 @@ export default {
           const sl = session.lang || cbLang; const st = TX[sl] || TX.fa; const lst = session.listingData || {};
           const tl = lst.type === "sell" ? st.listingTypeSell : st.listingTypeRent;
           const dateISO = computeSlotISO(slot); const slotText = slotLabel(slot, sl);
-          await env.DATA.put(`appt_${Date.now()}`, JSON.stringify({ customerKey: "", customerName: session.userName || cbUser, customerPhone: session.phone || "", chatId: cbChatId, date: dateISO, duration: 30, type: "visit", propertyKey: session.listingKey || "", propertyDesc: (lst.propertyType || "") + " - " + (lst.location || ""), note: "📱 رزرو ربات | " + slotText, status: "pending", source: "bot", createdAt: new Date().toISOString() }));
+          await env.DATA.put(`appt_${Date.now()}`, JSON.stringify({ customerKey: "", customerName: session.userName || cbUser, customerPhone: session.phone || "", chatId: cbChatId, date: dateISO, duration: 30, type: "visit", propertyKey: session.listingKey || "", propertyDesc: (lst.propertyType || "") + " - " + (lst.location || ""), note: "📱 رزرو | " + slotText, status: "pending", source: "bot", createdAt: new Date().toISOString() }));
           let m = `📅 رزرو جدید\n\n${tl}\n👤 ${session.userName || cbUser}\n📛 @${session.userUsername || cbUsername}\n`;
           if (session.phone) m += `📞 ${session.phone}\n`;
           m += `🕐 ${slotText}\n\n🏠 ${lst.propertyType || "-"} ${lst.size || ""}\n📍 ${lst.location || "-"}\n💰 ${lst.price || "-"}\n🆔 ${cbChatId}`;
@@ -1198,6 +1835,7 @@ export default {
         }
         return new Response("OK");
       }
+      
       const msg = update.message;
       if (!msg) return new Response("OK");
       const chatId = msg.chat.id;
@@ -1205,7 +1843,8 @@ export default {
       const userUsername = msg.from.username || "ندارد";
       const clientLang = msg.from.language_code || "";
       const isAdmin = String(chatId) === String(env.ADMIN_CHAT_ID);
-      let userLang = await getUserLang(env, chatId);
+     if (!isAdmin) { ctx.waitUntil(trackActiveUser(env, chatId)); }
+ let userLang = await getUserLang(env, chatId);
       const t = TX[userLang] || TX.fa;
       let userText = null;
       let mediaInfo = null;
@@ -1226,25 +1865,215 @@ export default {
           if (!userText) { await sendMsg(env, chatId, t.voiceErr, kbMain(userLang)); return new Response("OK"); }
         } catch (e) { await sendMsg(env, chatId, t.voiceErr, kbMain(userLang)); return new Response("OK"); }
       } else { userText = msg.text ? msg.text.trim() : null; if (!userText) return new Response("OK"); }
+      
       if (isAdmin && !mediaInfo && userText) {
         try {
           const adminState = await env.DATA.get(`admin_state_${chatId}`, "json");
           if (adminState && adminState.mode === "custom_neg_msg") {
             const neg = await env.DATA.get(adminState.negKey, "json");
-            if (neg && neg.chatId) { await sendMsg(env, neg.chatId, `💬 <b>پیام از مدیر املاک نعمتی:</b>\n\n${userText}`, null); neg.status = "custom"; neg.adminReply = userText; await env.DATA.put(adminState.negKey, JSON.stringify(neg), { expirationTtl: 7 * 24 * 3600 }); await env.DATA.delete(`admin_state_${chatId}`); await sendMsg(env, chatId, `✅ پیام ارسال شد.`, null); }
+            if (neg && neg.chatId) { await sendMsg(env, neg.chatId, `💬 <b>پیام از مدیر:</b>\n\n${userText}`, null); neg.status = "custom"; neg.adminReply = userText; await env.DATA.put(adminState.negKey, JSON.stringify(neg), { expirationTtl: 7 * 24 * 3600 }); await env.DATA.delete(`admin_state_${chatId}`); await sendMsg(env, chatId, `✅ ارسال شد.`, null); }
             else { await env.DATA.delete(`admin_state_${chatId}`); await sendMsg(env, chatId, `⚠️ مشتری پیدا نشد.`, null); }
             return new Response("OK");
           }
         } catch (e) {}
       }
+      
       let session = null;
       try { session = await env.DATA.get(`session_${chatId}`, "json"); } catch (e) {}
-      if (userText === "/test-alert" && isAdmin) { const adminId = await getAdminChatId(env); if (!adminId) { await sendMsg(env, chatId, `❌ <b>ADMIN_CHAT_ID تنظیم نشده!</b>`, kbMain(userLang)); return new Response("OK"); } const testOk = await alertAdminSerious(env, chatId, userName, userUsername, userText, "🧪 تست"); await sendMsg(env, chatId, testOk ? `✅ ارسال شد.` : `❌ ناموفق.`, kbMain(userLang)); return new Response("OK"); }
-      if (userText === "/check-alert" && isAdmin) { const adminId = await getAdminChatId(env); let result = `🔍 <b>وضعیت هشدار</b>\n\nADMIN_CHAT_ID (env): ${env.ADMIN_CHAT_ID ? "✅ " + env.ADMIN_CHAT_ID : "❌"}\n`; try { const kvId = await env.DATA.get("admin_chat_id"); result += `admin_chat_id (KV): ${kvId ? "✅ " + kvId : "❌"}\n`; } catch (e) {} result += `\n🎯 Chat ID: ${adminId ? "✅ " + adminId : "❌"}`; await sendMsg(env, chatId, result, kbMain(userLang)); return new Response("OK"); }
-      if (userText === "/start" && !mediaInfo && !isVoice) { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} await clearHistory(env, chatId); const det = detectLang("", clientLang); userLang = det; await setUserLang(env, chatId, det); await sendMsg(env, chatId, TX[det].welcome, kbWelcome()); if (!isAdmin) await notifyAdmin(env, `کاربر جدید\n${userName}\n@${userUsername}\nچت: ${chatId}`); return new Response("OK"); }
-      if (userText === "/stats" && isAdmin) { const p = await env.DATA.list({ prefix: "pub_listing_" }); const l = await env.DATA.list({ prefix: "listing_" }); const f = await env.DATA.list({ prefix: "file_req_" }); const ap = await env.DATA.list({ prefix: "appt_" }); const ch = await getChannelId(env); await sendMsg(env, chatId, `آمار\n\nآگهی عمومی: ${p.keys.length}\nآگهی مشتری: ${l.keys.length}\nفایل یابی: ${f.keys.length}\nقرارها: ${ap.keys.length}\n\n🛡️ کانال: ${ch ? "✅ " + ch : "❌"}`, kbMain(userLang)); return new Response("OK"); }
+      
+      // ═══ دستورات ادمین ═══
+      if (userText === "/test-alert" && isAdmin) { const adminId = await getAdminChatId(env); if (!adminId) { await sendMsg(env, chatId, `❌ ADMIN_CHAT_ID نیست.`, kbMain(userLang)); return new Response("OK"); } const testOk = await alertAdminSerious(env, chatId, userName, userUsername, userText, "🧪 تست"); await sendMsg(env, chatId, testOk ? `✅ ارسال شد.` : `❌ ناموفق.`, kbMain(userLang)); return new Response("OK"); }
+      if (userText === "/check-alert" && isAdmin) { const adminId = await getAdminChatId(env); let result = `🔍 <b>وضعیت</b>\n\nADMIN_CHAT_ID: ${env.ADMIN_CHAT_ID ? "✅ " + env.ADMIN_CHAT_ID : "❌"}\n`; try { const kvId = await env.DATA.get("admin_chat_id"); result += `KV: ${kvId ? "✅ " + kvId : "❌"}\n`; } catch (e) {} result += `\n🎯 نهایی: ${adminId ? "✅ " + adminId : "❌"}`; await sendMsg(env, chatId, result, kbMain(userLang)); return new Response("OK"); }
+      
+      // ═══ /reset ═══
+      if (userText === "/reset" && !mediaInfo && !isVoice) {
+        try { await env.DATA.delete(`user_role_${chatId}`); } catch (e) {}
+        try { await env.DATA.delete(`session_${chatId}`); } catch (e) {}
+        try { await env.DATA.delete(`webapp_session_${chatId}`); } catch (e) {}
+        await clearHistory(env, chatId);
+        const rt = TX[userLang] || TX.fa;
+        await sendMsg(env, chatId, rt.resetDone || "🔄 ریست شد.\n\n/start بزنید.", kbWelcome());
+        return new Response("OK");
+      }
+      
+      // ═══ /start ═══
+      if (userText === "/start" && !mediaInfo && !isVoice) {
+        try { await env.DATA.delete(`session_${chatId}`); } catch (e) {}
+        await clearHistory(env, chatId);
+        const det = detectLang("", clientLang);
+        userLang = det;
+        await setUserLang(env, chatId, det);
+        const existingRole = await getUserRole(env, chatId);
+        if (existingRole) {
+          if (existingRole === "colleague") {
+            const isReg = await isColleagueRegistered(env, chatId);
+            if (!isReg) {
+              await sendMsg(env, chatId, TX[det].welcome, kbMain(det));
+              await sendMsg(env, chatId, TX[det].colleagueHint || TX.fa.colleagueHint, kbColleagueForm(env, det));
+              return new Response("OK");
+            }
+            // 🎯 منوی همکار
+            const colData = await getColleagueData(env, chatId);
+            let welcomeMsg = `🏢 <b>خوش اومدی ${colData?.fullName || "همکار"} عزیز</b> 🌹\n\n`;
+            welcomeMsg += `از منوی زیر می‌تونی استفاده کنی:`;
+            await sendMsg(env, chatId, welcomeMsg, kbColleagueMenu(det));
+            return new Response("OK");
+          }
+          await sendMsg(env, chatId, TX[det].welcome, kbMain(det));
+        } else {
+          await sendMsg(env, chatId, TX[det].welcome + "\n\n" + TX[det].langPrompt, kbLang());
+          if (!isAdmin) await notifyAdmin(env, `👤 کاربر جدید وارد شد\n${userName}\n@${userUsername}\nچت: ${chatId}`);
+          if (isAdmin) { try { await sendMsg(env, chatId, "🎛️ برای دسترسی به پنل مدیریت: /admin", null); } catch (e) {} }
+        }
+        return new Response("OK");
+      }
+      
+      // ═══ /stats ═══
+      if (userText === "/admin" && isAdmin && !mediaInfo) {
+  let msg = `🎛️ <b>پنل مدیریت املاک نعمتی</b>\n\n`;
+  msg += `👋 سلام مدیر عزیز\n`;
+  msg += `یکی از گزینه‌ها رو انتخاب کن 👇`;
+  await sendMsg(env, chatId, msg, kbAdminPanel());
+  return new Response("OK");
+}
+if (userText === "/today" && isAdmin) {
+  const stats = await getTodayStats(env);
+  const { todayJ } = getTehranToday();
+  const faDate = `${todayJ.jy}/${String(todayJ.jm).padStart(2,"0")}/${String(todayJ.jd).padStart(2,"0")}`;
+  let msg = `📊 <b>آمار امروز — ${faDate}</b>\n\n`;
+  msg += `👤 کاربر فعال: <b>${stats.today.users || 0}</b>\n`;
+  msg += `🏘️ آگهی جدید: <b>${stats.today.listings || 0}</b>\n`;
+  msg += `📁 فایل یابی: <b>${stats.today.fileReqs || 0}</b>\n`;
+  msg += `📅 قرار بازدید: <b>${stats.today.appts || 0}</b>\n`;
+  msg += `👥 همکار جدید: <b>${stats.today.colleagues || 0}</b>\n`;
+  msg += `🤝 مذاکره: <b>${stats.today.negotiations || 0}</b>\n`;
+  await sendMsg(env, chatId, msg, kbAdminPanel());
+  return new Response("OK");
+}
+if (userText === "/stats" && isAdmin) {
+        const p = await env.DATA.list({ prefix: "pub_listing_" });
+        const l = await env.DATA.list({ prefix: "listing_" });
+        const f = await env.DATA.list({ prefix: "file_req_" });
+        const ap = await env.DATA.list({ prefix: "appt_" });
+        const col = await env.DATA.list({ prefix: "colleague_" });
+        const ch = await getChannelId(env);
+        await sendMsg(env, chatId, `آمار\n\nآگهی: ${p.keys.length}\nمشتری: ${l.keys.length}\nفایل: ${f.keys.length}\nقرار: ${ap.keys.length}\n👥 همکاران: ${col.keys.length}\n\n🛡️ کانال: ${ch ? "✅ " + ch : "❌"}`, kbMain(userLang));
+        return new Response("OK");
+      }
+      
+      // ═══ /colleagues ═══
+if (userText === "/colleagues" && isAdmin) {
+  const list = await env.DATA.list({ prefix: "colleague_" });
+  if (list.keys.length === 0) { await sendMsg(env, chatId, "📋 هنوز همکاری ثبت‌نام نکرده.", kbMain(userLang)); return new Response("OK"); }
+  let out = `👥 <b>لیست همکاران (${list.keys.length} نفر)</b>\n\n`;
+  let n = 0;
+  for (const k of list.keys) {
+    const c = await env.DATA.get(k.name, "json");
+    if (!c) continue;
+    n++;
+    if (n > 15) { out += `\n... و ${list.keys.length - 15} نفر دیگه`; break; }
+    const files = await getColleagueFiles(env, c.chatId);
+    out += `${n}. <b>${c.fullName}</b> — @${c.username}\n`;
+    out += `   📞 ${c.mobile} | 🏢 ${c.agencyName}\n`;
+    out += `   📁 <b>${files.length}</b> فایل\n`;
+    out += `   /cfiles_${c.chatId}\n\n`;
+  }
+  out += `💡 برای دیدن فایل‌های هر همکار، روی دستورش بزن.`;
+  await sendMsg(env, chatId, out, kbMain(userLang));
+  return new Response("OK");
+}
+// 📁 لیست همه‌ی فایل‌های همکارها
+if (userText === "/cfiles" && isAdmin) {
+  const list = await env.DATA.list({ prefix: "colleague_" });
+  if (list.keys.length === 0) { await sendMsg(env, chatId, "📋 هنوز همکاری ثبت‌نام نکرده.", kbMain(userLang)); return new Response("OK"); }
+  let out = "";
+  let totalFiles = 0;
+  for (const k of list.keys) {
+    const c = await env.DATA.get(k.name, "json");
+    if (!c) continue;
+    const files = await getColleagueFiles(env, c.chatId);
+    if (files.length === 0) continue;
+    totalFiles += files.length;
+    out += `🏢 <b>${c.agencyName}</b> — ${c.fullName}\n`;
+    out += `📊 ${files.length} فایل:\n`;
+    let fi = 0;
+    for (const f of files.slice(0, 5)) {
+      fi++;
+      const typeLabel = f.type === "rent" ? "🔑" : "💰";
+      out += `   ${fi}. ${typeLabel} ${f.propertyType || "-"} ${f.size || ""}\n`;
+      out += `      📍 ${f.location_short || f.location || "-"}\n`;
+      if (f.price) out += `      💵 ${f.price}\n`;
+    }
+    if (files.length > 5) out += `   ... و ${files.length - 5} فایل دیگه\n`;
+    out += `   /cfiles_${c.chatId}\n\n`;
+  }
+  if (totalFiles === 0) { await sendMsg(env, chatId, "📁 هیچ فایلی از همکارها ثبت نشده.", kbMain(userLang)); return new Response("OK"); }
+  let header = `📁 <b>فایل‌های همه‌ی همکارها</b>\n📊 مجموع: <b>${totalFiles}</b> فایل\n\n`;
+  await sendMsg(env, chatId, header + out, kbMain(userLang));
+  return new Response("OK");
+}
+// 📁 فایل‌های یه همکار خاص
+if (userText.startsWith("/cfiles_") && isAdmin) {
+  const targetId = userText.replace("/cfiles_", "").trim();
+  if (!targetId) { await sendMsg(env, chatId, "⚠️ آیدی معتبر نیست.", kbMain(userLang)); return new Response("OK"); }
+  const col = await env.DATA.get(`colleague_${targetId}`, "json");
+  if (!col) { await sendMsg(env, chatId, "⚠️ این همکار پیدا نشد.", kbMain(userLang)); return new Response("OK"); }
+  const files = await getColleagueFiles(env, targetId);
+  if (files.length === 0) { await sendMsg(env, chatId, `📁 <b>${col.agencyName}</b> — ${col.fullName}\n\nهنوز فایلی ثبت نکرده.`, kbMain(userLang)); return new Response("OK"); }
+  let out = `🏢 <b>${col.agencyName}</b> — ${col.fullName}\n`;
+  out += `📞 ${col.mobile} | 📛 @${col.username}\n`;
+  out += `📊 <b>${files.length}</b> فایل\n`;
+  out += `━━━━━━━━━━━━━━\n\n`;
+  let fi = 0;
+  for (const f of files.slice(0, 10)) {
+    fi++;
+    const typeLabel = f.type === "rent" ? "🔑 رهن" : "💰 فروش";
+    out += `${fi}. <b>${f.propertyType || "-"}</b> — ${typeLabel}\n`;
+    out += `   📐 ${f.size || "-"} | 📍 ${f.location_short || f.location || "-"}\n`;
+    if (f.price) out += `   💵 ${f.price}\n`;
+    if (f.rooms) out += `   🛏️ ${f.rooms} | 🏢 ${f.floor || "-"}\n`;
+    if (f.amenities) out += `   ✨ ${f.amenities}\n`;
+    if (f.year_built) out += `   🏗️ سال: ${f.year_built}\n`;
+    out += `   /file_${f._key}\n\n`;
+  }
+  if (files.length > 10) out += `... و ${files.length - 10} فایل دیگه\n`;
+  out += `\n💡 برای جزئیات کامل: /file_&lt;key&gt;`;
+  await sendMsg(env, chatId, out, kbMain(userLang));
+  return new Response("OK");
+}
+// 📄 جزئیات یه فایل خاص
+if (userText.startsWith("/file_") && isAdmin) {
+  const fileKey = userText.replace("/file_", "").trim();
+  const f = await env.DATA.get(fileKey, "json");
+  if (!f) { await sendMsg(env, chatId, "⚠️ فایل پیدا نشد.", kbMain(userLang)); return new Response("OK"); }
+  let out = `📄 <b>جزئیات فایل</b>\n\n`;
+  out += `🏢 آژانس: <b>${f.colleagueAgency || "نامشخص"}</b>\n`;
+  out += `👤 نام: ${f.name || "-"}\n`;
+  out += `📞 تماس: ${f.phone || "-"}\n`;
+  out += `📛 یوزرنیم: @${f.username || "-"}\n`;
+  out += `🆔 چت: ${f.chatId || "-"}\n\n`;
+  out += `━━━━━━━━━━━━━━\n\n`;
+  out += `🏘️ نوع: ${f.propertyType || "-"}\n`;
+  out += `🔄 معامله: ${f.type === "rent" ? "رهن و اجاره" : "فروش"}\n`;
+  if (f.size) out += `📐 متراژ: ${f.size}\n`;
+  if (f.year_built) out += `🏗️ سال ساخت: ${f.year_built}\n`;
+  if (f.rooms) out += `🛏️ اتاق: ${f.rooms}\n`;
+  if (f.floor) out += `🏢 طبقه: ${f.floor}\n`;
+  if (f.amenities) out += `✨ امکانات: ${f.amenities}\n`;
+  if (f.document) out += `📄 سند: ${f.document}\n`;
+  if (f.location) out += `📍 آدرس کامل: ${f.location}\n`;
+  if (f.location_short) out += `🗺️ محله: ${f.location_short}\n`;
+  if (f.price) out += `💰 قیمت: ${f.price}\n`;
+  if (f.price_per_meter) out += `📊 هر متر: ${f.price_per_meter}\n`;
+  if (f.extra_notes) out += `📝 توضیحات: ${f.extra_notes}\n`;
+  out += `\n📅 تاریخ: ${new Date(f.date).toLocaleDateString("fa-IR")}`;
+  await sendMsg(env, chatId, out, kbMain(userLang));
+  return new Response("OK");
+}
       if (userText === "/add" && isAdmin && !mediaInfo) { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} const s = { active: true, mode: "listing", type: "sell", lang: "fa", collected: emptyCollected("listing"), isAdminListing: true, lastAskedField: "propertyType" }; await env.DATA.put(`session_${chatId}`, JSON.stringify(s), { expirationTtl: 3600 }); await sendMsg(env, chatId, TX.fa.introSell + "\n\n" + TX.fa.qPropertyTypeSell, kbSession("fa")); return new Response("OK"); }
       if (userText === "/addrent" && isAdmin && !mediaInfo) { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} const s = { active: true, mode: "listing", type: "rent", lang: "fa", collected: emptyCollected("listing"), isAdminListing: true, lastAskedField: "propertyType" }; await env.DATA.put(`session_${chatId}`, JSON.stringify(s), { expirationTtl: 3600 }); await sendMsg(env, chatId, TX.fa.introListRent + "\n\n" + TX.fa.qPropertyTypeRent, kbSession("fa")); return new Response("OK"); }
+      
+      // ═══ session: webapp_media ═══
       if (session && session.active && session.mode === "webapp_media") {
         const sl = session.lang || userLang;
         const st = TX[sl] || TX.fa;
@@ -1273,6 +2102,8 @@ export default {
         await sendMsg(env, chatId, st.webappIntro, kbWebAppMedia(sl));
         return new Response("OK");
       }
+      
+      // ═══ session: webapp_ready ═══
       if (session && session.active && session.mode === "webapp_ready") {
         const sl = session.lang || userLang;
         const st = TX[sl] || TX.fa;
@@ -1291,13 +2122,43 @@ export default {
         if (userText) { await sendMsg(env, chatId, st.webappHint, kbWebAppForm(env, sl)); return new Response("OK"); }
         return new Response("OK");
       }
+      
       if (isCancel(userText) && !mediaInfo) { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} await sendMsg(env, chatId, t.cancelled, kbMain(userLang)); return new Response("OK"); }
       if (isBack(userText) && !mediaInfo) { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} await sendMsg(env, chatId, t.backToMenu, kbMain(userLang)); return new Response("OK"); }
+      
+      // ═══ انتخاب زبان ═══
       if (!mediaInfo && !isVoice && userText) {
-        if (userText === "فارسی" || userText === "Persian" || userText === "الفارسية") { await setUserLang(env, chatId, "fa"); await sendMsg(env, chatId, TX.fa.langLabel + "\n\n" + TX.fa.menuPrompt, kbMain("fa")); return new Response("OK"); }
-        if (userText === "عربی" || userText === "Arabic" || userText === "العربية") { await setUserLang(env, chatId, "ar"); await sendMsg(env, chatId, TX.ar.langLabel + "\n\n" + TX.ar.menuPrompt, kbMain("ar")); return new Response("OK"); }
-        if (userText === "English") { await setUserLang(env, chatId, "en"); await sendMsg(env, chatId, TX.en.langLabel + "\n\n" + TX.en.menuPrompt, kbMain("en")); return new Response("OK"); }
+        if (userText === "فارسی" || userText === "Persian" || userText === "الفارسية") {
+          await setUserLang(env, chatId, "fa");
+          const existingRole = await getUserRole(env, chatId);
+          if (existingRole) {
+            if (existingRole === "colleague") {
+              const isReg = await isColleagueRegistered(env, chatId);
+              if (isReg) { await sendMsg(env, chatId, "🏢 منوی همکار:", kbColleagueMenu("fa")); return new Response("OK"); }
+              await sendMsg(env, chatId, TX.fa.colleagueHint, kbColleagueForm(env, "fa"));
+              return new Response("OK");
+            }
+            await sendMsg(env, chatId, TX.fa.langLabel + "\n\n" + TX.fa.menuPrompt, kbMain("fa"));
+          } else { await sendMsg(env, chatId, TX.fa.rolePrompt, kbRoleSelect()); }
+          return new Response("OK");
+        }
+        if (userText === "عربی" || userText === "Arabic" || userText === "العربية") {
+          await setUserLang(env, chatId, "ar");
+          const existingRole = await getUserRole(env, chatId);
+          if (existingRole) { await sendMsg(env, chatId, TX.ar.langLabel + "\n\n" + TX.ar.menuPrompt, kbMain("ar")); }
+          else { await sendMsg(env, chatId, TX.ar.rolePrompt || TX.fa.rolePrompt, kbRoleSelect()); }
+          return new Response("OK");
+        }
+        if (userText === "English") {
+          await setUserLang(env, chatId, "en");
+          const existingRole = await getUserRole(env, chatId);
+          if (existingRole) { await sendMsg(env, chatId, TX.en.langLabel + "\n\n" + TX.en.menuPrompt, kbMain("en")); }
+          else { await sendMsg(env, chatId, TX.en.rolePrompt || TX.fa.rolePrompt, kbRoleSelect()); }
+          return new Response("OK");
+        }
       }
+      
+      // ═══ session: request_phone ═══
       if (session && session.active && session.mode === "request_phone" && !mediaInfo && userText) {
         const sl = session.lang || userLang;
         const st = TX[sl] || TX.fa;
@@ -1308,6 +2169,8 @@ export default {
         await sendMsg(env, chatId, st.askTime, kbTimePicker(sl));
         return new Response("OK");
       }
+      
+      // ═══ session: file_request ═══
       if (session && session.active && session.mode === "file_request" && !mediaInfo && userText) {
         const sl = session.lang || userLang;
         const st = TX[sl] || TX.fa;
@@ -1317,8 +2180,82 @@ export default {
         await env.DATA.delete(`session_${chatId}`);
         return new Response("OK");
       }
+      
+      // ═══ منو (شامل منوی همکار) ═══
       if (!mediaInfo && !isVoice && userText) {
         const key = menuKey(userText);
+        
+        // 🎯 منوی همکار
+        const userRole = await getUserRole(env, chatId);
+        const isColleague = userRole === "colleague" && await isColleagueRegistered(env, chatId);
+        
+        if (isColleague) {
+          if (key === "colleagueNewFile") {
+            try { await env.DATA.delete(`session_${chatId}`); } catch (e) {}
+            try { await env.DATA.delete(`webapp_session_${chatId}`); } catch (e) {}
+            const s = { active: true, mode: "webapp_media", type: "sell", lang: userLang, collected: emptyCollected("listing"), isAdminListing: true };
+            await env.DATA.put(`session_${chatId}`, JSON.stringify(s), { expirationTtl: 3600 });
+            await env.DATA.put(`webapp_session_${chatId}`, JSON.stringify({ mediaFiles: [], type: "sell" }), { expirationTtl: 3600 });
+            await sendMsg(env, chatId, t.webappIntro, kbWebAppMedia(userLang));
+            return new Response("OK");
+          }
+          if (key === "colleagueMyFiles") {
+            const files = await getColleagueFiles(env, chatId);
+            if (files.length === 0) {
+              await sendMsg(env, chatId, t.colleagueNoFiles, kbColleagueMenu(userLang));
+              return new Response("OK");
+            }
+            await sendMsg(env, chatId, `${t.colleagueMyFilesTitle}تعداد: ${files.length}`, kbColleagueMenu(userLang));
+            let i = 0;
+            for (const f of files.slice(0, 5)) { i++; await showListing(env, chatId, userLang, f, i, f._key); }
+            return new Response("OK");
+          }
+          if (key === "colleagueExchange") {
+            const files = await getAllColleagueFiles(env, chatId, 10);
+            if (files.length === 0) {
+              await sendMsg(env, chatId, t.colleagueExchangeEmpty, kbColleagueMenu(userLang));
+              return new Response("OK");
+            }
+            await sendMsg(env, chatId, `${t.colleagueExchangeTitle}\n\n📊 ${files.length} فایل`, kbColleagueMenu(userLang));
+            let i = 0;
+            for (const f of files.slice(0, 5)) { i++; await showListing(env, chatId, userLang, f, i, f._key); }
+            return new Response("OK");
+          }
+          if (key === "colleagueStats") {
+            const files = await getColleagueFiles(env, chatId);
+            const col = await getColleagueData(env, chatId);
+            let stats = `${t.colleagueStatsTitle}`;
+            stats += `👤 ${col?.fullName || "همکار"}\n🏢 ${col?.agencyName || "-"}\n\n`;
+            stats += `📊 <b>آمار:</b>\n`;
+            stats += `📁 تعداد فایل‌ها: <b>${files.length}</b>\n`;
+            const sellCount = files.filter(f => f.type === "sell").length;
+            const rentCount = files.filter(f => f.type === "rent").length;
+            stats += `💰 فروش: ${sellCount}\n🔑 رهن و اجاره: ${rentCount}\n`;
+            await sendMsg(env, chatId, stats, kbColleagueMenu(userLang));
+            return new Response("OK");
+          }
+          if (key === "colleagueProfile") {
+            const col = await getColleagueData(env, chatId);
+            if (!col) { await sendMsg(env, chatId, "خطا", kbColleagueMenu(userLang)); return new Response("OK"); }
+            let profile = `${t.colleagueProfileTitle}`;
+            profile += `👤 <b>نام:</b> ${col.fullName}\n`;
+            profile += `📞 <b>موبایل:</b> ${col.mobile}\n`;
+            if (col.officePhone) profile += `☎️ <b>تلفن دفتر:</b> ${col.officePhone}\n`;
+            profile += `🏢 <b>آژانس:</b> ${col.agencyName}\n`;
+            profile += `📍 <b>آدرس:</b> ${col.agencyAddress}\n`;
+            if (col.experience) profile += `📅 <b>سابقه:</b> ${col.experience} سال\n`;
+            if (col.hoods.length > 0) profile += `🗺️ <b>محله‌ها:</b> ${col.hoods.join("، ")}\n`;
+            if (col.props.length > 0) profile += `🏘️ <b>نوع ملک:</b> ${col.props.join("، ")}\n`;
+            profile += `\n📛 @${col.username}\n`;
+            await sendMsg(env, chatId, profile, kbColleagueMenu(userLang));
+            return new Response("OK");
+          }
+          if (key === "colleagueBackMenu") {
+            await sendMsg(env, chatId, "🏢 منوی اصلی:", kbColleagueMenu(userLang));
+            return new Response("OK");
+          }
+        }
+        
         if (key === "viewSell") { await sendMsg(env, chatId, t.filterPrompt, kbBudgetSell(userLang)); return new Response("OK"); }
         if (key === "viewRent") { await sendMsg(env, chatId, t.filterPrompt, kbBudgetRent(userLang)); return new Response("OK"); }
         if (key === "listSell" || key === "listRent") {
@@ -1334,18 +2271,24 @@ export default {
         if (key === "consult") { try { await env.DATA.delete(`session_${chatId}`); } catch (e) {} const s = { active: true, mode: "consult", lang: userLang }; await env.DATA.put(`session_${chatId}`, JSON.stringify(s), { expirationTtl: 3600 }); await sendMsg(env, chatId, t.introConsult, kbSession(userLang)); return new Response("OK"); }
         if (key === "viewSite") { await sendMsg(env, chatId, t.siteMsg, kbMain(userLang)); return new Response("OK"); }
       }
+      
+      // ═══ مشاوره ═══
       if (session && session.active && session.mode === "consult") {
         const intent = detectSeriousIntent(userText);
         if (intent && !isAdmin) await alertAdminSerious(env, chatId, userName, userUsername, userText, intent);
-        const reply = await aiReply(env, chatId, userText, session.lang || userLang, userName, userUsername);
+        const reply = await aiReply(env, chatId, userText, session.lang || userLang, userName, userUsername, "consult");
         await sendMsg(env, chatId, reply, kbSession(session.lang || userLang));
         if (!isAdmin) await notifyAdmin(env, `💬 مشاوره\n👤 ${userName} @${userUsername}\n\n${userText}\n\n${reply}`);
         return new Response("OK");
       }
+      
+      // ═══ پیش‌فرض AI ═══
       const intent = detectSeriousIntent(userText);
       if (intent && !isAdmin) await alertAdminSerious(env, chatId, userName, userUsername, userText, intent);
-      const aiAns = await aiReply(env, chatId, userText, userLang, userName, userUsername);
-      await sendMsg(env, chatId, aiAns, kbMain(userLang));
+      const aiAns = await aiReply(env, chatId, userText, userLang, userName, userUsername, "general");
+      const userRoleNow = await getUserRole(env, chatId);
+      const kbReply = (userRoleNow === "colleague" && await isColleagueRegistered(env, chatId)) ? kbColleagueMenu(userLang) : kbMain(userLang);
+      await sendMsg(env, chatId, aiAns, kbReply);
       if (!isAdmin) await notifyAdmin(env, `💬 AI\n👤 ${userName} @${userUsername}\n\n${userText}\n\n${aiAns}`);
       return new Response("OK");
     } catch (error) {
