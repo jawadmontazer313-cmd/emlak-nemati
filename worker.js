@@ -410,7 +410,7 @@ function parsePersianDate(text) {
   if (!text) return null;
   const t = String(text).trim();
   const PERSIAN_MONTHS = {"فروردین":1,"فرودین":1,"اردیبهشت":2,"خرداد":3,"تیر":4,"مرداد":5,"شهریور":6,"مهر":7,"آبان":8,"ابان":8,"آذر":9,"اذر":9,"دی":10,"بهمن":11,"اسفند":12};
-  const WEEKDAYS = {"شنبه":6,"یکشنبه":0,"یک‌شنبه":0,"یک شنبه":0,"دوشنبه":1,"دو‌شنبه":1,"دو شنبه":1,"سه‌شنبه":2,"سه شنبه":2,"سه‌شنبه":2,"چهارشنبه":3,"چهار‌شنبه":3,"چهار شنبه":3,"پنجشنبه":4,"پنج‌شنبه":4,"پنج شنبه":4,"جمعه":5};
+  const WEEKDAYS = {"شنبه":6,"یکشنبه":0,"یک‌شنبه":0,"یک شنبه":0,"دوشنبه":1,"دو‌شنبه":1,"دو شنبه":1,"سه‌شنبه":2,"سه شنبه":2,"چهارشنبه":3,"چهار‌شنبه":3,"چهار شنبه":3,"پنجشنبه":4,"پنج‌شنبه":4,"پنج شنبه":4,"جمعه":5};
   const { today, todayJ } = getTehranToday();
   let hour = 10, minute = 0;
   const timeMatch = t.match(/(?:ساعت\s*)?([۰-۹\d]+)(?::([۰-۹\d]+))?/);
@@ -918,7 +918,8 @@ async function aiReply(env, chatId, userText, userLang, userName, userUsername, 
         else if (tc.function.name === "negotiate_price") r = await negotiatePriceForAI(env, a, chatId, userName, userUsername);
         else r = { ok: false, error: "ناشناخته" };
         
-        messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(r) });
+    /** @type {any[]} */
+let messages = [{ role: "system", content: buildSystemPrompt(userLang, userName, mode) }, ...history.map(h => ({ role: h.role, content: h.content })), { role: "user", content: normText }];    
       }
       res = await callGroqWithRetry(env, messages, true);
       if (!res.ok) return "رفیق الان یه کم سرم شلوغه 🙏 چند لحظه دیگه دوباره بپرس";
